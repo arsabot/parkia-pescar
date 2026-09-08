@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Parkia - Home / Mapa</title>
+<link rel="stylesheet" href="css/inicio.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+</head>
+<body>
+
+<div class="app">
+  <header class="header">
+    <span class="logo">Parkia</span>
+    <nav class="nav">
+      <a href="index.html" class="active">Inicio</a>
+      <a href="vistas/detalle.html">Buscar</a>
+      <a href="vistas/reserva.html">Reservas</a>
+      <a href="vistas/historial.html">Historial</a>
+      <a href="#">Ayuda</a>
+    </nav>
+    <a href="vistas/perfil.html" class="avatar">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </a>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="search-box">
+        <span class="search-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </span>
+        <input type="text" placeholder="¿Dónde querés estacionar?" />
+      </div>
+
+      <div class="filters-label">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/></svg>
+        Filtros
+      </div>
+
+      <div class="filter-group">
+        <div class="filter-row">
+          <span>Precio por hora</span>
+          <strong id="priceOut">$0 – $15.000</strong>
+        </div>
+        <input type="range" min="1000" max="15000" step="100" value="15000" id="priceRange" oninput="document.getElementById('priceOut').textContent = '$0 – $' + Number(this.value).toLocaleString('es-AR')" />
+      </div>
+
+      <div class="filter-group">
+        <div class="filter-title">Distancia</div>
+        <div class="custom-select" id="distanceSelect">
+          <button type="button" class="custom-select-trigger" aria-haspopup="listbox" aria-expanded="false">
+            <span class="custom-select-value">Cercano (1 km)</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <ul class="custom-select-options" role="listbox">
+            <li data-value="1" class="selected">Cercano (1 km)</li>
+            <li data-value="3">Medio (3 km)</li>
+            <li data-value="5">Amplio (5 km)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <div class="filter-title">Disponibilidad</div>
+        <label class="checkbox-row"><input type="checkbox" checked /> Disponible</label>
+        <label class="checkbox-row"><input type="checkbox" /> Pocos lugares</label>
+        <label class="checkbox-row"><input type="checkbox" /> Completo</label>
+      </div>
+
+      <button class="btn-outline">Más filtros</button>
+    </aside>
+
+    <main class="main">
+      <div class="map" id="map">
+        <!-- Mapa real de Leaflet montado acá por JS -->
+
+        <div class="zoom-controls">
+          <button aria-label="Acercar">+</button>
+          <button aria-label="Alejar">-</button>
+        </div>
+      </div>
+
+      <section class="featured">
+        <div class="featured-header">
+          <h2>Estacionamientos destacados</h2>
+          <a href="#">Ver todos →</a>
+        </div>
+        <div class="featured-grid">
+          <div class="spot-card">
+            <div class="spot-photo"><span class="spot-badge">Destacado</span></div>
+            <div class="spot-body">
+              <p class="spot-name">Parking Obelisco</p>
+              <div class="spot-rating">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24"><polygon points="12 2 15 9 22 9 16.5 13.5 18.5 21 12 16.5 5.5 21 7.5 13.5 2 9 9 9"/></svg>
+                <strong style="color:#44403c;font-weight:500">4.8</strong> (120) · 350 m
+              </div>
+              <p class="spot-price">$2.500 / hora</p>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <div class="spot-photo"></div>
+            <div class="spot-body">
+              <p class="spot-name">Parking Palermo</p>
+              <div class="spot-rating">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24"><polygon points="12 2 15 9 22 9 16.5 13.5 18.5 21 12 16.5 5.5 21 7.5 13.5 2 9 9 9"/></svg>
+                <strong style="color:#44403c;font-weight:500">4.3</strong> (98) · 800 m
+              </div>
+              <p class="spot-price">$2.200 / hora</p>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <div class="spot-photo"></div>
+            <div class="spot-body">
+              <p class="spot-name">Parking Puerto Madero</p>
+              <div class="spot-rating">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24"><polygon points="12 2 15 9 22 9 16.5 13.5 18.5 21 12 16.5 5.5 21 7.5 13.5 2 9 9 9"/></svg>
+                <strong style="color:#44403c;font-weight:500">4.9</strong> (150) · 1.1 km
+              </div>
+              <p class="spot-price">$3.000 / hora</p>
+            </div>
+          </div>
+
+          <div class="promo-card">
+            <div>
+              <p>20% off</p>
+              <p>con tu reserva en Parkia</p>
+            </div>
+            <span class="promo-arrow">→</span>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+  // ============================================================
+  // Mapa REAL con Leaflet + OpenStreetMap (sin API key)
+  // ============================================================
+  // Estacionamientos con coordenadas reales (Buenos Aires)
+  var spots = [
+    { name: "Parking Obelisco", lat: -34.6037, lng: -58.3816, status: "available", price: "$2.500", rating: "4.8", reviews: "(120)", dist: "350 m" },
+    { name: "Parking Corrientes", lat: -34.6035, lng: -58.3785, status: "available", price: "$2.800", rating: "4.7", reviews: "(88)", dist: "500 m" },
+    { name: "Parking Palermo", lat: -34.5888, lng: -58.4300, status: "few", price: "$2.200", rating: "4.3", reviews: "(98)", dist: "800 m" },
+    { name: "Parking Puerto Madero", lat: -34.6083, lng: -58.3668, status: "available", price: "$3.000", rating: "4.9", reviews: "(150)", dist: "1.1 km" },
+    { name: "Parking Recoleta", lat: -34.5879, lng: -58.3923, status: "full", price: "$3.500", rating: "4.5", reviews: "(112)", dist: "1.4 km" },
+    { name: "Parking San Telmo", lat: -34.6182, lng: -58.3713, status: "few", price: "$2.600", rating: "4.6", reviews: "(76)", dist: "900 m" },
+    { name: "Parking Caballito", lat: -34.6186, lng: -58.4446, status: "available", price: "$4.100", rating: "4.4", reviews: "(64)", dist: "2.2 km" }
+  ];
+
+  var statusStyles = {
+    available: { color: "#1d9e75", label: "Disponible" },
+    few: { color: "#ba7517", label: "Pocos lugares" },
+    full: { color: "#a32d2d", label: "Completo" }
+  };
+
+  var starSvg = '<svg width="12" height="12" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24"><polygon points="12 2 15 9 22 9 16.5 13.5 18.5 21 12 16.5 5.5 21 7.5 13.5 2 9 9 9"/></svg>';
+
+  // Inicializar el mapa centrado en Buenos Aires
+  var leafMap = L.map("map", { zoomControl: false }).setView([-34.6037, -58.3816], 14);
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(leafMap);
+
+  // Crear el ícono de pin según el estado (mismo estilo SVG del mockup)
+  function makeIcon(status) {
+    var color = statusStyles[status].color;
+    var html = '<svg width="28" height="28" viewBox="0 0 24 24" fill="' + color + '" stroke="' + color + '" stroke-width="1.5">'
+      + '<path d="M12 21s-7-7.2-7-12a7 7 0 0 1 14 0c0 4.8-7 12-7 12z"/>'
+      + '<circle cx="12" cy="9" r="2.5" fill="white" stroke="white"/></svg>';
+    return L.divIcon({
+      className: "pin",
+      html: html,
+      iconSize: [28, 28],
+      iconAnchor: [14, 28]
+    });
+  }
+
+  function makePopup(spot) {
+    var s = statusStyles[spot.status];
+    return '<div class="leaflet-popup-custom">'
+      + '<strong>' + spot.name + '</strong><br>'
+      + '<span class="star">' + starSvg + '</span> <strong style="color:#44403c;font-weight:500">' + spot.rating + '</strong> ' + spot.reviews + ' · ' + spot.dist + '<br>'
+      + '<span class="status-dot" style="background:' + s.color + '"></span>' + s.label + '<br>'
+      + '<span class="price-tag">' + spot.price + ' / hora</span>'
+      + '</div>';
+  }
+
+  spots.forEach(function (spot) {
+    var marker = L.marker([spot.lat, spot.lng], { icon: makeIcon(spot.status) }).addTo(leafMap);
+    marker.bindPopup(makePopup(spot));
+  });
+
+  // Conectar botones de zoom personalizados al mapa Leaflet
+  document.querySelectorAll(".zoom-controls button").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var delta = this.textContent === "+" ? 1 : -1;
+      leafMap.setZoom(leafMap.getZoom() + delta);
+    });
+  });
+
+  // ============================================================
+  // CÓDIGO VIEJO (mockup) — conservado como referencia
+  // ============================================================
+  /*
+  var pins = [
+    { top: "22%", left: "38%", status: "available", price: "$2.500" },
+    { top: "34%", left: "58%", status: "available", price: "$3.500" },
+    { top: "14%", left: "70%", status: "few", price: "$2.800" },
+    { top: "48%", left: "24%", status: "available", price: "$2.200" },
+    { top: "58%", left: "48%", status: "full", price: "$3.000" },
+    { top: "44%", left: "68%", status: "available", price: "$2.600" },
+    { top: "68%", left: "58%", status: "few", price: "$4.100" }
+  ];
+
+  var statusStyles = {
+    available: { color: "#1d9e75", label: "Disponible" },
+    few: { color: "#ba7517", label: "Pocos lugares" },
+    full: { color: "#a32d2d", label: "Completo" }
+  };
+
+  var map = document.getElementById("map");
+  var mapCard = document.getElementById("mapCard");
+  var statusDot = document.getElementById("statusDot");
+  var statusLabel = document.getElementById("statusLabel");
+  var statusPrice = document.getElementById("statusPrice");
+
+  pins.forEach(function (pin, i) {
+    var btn = document.createElement("button");
+    btn.className = "pin";
+    btn.style.top = pin.top;
+    btn.style.left = pin.left;
+    btn.setAttribute("aria-label", "Estacionamiento");
+    var color = statusStyles[pin.status].color;
+    btn.innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="' + color + '" stroke="' + color + '" stroke-width="1.5"><path d="M12 21s-7-7.2-7-12a7 7 0 0 1 14 0c0 4.8-7 12-7 12z"/><circle cx="12" cy="9" r="2.5" fill="white" stroke="white"/></svg>';
+
+    btn.addEventListener("click", function () {
+      statusDot.style.background = color;
+      statusLabel.textContent = statusStyles[pin.status].label;
+      statusPrice.textContent = pin.price + " / hora";
+      mapCard.style.left = "calc(" + pin.left + " )";
+      mapCard.style.top = "24px";
+    });
+
+    map.insertBefore(btn, mapCard);
+  });
+  */
+</script>
+
+<script>
+  // Dropdown custom del filtro "Distancia"
+  var distanceSelect = document.getElementById("distanceSelect");
+  var trigger = distanceSelect.querySelector(".custom-select-trigger");
+  var optionItems = Array.prototype.slice.call(distanceSelect.querySelectorAll(".custom-select-options li"));
+
+  trigger.addEventListener("click", function () {
+    var open = distanceSelect.classList.toggle("open");
+    trigger.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+
+  optionItems.forEach(function (opt) {
+    opt.addEventListener("click", function () {
+      optionItems.forEach(function (o) { o.classList.remove("selected"); });
+      opt.classList.add("selected");
+      distanceSelect.querySelector(".custom-select-value").textContent = opt.textContent;
+      distanceSelect.classList.remove("open");
+      trigger.setAttribute("aria-expanded", "false");
+    });
+  });
+
+  document.addEventListener("click", function (e) {
+    if (!distanceSelect.contains(e.target)) {
+      distanceSelect.classList.remove("open");
+      trigger.setAttribute("aria-expanded", "false");
+    }
+  });
+</script>
+
+</body>
+</html>

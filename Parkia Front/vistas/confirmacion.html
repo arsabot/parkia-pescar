@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parkia - Confirmación</title>
+  <link rel="stylesheet" href="../css/vistas.css" />
+</head>
+<body>
+
+<div class="app">
+  <header class="header">
+    <span class="logo">Parkia</span>
+    <nav class="nav">
+      <a href="../index.html">Inicio</a>
+      <a href="detalle.html">Buscar</a>
+      <a href="reserva.html" class="active">Reservas</a>
+      <a href="historial.html">Historial</a>
+      <a href="#">Ayuda</a>
+    </nav>
+    <a href="perfil.html" class="avatar">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </a>
+  </header>
+
+  <div class="container">
+
+    <div class="section-title">Confirmación</div>
+
+    <div class="confirm-card">
+      <div class="confirm-check">
+        <div class="check-circle"><i data-lucide="circle-check" style="width:32px;height:32px;"></i></div>
+      </div>
+
+      <h2>¡Reserva confirmada!</h2>
+      <p class="confirm-subtitle">Tu lugar está asegurado. Presentá el código QR al llegar.</p>
+
+      <div class="confirm-parking">
+        <div class="confirm-parking-img"></div>
+        <div>
+          <h4>Parking Corrientes</h4>
+          <p>Av. Corrientes 1234, CABA</p>
+        </div>
+      </div>
+
+      <div class="confirm-details">
+        <div class="detail-row">
+          <span><i data-lucide="calendar" style="width:13px;height:13px;"></i> Fecha</span>
+          <span>28/05/2025</span>
+        </div>
+        <div class="detail-row">
+          <span><i data-lucide="clock" style="width:13px;height:13px;"></i> Hora de entrada</span>
+          <span>10:00</span>
+        </div>
+        <div class="detail-row">
+          <span><i data-lucide="clock" style="width:13px;height:13px;"></i> Hora de salida</span>
+          <span>14:00</span>
+        </div>
+        <div class="detail-row total">
+          <span>Total</span>
+          <strong>$10.000</strong>
+        </div>
+      </div>
+
+      <div class="qr-container">
+        <div class="qr-placeholder">
+          <div class="qr-grid">
+            <div class="qr-block"></div>
+            <div class="qr-block"></div>
+            <div class="qr-block small"></div>
+            <div class="qr-block"></div>
+            <div class="qr-block"></div>
+            <div class="qr-block small"></div>
+            <div class="qr-block"></div>
+          </div>
+        </div>
+        <p class="qr-code">#PKB-4567</p>
+      </div>
+
+      <div class="confirm-actions">
+        <a href="reservas.html" class="btn-primary" style="display:flex;align-items:center;justify-content:center;text-decoration:none;gap:8px;">
+          <i data-lucide="clipboard-list" style="width:16px;height:16px;"></i> Ver mis reservas
+        </a>
+        <a href="../index.html" class="btn-outline" style="display:flex;align-items:center;justify-content:center;text-decoration:none;gap:8px;">
+          <i data-lucide="house" style="width:16px;height:16px;"></i> Volver al inicio
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom Nav Mobile -->
+  <nav class="bottom-nav">
+    <div class="bottom-nav-inner">
+      <a href="../index.html"><i data-lucide="house" class="nav-icon"></i> Inicio</a>
+      <a href="detalle.html" class="active"><i data-lucide="search" class="nav-icon"></i> Reservas</a>
+      <a href="historial.html"><i data-lucide="clipboard-list" class="nav-icon"></i> Historial</a>
+      <a href="perfil.html"><i data-lucide="user" class="nav-icon"></i> Perfil</a>
+    </div>
+  </nav>
+</div>
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>
