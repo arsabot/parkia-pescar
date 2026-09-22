@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PARKIA - Probador de API de Autenticación</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --success: #22c55e;
+      --danger: #ef4444;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding: 24px; display: flex; justify-content: center; }
+    .container { width: 100%; max-width: 900px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    h1 { grid-column: 1 / -1; font-size: 24px; display: flex; align-items: center; gap: 10px; color: var(--accent); margin-bottom: 10px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2); }
+    h2 { font-size: 16px; margin-bottom: 14px; color: #e2e8f0; display: flex; align-items: center; gap: 8px; }
+    .form-group { margin-bottom: 12px; }
+    label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+    input, select { width: 100%; padding: 8px 12px; background: #0f172a; border: 1px solid var(--border); border-radius: 6px; color: #fff; font-size: 14px; outline: none; }
+    input:focus { border-color: var(--accent); }
+    button { width: 100%; padding: 10px; background: var(--accent); color: #0f172a; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; transition: 0.2s; margin-top: 8px; font-size: 14px; }
+    button:hover { background: var(--accent-hover); color: #fff; }
+    button.secondary { background: #334155; color: #fff; }
+    button.secondary:hover { background: #475569; }
+    .output-panel { grid-column: 1 / -1; background: #020617; border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+    .output-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .status-badge { padding: 4px 10px; border-radius: 9999px; font-size: 12px; font-weight: 600; }
+    .status-200 { background: rgba(34, 197, 94, 0.2); color: var(--success); border: 1px solid var(--success); }
+    .status-400 { background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid var(--danger); }
+    pre { background: #090d16; padding: 12px; border-radius: 6px; overflow-x: auto; font-family: monospace; font-size: 13px; color: #a5f3fc; max-height: 250px; }
+    .token-box { margin-top: 10px; font-size: 12px; word-break: break-all; color: var(--text-muted); background: #0f172a; padding: 8px; border-radius: 6px; border: 1px dashed var(--border); }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>🚗 PARKIA - Probador Visual de Login y Autenticación</h1>
+
+    <!-- Card Demo Login -->
+    <div class="card">
+      <h2>⚡ Demo Login Rápido</h2>
+      <div class="form-group">
+        <label>Rol de Prueba</label>
+        <select id="demoRole">
+          <option value="driver">Conductor (conductor@parkia.com)</option>
+          <option value="admin">Administrador (admin@parkia.com)</option>
+        </select>
+      </div>
+      <button onclick="demoLogin()">Iniciar como Demo</button>
+    </div>
+
+    <!-- Card Login -->
+    <div class="card">
+      <h2>🔐 Iniciar Sesión (Login)</h2>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="loginEmail" value="conductor@parkia.com" />
+      </div>
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" id="loginPassword" value="password123" />
+      </div>
+      <button onclick="login()">Iniciar Sesión</button>
+    </div>
+
+    <!-- Card Register -->
+    <div class="card">
+      <h2>📝 Registro de Usuario</h2>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+        <div class="form-group">
+          <label>Nombre</label>
+          <input type="text" id="regFirst" value="Carlos" />
+        </div>
+        <div class="form-group">
+          <label>Apellido</label>
+          <input type="text" id="regLast" value="Prueba" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="regEmail" value="nuevo.usuario@parkia.com" />
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+        <div class="form-group">
+          <label>Contraseña</label>
+          <input type="password" id="regPass" value="Pass1234" />
+        </div>
+        <div class="form-group">
+          <label>Confirmar</label>
+          <input type="password" id="regPassConf" value="Pass1234" />
+        </div>
+      </div>
+      <button onclick="register()">Registrar Usuario</button>
+    </div>
+
+    <!-- Card Token / Me -->
+    <div class="card">
+      <h2>👤 Perfil Autenticado (/api/auth/me/)</h2>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
+        Usa el token JWT actual para consultar los datos del usuario logueado.
+      </p>
+      <button class="secondary" onclick="getMe()">Consultar /api/auth/me/</button>
+      <div class="token-box" id="tokenDisplay">Token: Ninguno cargado aún</div>
+    </div>
+
+    <!-- Output Panel -->
+    <div class="output-panel">
+      <div class="output-header">
+        <h3>📡 Respuesta del Servidor</h3>
+        <span id="statusBadge" class="status-badge" style="display: none;"></span>
+      </div>
+      <pre id="responsePre">// Haz clic en alguna acción para ver la respuesta aquí...</pre>
+    </div>
+  </div>
+
+  <script>
+    let currentAccessToken = "";
+
+    function setResponse(status, data) {
+      const badge = document.getElementById("statusBadge");
+      badge.style.display = "inline-block";
+      badge.textContent = `HTTP Status: ${status}`;
+      badge.className = `status-badge ${status >= 200 && status < 300 ? 'status-200' : 'status-400'}`;
+      document.getElementById("responsePre").textContent = JSON.stringify(data, null, 2);
+
+      if (data && data.tokens && data.tokens.access) {
+        currentAccessToken = data.tokens.access;
+        document.getElementById("tokenDisplay").textContent = `Token JWT guardado: ${currentAccessToken.substring(0, 30)}...`;
+      }
+    }
+
+    async function demoLogin() {
+      const role = document.getElementById("demoRole").value;
+      try {
+        const res = await fetch("http://127.0.0.1:8000/api/auth/demo-login/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ role })
+        });
+        const data = await res.json();
+        setResponse(res.status, data);
+      } catch (err) {
+        setResponse("Error de Conexión", { error: "No se pudo conectar a http://127.0.0.1:8000. Asegúrate de ejecutar ./start.sh" });
+      }
+    }
+
+    async function login() {
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+      try {
+        const res = await fetch("http://127.0.0.1:8000/api/auth/login/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        setResponse(res.status, data);
+      } catch (err) {
+        setResponse("Error de Conexión", { error: "No se pudo conectar a http://127.0.0.1:8000." });
+      }
+    }
+
+    async function register() {
+      const first_name = document.getElementById("regFirst").value;
+      const last_name = document.getElementById("regLast").value;
+      const email = document.getElementById("regEmail").value;
+      const password = document.getElementById("regPass").value;
+      const password_confirmation = document.getElementById("regPassConf").value;
+      try {
+        const res = await fetch("http://127.0.0.1:8000/api/auth/register/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ first_name, last_name, email, password, password_confirmation, role: "driver" })
+        });
+        const data = await res.json();
+        setResponse(res.status, data);
+      } catch (err) {
+        setResponse("Error de Conexión", { error: "No se pudo conectar a http://127.0.0.1:8000." });
+      }
+    }
+
+    async function getMe() {
+      if (!currentAccessToken) {
+        setResponse("Aviso", { mensaje: "Primero inicia sesión o usa Demo Login para obtener un Token JWT." });
+        return;
+      }
+      try {
+        const res = await fetch("http://127.0.0.1:8000/api/auth/me/", {
+          method: "GET",
+          headers: { "Authorization": `Bearer ${currentAccessToken}` }
+        });
+        const data = await res.json();
+        setResponse(res.status, data);
+      } catch (err) {
+        setResponse("Error de Conexión", { error: "No se pudo conectar a http://127.0.0.1:8000." });
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+# Use this workspace to collaborate
+workspace:
+  id: f992fc2a-1021-495f-844b-466944c1d953
+
+localResources:
+  collections:
+    - ../parkia_postman_collection.json

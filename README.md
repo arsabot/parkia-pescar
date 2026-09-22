@@ -1,5 +1,9 @@
 # PARKIA - Lógica de Backend: Endpoints de Login y Autenticación
 
+<div align="center">
+  <img src="assets/preview.png" alt="Parkia Preview" width="100%" style="border-radius: 12px; margin: 16px 0; border: 1px solid rgba(255,255,255,0.1);" />
+</div>
+
 Este repositorio contiene exclusivamente la **lógica de backend y endpoints para el inicio de sesión y autenticación** de usuarios con tokens JWT.
 
 ---

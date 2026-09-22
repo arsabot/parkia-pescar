@@ -1,0 +1,45 @@
+### 1. Demo Login (Conductor)
+POST http://127.0.0.1:8000/api/auth/demo-login/
+Content-Type: application/json
+
+{
+  "role": "driver"
+}
+
+### 2. Registro de Nuevo Usuario
+POST http://127.0.0.1:8000/api/auth/register/
+Content-Type: application/json
+
+{
+  "first_name": "Ariel",
+  "last_name": "Sabot",
+  "email": "ariel.demo@parkia.com",
+  "password": "Password123",
+  "password_confirmation": "Password123",
+  "role": "driver",
+  "phone": "+5491122334455"
+}
+
+### 3. Iniciar Sesión (Login)
+# @name login
+POST http://127.0.0.1:8000/api/auth/login/
+Content-Type: application/json
+
+{
+  "email": "ariel.demo@parkia.com",
+  "password": "Password123"
+}
+
+### 4. Perfil Autenticado (Toma automáticamente el token del login anterior)
+@authToken = {{login.response.body.tokens.access}}
+GET http://127.0.0.1:8000/api/auth/me/
+Authorization: Bearer {{authToken}}
+
+### 5. Probar Error de Contraseña Incorrecta
+POST http://127.0.0.1:8000/api/auth/login/
+Content-Type: application/json
+
+{
+  "email": "ariel.demo@parkia.com",
+  "password": "PasswordIncorrecta"
+}
