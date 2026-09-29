@@ -33,6 +33,9 @@ INSTALLED_APPS = [
 
     # Local app - Login & Auth
     'apps.users',
+
+    # CRUD and queries
+    'apps.estacionamientos',
 ]
 
 MIDDLEWARE = [
