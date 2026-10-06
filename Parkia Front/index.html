@@ -143,17 +143,6 @@
   // ============================================================
   // Mapa REAL con Leaflet + OpenStreetMap (sin API key)
   // ============================================================
-  // Estacionamientos con coordenadas reales (Buenos Aires)
-  var spots = [
-    { name: "Parking Obelisco", lat: -34.6037, lng: -58.3816, status: "available", price: "$2.500", rating: "4.8", reviews: "(120)", dist: "350 m" },
-    { name: "Parking Corrientes", lat: -34.6035, lng: -58.3785, status: "available", price: "$2.800", rating: "4.7", reviews: "(88)", dist: "500 m" },
-    { name: "Parking Palermo", lat: -34.5888, lng: -58.4300, status: "few", price: "$2.200", rating: "4.3", reviews: "(98)", dist: "800 m" },
-    { name: "Parking Puerto Madero", lat: -34.6083, lng: -58.3668, status: "available", price: "$3.000", rating: "4.9", reviews: "(150)", dist: "1.1 km" },
-    { name: "Parking Recoleta", lat: -34.5879, lng: -58.3923, status: "full", price: "$3.500", rating: "4.5", reviews: "(112)", dist: "1.4 km" },
-    { name: "Parking San Telmo", lat: -34.6182, lng: -58.3713, status: "few", price: "$2.600", rating: "4.6", reviews: "(76)", dist: "900 m" },
-    { name: "Parking Caballito", lat: -34.6186, lng: -58.4446, status: "available", price: "$4.100", rating: "4.4", reviews: "(64)", dist: "2.2 km" }
-  ];
-
   var statusStyles = {
     available: { color: "#1d9e75", label: "Disponible" },
     few: { color: "#ba7517", label: "Pocos lugares" },
@@ -165,12 +154,11 @@
   // Inicializar el mapa centrado en Buenos Aires
   var leafMap = L.map("map", { zoomControl: false }).setView([-34.6037, -58.3816], 14);
 
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
     maxZoom: 19,
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
   }).addTo(leafMap);
 
-  // Crear el ícono de pin según el estado (mismo estilo SVG del mockup)
   function makeIcon(status) {
     var color = statusStyles[status].color;
     var html = '<svg width="28" height="28" viewBox="0 0 24 24" fill="' + color + '" stroke="' + color + '" stroke-width="1.5">'
@@ -185,7 +173,7 @@
   }
 
   function makePopup(spot) {
-    var s = statusStyles[spot.status];
+    var s = statusStyles[spot.status] || statusStyles['available'];
     return '<div class="leaflet-popup-custom">'
       + '<strong>' + spot.name + '</strong><br>'
       + '<span class="star">' + starSvg + '</span> <strong style="color:#44403c;font-weight:500">' + spot.rating + '</strong> ' + spot.reviews + ' · ' + spot.dist + '<br>'
@@ -194,10 +182,37 @@
       + '</div>';
   }
 
-  spots.forEach(function (spot) {
-    var marker = L.marker([spot.lat, spot.lng], { icon: makeIcon(spot.status) }).addTo(leafMap);
-    marker.bindPopup(makePopup(spot));
-  });
+  // Fetch estacionamientos from Backend API
+  fetch("http://127.0.0.1:8000/api/estacionamientos/")
+    .then(response => response.json())
+    .then(data => {
+      let spotsData = [];
+      if (data.results && data.results.length > 0) {
+          spotsData = data.results.map(e => ({
+              name: e.nombre,
+              lat: parseFloat(e.latitud),
+              lng: parseFloat(e.longitud),
+              status: e.activo ? "available" : "full",
+              price: "$" + e.precio_por_hora,
+              rating: "4.5",
+              reviews: "(100)",
+              dist: "500 m"
+          }));
+      } else {
+          // Fallback data if DB is empty
+          spotsData = [
+            { name: "Parking Obelisco", lat: -34.6037, lng: -58.3816, status: "available", price: "$2.500", rating: "4.8", reviews: "(120)", dist: "350 m" },
+            { name: "Parking Corrientes", lat: -34.6035, lng: -58.3785, status: "available", price: "$2.800", rating: "4.7", reviews: "(88)", dist: "500 m" },
+            { name: "Parking Palermo", lat: -34.5888, lng: -58.4300, status: "few", price: "$2.200", rating: "4.3", reviews: "(98)", dist: "800 m" }
+          ];
+      }
+
+      spotsData.forEach(function (spot) {
+        var marker = L.marker([spot.lat, spot.lng], { icon: makeIcon(spot.status) }).addTo(leafMap);
+        marker.bindPopup(makePopup(spot));
+      });
+    })
+    .catch(err => console.error("Error al cargar estacionamientos desde la API:", err));
 
   // Conectar botones de zoom personalizados al mapa Leaflet
   document.querySelectorAll(".zoom-controls button").forEach(function (btn) {
