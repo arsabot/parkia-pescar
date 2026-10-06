@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parkia - Perfil</title>
+  <link rel="stylesheet" href="../css/vistas.css" />
+</head>
+<body>
+
+<div class="app">
+  <header class="header">
+    <span class="logo">Parkia</span>
+    <nav class="nav">
+      <a href="../index.html">Inicio</a>
+      <a href="detalle.html">Buscar</a>
+      <a href="reserva.html">Reservas</a>
+      <a href="historial.html">Historial</a>
+      <a href="#">Ayuda</a>
+    </nav>
+    <a href="perfil.html" class="avatar" style="border:2px solid var(--orange);">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </a>
+  </header>
+
+  <div class="container">
+
+    <div class="section-title">Perfil</div>
+
+    <div class="profile-layout">
+
+      <!-- Sidebar izquierdo -->
+      <div class="profile-sidebar">
+        <div class="profile-avatar">NA</div>
+        <h4>Nombre Apelido</h4>
+        <p>Usuario@email.com</p>
+
+        <div class="profile-menu">
+          <a href="#" class="menu-item active">
+            <i data-lucide="user" style="width:16px;height:16px;"></i> Datos personales
+          </a>
+          <a href="#" class="menu-item">
+            <i data-lucide="credit-card" style="width:16px;height:16px;"></i> Métodos de pago
+          </a>
+          <a href="#" class="menu-item">
+            <i data-lucide="bell" style="width:16px;height:16px;"></i> Notificaciones
+          </a>
+          <a href="#" class="menu-item">
+            <i data-lucide="settings" style="width:16px;height:16px;"></i> Configuración
+          </a>
+          <a href="#" class="menu-item logout">
+            <i data-lucide="log-out" style="width:16px;height:16px;"></i> Cerrar sesión
+          </a>
+        </div>
+      </div>
+
+      <!-- Contenido principal -->
+      <div class="profile-content">
+        <h2>Datos personales</h2>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nombre</label>
+            <input type="text" placeholder="ingresa tu nombre" />
+          </div>
+          <div class="form-group">
+            <label>Apellido</label>
+            <input type="text" placeholder="ingresa apellido" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" value="" placeholder="ingresa tu email" />
+        </div>
+
+        <div class="form-group">
+          <label>Teléfono</label>
+          <input type="tel" placeholder="ingresa tu número de Teléfono" />
+        </div>
+
+        <button class="btn-primary btn-edit"><i data-lucide="pencil" style="width:14px;height:14px;"></i> Editar</button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Bottom Nav Mobile -->
+  <nav class="bottom-nav">
+    <div class="bottom-nav-inner">
+      <a href="../index.html"><i data-lucide="house" class="nav-icon"></i> Inicio</a>
+      <a href="detalle.html"><i data-lucide="search" class="nav-icon"></i> Reservas</a>
+      <a href="historial.html"><i data-lucide="clipboard-list" class="nav-icon"></i> Historial</a>
+      <a href="perfil.html" class="active"><i data-lucide="user" class="nav-icon"></i> Perfil</a>
+    </div>
+  </nav>
+</div>
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

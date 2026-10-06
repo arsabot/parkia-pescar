@@ -1,0 +1,497 @@
+:root {
+    --orange: #ea580c;
+    --orange-dark: #c2410c;
+    --orange-light: #fff3ea;
+    --text: #1c1917;
+    --text-secondary: #78716c;
+    --text-muted: #a8a29e;
+    --border: #e7e5e4;
+    --bg: #fafaf9;
+    --white: #ffffff;
+    --green: #1d9e75;
+    --amber: #ba7517;
+    --red: #a32d2d;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--text);
+    background: var(--bg);
+  }
+
+  .app {
+    width: 100%;
+    min-height: 720px;
+    background: var(--bg);
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    padding: 0 24px;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--orange);
+  }
+
+  .nav {
+    display: flex;
+    gap: 24px;
+  }
+
+  .nav a {
+    font-size: 14px;
+    color: var(--text-secondary);
+    text-decoration: none;
+  }
+
+  .nav a.active {
+    color: var(--orange);
+    font-weight: 500;
+  }
+
+  .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #f5f5f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+
+  /* Layout */
+  .layout {
+    display: flex;
+    height: 620px;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: 288px;
+    flex-shrink: 0;
+    background: var(--white);
+    border-right: 1px solid var(--border);
+    padding: 20px;
+    overflow-y: auto;
+  }
+
+  .search-box {
+    position: relative;
+    margin-bottom: 20px;
+  }
+
+  .search-box input {
+    width: 100%;
+    height: 36px;
+    padding: 0 12px 0 34px;
+    font-size: 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    outline: none;
+  }
+
+  .search-box input:focus {
+    border-color: var(--orange);
+    box-shadow: 0 0 0 3px var(--orange-light);
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  .filters-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 16px;
+  }
+
+  .filter-group {
+    margin-bottom: 20px;
+  }
+
+  .filter-title {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+
+  .filter-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+
+  .filter-row strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  input[type="range"] {
+    width: 100%;
+    accent-color: var(--orange);
+  }
+
+  select {
+    width: 100%;
+    height: 36px;
+    padding: 0 12px;
+    font-size: 14px;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--white);
+    outline: none;
+    cursor: pointer;
+  }
+
+  select:focus {
+    border-color: var(--orange);
+    box-shadow: 0 0 0 3px var(--orange-light);
+  }
+
+  select option {
+    font-size: 14px;
+    color: var(--text);
+    background: var(--white);
+  }
+
+  select option:hover {
+    background: var(--orange-light);
+  }
+
+  .custom-select {
+    position: relative;
+  }
+
+  .custom-select-trigger {
+    width: 100%;
+    height: 36px;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--text);
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .custom-select-trigger:hover {
+    border-color: var(--text-muted);
+  }
+
+  .custom-select-trigger svg {
+    color: var(--text-muted);
+    transition: transform 0.2s ease;
+  }
+
+  .custom-select.open .custom-select-trigger {
+    border-color: var(--orange);
+    box-shadow: 0 0 0 3px var(--orange-light);
+  }
+
+  .custom-select.open .custom-select-trigger svg {
+    transform: rotate(180deg);
+  }
+
+  .custom-select-options {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 4px;
+    list-style: none;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    display: none;
+    z-index: 50;
+  }
+
+  .custom-select.open .custom-select-options {
+    display: block;
+  }
+
+  .custom-select-options li {
+    padding: 8px 10px;
+    font-size: 14px;
+    color: var(--text);
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .custom-select-options li:hover {
+    background: var(--orange-light);
+  }
+
+  .custom-select-options li.selected {
+    color: var(--orange);
+    font-weight: 500;
+  }
+
+  .checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    margin-bottom: 8px;
+    cursor: pointer;
+  }
+
+  .checkbox-row input {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--orange);
+  }
+
+  .btn-outline {
+    width: 100%;
+    height: 36px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--white);
+    font-size: 14px;
+    color: var(--text-secondary);
+    cursor: pointer;
+  }
+
+  .btn-outline:hover {
+    background: #fafaf9;
+  }
+
+  /* Main */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .map {
+    position: relative;
+    flex: 1;
+    min-height: 320px;
+    /* Fondo de cuadrícula simulada: queda como fallback que los tiles de
+       Leaflet cubren cuando el mapa real carga. */
+    background-color: #ede9e0;
+    background-image:
+      linear-gradient(#dcd6c8 1px, transparent 1px),
+      linear-gradient(90deg, #dcd6c8 1px, transparent 1px);
+    background-size: 48px 48px;
+    overflow: hidden;
+  }
+
+  /* Capas de Leaflet quedan por debajo de los controles de zoom */
+  .map .leaflet-container { z-index: 0; }
+  .map .leaflet-pane { z-index: 1; }
+
+  .pin {
+    position: absolute;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .pin svg { display: block; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.2)); }
+  .leaflet-marker-icon.pin { background: transparent; border: none; }
+
+  .status-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin-right: 4px;
+  }
+
+  .price-tag {
+    color: var(--orange-dark);
+    font-weight: 500;
+  }
+
+  .leaflet-popup-custom {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+
+  .leaflet-popup-custom .star { margin-right: 2px; }
+
+  .zoom-controls {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--white);
+    z-index: 400;
+  }
+
+  .zoom-controls button {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: var(--white);
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--text-secondary);
+  }
+
+  .zoom-controls button:first-child {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .zoom-controls button:hover {
+    background: #fafaf9;
+  }
+
+  /* Featured */
+  .featured {
+    background: var(--white);
+    border-top: 1px solid var(--border);
+    padding: 20px;
+  }
+
+  .featured-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .featured-header h2 {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0;
+  }
+
+  .featured-header a {
+    font-size: 12px;
+    color: var(--orange);
+    text-decoration: none;
+  }
+
+  .featured-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+
+  .spot-card {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--white);
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .spot-card:hover {
+    border-color: #d6d3d1;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+
+  .spot-photo {
+    position: relative;
+    height: 96px;
+    background-color: #44403c;
+    background-image: repeating-linear-gradient(90deg, #57534e 0 2px, transparent 2px 40px);
+  }
+
+  .spot-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: var(--orange);
+    color: var(--white);
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  .spot-body {
+    padding: 12px;
+  }
+
+  .spot-name {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0 0 4px;
+  }
+
+  .spot-rating {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .spot-price {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--orange-dark);
+    margin-top: 6px;
+  }
+
+  .promo-card {
+    border-radius: 12px;
+    background: var(--orange);
+    color: var(--white);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .promo-card p:first-child {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 4px;
+  }
+
+  .promo-card p:nth-child(2) {
+    font-size: 14px;
+    color: #ffedd5;
+    margin: 0;
+  }
+
+  .promo-arrow {
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 12px;
+  }

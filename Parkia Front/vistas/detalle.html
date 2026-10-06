@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parkia - Detalle del Estacionamiento</title>
+  <link rel="stylesheet" href="../css/vistas.css" />
+</head>
+<body>
+
+<div class="app">
+  <header class="header">
+    <span class="logo">Parkia</span>
+    <nav class="nav">
+      <a href="../index.html">Inicio</a>
+      <a href="detalle.html" class="active">Buscar</a>
+      <a href="reserva.html">Reservas</a>
+      <a href="historial.html">Historial</a>
+      <a href="#">Ayuda</a>
+    </nav>
+    <a href="perfil.html" class="avatar">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </a>
+  </header>
+
+  <div class="container">
+
+    <div class="section-title">Detalle del estacionamiento</div>
+
+    <div class="detail-card">
+      <div class="detail-photo-banner">
+        <span class="badge-destacado">Destacado</span>
+      </div>
+
+      <div class="detail-body">
+        <div class="detail-header">
+          <div class="detail-info">
+            <h2>Parking Corrientes</h2>
+            <p>Av. Corrientes 1234, CABA · 350 m · 32 lugares</p>
+          </div>
+          <div class="detail-price">$2.500 <span>/ hora</span></div>
+        </div>
+
+        <div class="detail-rating">
+          <span class="stars"><i data-lucide="star" style="width:13px;height:13px;"></i> 4.8 (120)</span>
+        </div>
+
+        <div class="detail-location">
+          <i data-lucide="map-pin" style="width:13px;height:13px;"></i> Av. Corrientes 1234, CABA
+        </div>
+
+        <div class="features-grid">
+          <div><i data-lucide="clock" style="width:18px;height:18px;"></i> Abierto 24 hs</div>
+          <div><i data-lucide="shield" style="width:18px;height:18px;"></i> Vigilancia 24 hs</div>
+          <div><i data-lucide="lock" style="width:18px;height:18px;"></i> Seguridad</div>
+          <div><i data-lucide="droplets" style="width:18px;height:18px;"></i> Lavadero</div>
+          <div><i data-lucide="smartphone" style="width:18px;height:18px;"></i> Acceso con QR</div>
+        </div>
+
+        <div class="detail-section">
+          <h3>Disponibilidad</h3>
+          <div class="availability">
+            <span class="avail-dot green"></span> 12 lugares disponibles
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h3>Horarios</h3>
+          <p>Lun - Dom · Abierto 24 hs</p>
+        </div>
+
+        <div class="detail-section">
+          <h3>Servicios</h3>
+          <div class="services-tags">
+            <span class="tag"><i data-lucide="wifi" style="width:12px;height:12px;"></i> WiFi</span>
+            <span class="tag"><i data-lucide="bath" style="width:12px;height:12px;"></i> Baños</span>
+            <span class="tag"><i data-lucide="coffee" style="width:12px;height:12px;"></i> Cafetería</span>
+            <span class="tag"><i data-lucide="zap" style="width:12px;height:12px;"></i> Carga eléctrica</span>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h3>Seguridad</h3>
+          <div class="services-tags">
+            <span class="tag"><i data-lucide="camera" style="width:12px;height:12px;"></i> Cámaras</span>
+            <span class="tag"><i data-lucide="shield-check" style="width:12px;height:12px;"></i> Personal de seguridad</span>
+            <span class="tag"><i data-lucide="lightbulb" style="width:12px;height:12px;"></i> Iluminación</span>
+          </div>
+        </div>
+
+        <a href="reserva.html" class="btn-primary" style="display:flex;align-items:center;justify-content:center;text-decoration:none;gap:8px;">
+          <i data-lucide="calendar" style="width:16px;height:16px;"></i> Reservar lugar
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom Nav Mobile -->
+  <nav class="bottom-nav">
+    <div class="bottom-nav-inner">
+      <a href="../index.html"><i data-lucide="house" class="nav-icon"></i> Inicio</a>
+      <a href="detalle.html" class="active"><i data-lucide="search" class="nav-icon"></i> Reservas</a>
+      <a href="historial.html"><i data-lucide="clipboard-list" class="nav-icon"></i> Historial</a>
+      <a href="perfil.html"><i data-lucide="user" class="nav-icon"></i> Perfil</a>
+    </div>
+  </nav>
+</div>
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>
