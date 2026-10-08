@@ -15,7 +15,7 @@
     <span class="logo">Parkia</span>
     <nav class="nav">
       <a href="index.html" class="active">Inicio</a>
-      <a href="vistas/detalle.html">Buscar</a>
+      <a href="vistas/buscador.html">Buscar</a>
       <a href="vistas/reserva.html">Reservas</a>
       <a href="vistas/historial.html">Historial</a>
       <a href="#">Ayuda</a>
@@ -31,7 +31,7 @@
         <span class="search-icon">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
         </span>
-        <input type="text" placeholder="¿Dónde querés estacionar?" />
+        <input type="text" id="searchInput" placeholder="¿Dónde querés estacionar?" />
       </div>
 
       <div class="filters-label">
@@ -87,43 +87,7 @@
           <h2>Estacionamientos destacados</h2>
           <a href="#">Ver todos →</a>
         </div>
-        <div class="featured-grid">
-          <div class="spot-card">
-            <div class="spot-photo"><span class="spot-badge">Destacado</span></div>
-            <div class="spot-body">
-              <p class="spot-name">Parking Obelisco</p>
-              <div class="spot-rating">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24"><polygon points="12 2 15 9 22 9 16.5 13.5 18.5 21 12 16.5 5.5 21 7.5 13.5 2 9 9 9"/></svg>
-                <strong style="color:#44403c;font-weight:500">4.8</strong> (120) · 350 m
-              </div>
-              <p class="spot-price">$2.500 / hora</p>
-            </div>
-          </div>
-
-          <div class="spot-card">
-            <div class="spot-photo"></div>
-            <div class="spot-body">
-              <p class="spot-name">Parking Palermo</p>
-              <div class="spot-rating">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24"><polygon points="12 2 15 9 22 9 16.5 13.5 18.5 21 12 16.5 5.5 21 7.5 13.5 2 9 9 9"/></svg>
-                <strong style="color:#44403c;font-weight:500">4.3</strong> (98) · 800 m
-              </div>
-              <p class="spot-price">$2.200 / hora</p>
-            </div>
-          </div>
-
-          <div class="spot-card">
-            <div class="spot-photo"></div>
-            <div class="spot-body">
-              <p class="spot-name">Parking Puerto Madero</p>
-              <div class="spot-rating">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24"><polygon points="12 2 15 9 22 9 16.5 13.5 18.5 21 12 16.5 5.5 21 7.5 13.5 2 9 9 9"/></svg>
-                <strong style="color:#44403c;font-weight:500">4.9</strong> (150) · 1.1 km
-              </div>
-              <p class="spot-price">$3.000 / hora</p>
-            </div>
-          </div>
-
+        <div class="featured-grid" id="featuredGrid">
           <div class="promo-card">
             <div>
               <p>20% off</p>
@@ -133,6 +97,8 @@
           </div>
         </div>
       </section>
+
+      <div id="apiStatus" class="api-msg api-msg-info">Buscando estacionamientos...</div>
     </main>
   </div>
 </div>
@@ -141,7 +107,7 @@
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
   // ============================================================
-  // Mapa REAL con Leaflet + OpenStreetMap (sin API key)
+  // Mapa REAL con Leaflet + CARTO Voyager (key gratuita de basemaps)
   // ============================================================
   var statusStyles = {
     available: { color: "#1d9e75", label: "Disponible" },
@@ -154,7 +120,7 @@
   // Inicializar el mapa centrado en Buenos Aires
   var leafMap = L.map("map", { zoomControl: false }).setView([-34.6037, -58.3816], 14);
 
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=cb1_4dp3_1_c49551f0a2b6e42178ceed8e", {
     maxZoom: 19,
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
   }).addTo(leafMap);
@@ -182,37 +148,84 @@
       + '</div>';
   }
 
-  // Fetch estacionamientos from Backend API
-  fetch("http://127.0.0.1:8000/api/estacionamientos/")
-    .then(response => response.json())
-    .then(data => {
-      let spotsData = [];
-      if (data.results && data.results.length > 0) {
-          spotsData = data.results.map(e => ({
-              name: e.nombre,
-              lat: parseFloat(e.latitud),
-              lng: parseFloat(e.longitud),
-              status: e.activo ? "available" : "full",
-              price: "$" + e.precio_por_hora,
-              rating: "4.5",
-              reviews: "(100)",
-              dist: "500 m"
-          }));
-      } else {
-          // Fallback data if DB is empty
-          spotsData = [
-            { name: "Parking Obelisco", lat: -34.6037, lng: -58.3816, status: "available", price: "$2.500", rating: "4.8", reviews: "(120)", dist: "350 m" },
-            { name: "Parking Corrientes", lat: -34.6035, lng: -58.3785, status: "available", price: "$2.800", rating: "4.7", reviews: "(88)", dist: "500 m" },
-            { name: "Parking Palermo", lat: -34.5888, lng: -58.4300, status: "few", price: "$2.200", rating: "4.3", reviews: "(98)", dist: "800 m" }
-          ];
-      }
+  function showApiMessage(type, text) {
+    var el = document.getElementById("apiStatus");
+    el.className = "api-msg api-msg-" + type;
+    el.textContent = text;
+  }
 
-      spotsData.forEach(function (spot) {
-        var marker = L.marker([spot.lat, spot.lng], { icon: makeIcon(spot.status) }).addTo(leafMap);
-        marker.bindPopup(makePopup(spot));
+  var markersLayer = L.layerGroup().addTo(leafMap);
+
+  function renderAll(data) {
+    var grid = document.getElementById("featuredGrid");
+    var promo = grid.querySelector(".promo-card");
+    grid.querySelectorAll(".spot-card").forEach(function (c) { c.remove(); });
+    markersLayer.clearLayers();
+
+    if (!data.results || data.results.length === 0) {
+      showApiMessage("info", "No se encontraron estacionamientos.");
+      return;
+    }
+
+    data.results.slice(0, 4).forEach(function (e) {
+      var card = document.createElement("div");
+      card.className = "spot-card";
+      card.innerHTML = '<div class="spot-photo">' + (e.plan_destacado ? '<span class="spot-badge">Destacado</span>' : '') + '</div>'
+        + '<div class="spot-body">'
+        + '<p class="spot-name">' + e.nombre + '</p>'
+        + '<p class="spot-address">' + e.direccion + '</p>'
+        + '<p class="spot-availability">' + e.espacios_disponibles + '/' + e.espacios_totales + ' lugares disponibles</p>'
+        + '<p class="spot-price">$' + e.precio_por_hora + ' / hora</p>'
+        + '</div>';
+      card.addEventListener("click", function () {
+        window.location.href = "vistas/detalle.html?id=" + e.id;
       });
-    })
-    .catch(err => console.error("Error al cargar estacionamientos desde la API:", err));
+      grid.insertBefore(card, promo);
+    });
+
+    data.results.forEach(function (e) {
+      var status = e.activo ? (e.espacios_disponibles > 0 ? "available" : "full") : "full";
+      var marker = L.marker([parseFloat(e.latitud), parseFloat(e.longitud)], { icon: makeIcon(status) }).addTo(markersLayer);
+      marker.bindPopup(makePopup({ name: e.nombre, rating: "4.5", reviews: "(100)", dist: "", price: "$" + e.precio_por_hora, status: status }));
+    });
+
+    showApiMessage("success", "Se encontraron " + data.results.length + " estacionamientos.");
+  }
+
+  function cargarEstacionamientos(query) {
+    var url = "http://127.0.0.1:8000/api/estacionamientos/";
+    showApiMessage("info", "Buscando estacionamientos...");
+    fetch(url)
+      .then(function (response) {
+        if (!response.ok) throw new Error("HTTP " + response.status + " " + response.statusText);
+        return response.json();
+      })
+      .then(function (data) {
+        // Filtro client-side: nombre O dirección (el backend sólo filtra por dirección)
+        var q = (query || "").toLowerCase();
+        var filtered = q
+          ? data.results.filter(function (e) {
+              return e.nombre.toLowerCase().indexOf(q) !== -1 || e.direccion.toLowerCase().indexOf(q) !== -1;
+            })
+          : data.results;
+        renderAll({ results: filtered });
+      })
+      .catch(function (err) {
+        showApiMessage("error", "No se pudieron cargar los estacionamientos.");
+        console.error("Error al cargar estacionamientos desde la API:", err);
+      });
+  }
+
+  cargarEstacionamientos("");
+
+  // Buscador por dirección (debounce de 300 ms)
+  var searchInput = document.getElementById("searchInput");
+  var searchTimer = null;
+  searchInput.addEventListener("input", function () {
+    clearTimeout(searchTimer);
+    var q = this.value;
+    searchTimer = setTimeout(function () { cargarEstacionamientos(q); }, 300);
+  });
 
   // Conectar botones de zoom personalizados al mapa Leaflet
   document.querySelectorAll(".zoom-controls button").forEach(function (btn) {

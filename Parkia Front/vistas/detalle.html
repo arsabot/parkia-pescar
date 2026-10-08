@@ -13,7 +13,7 @@
     <span class="logo">Parkia</span>
     <nav class="nav">
       <a href="../index.html">Inicio</a>
-      <a href="detalle.html" class="active">Buscar</a>
+      <a href="buscador.html">Buscar</a>
       <a href="reserva.html">Reservas</a>
       <a href="historial.html">Historial</a>
       <a href="#">Ayuda</a>
@@ -108,6 +108,29 @@
 </div>
 
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-<script>lucide.createIcons();</script>
+<script>
+  lucide.createIcons();
+
+  var params = new URLSearchParams(window.location.search);
+  var estId = params.get('id');
+  if (estId) {
+    fetch('http://127.0.0.1:8000/api/estacionamientos/' + encodeURIComponent(estId) + '/')
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function (e) {
+        document.querySelector('.detail-info h2').textContent = e.nombre;
+        document.querySelector('.detail-info p').textContent = e.direccion + ' · ' + e.espacios_disponibles + ' lugares disponibles';
+        document.querySelector('.detail-price').innerHTML = '$' + e.precio_por_hora.replace('.00', '') + ' <span>/ hora</span>';
+        document.querySelector('.detail-location').lastChild.textContent = ' ' + e.direccion;
+        var avail = document.querySelector('.availability');
+        avail.innerHTML = '<span class="avail-dot green"></span> ' + e.espacios_disponibles + ' lugares disponibles (de ' + e.espacios_totales + ')';
+      })
+      .catch(function (err) {
+        console.error('No se pudo cargar el estacionamiento:', err);
+      });
+  }
+</script>
 </body>
 </html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parkia - Buscar</title>
+  <link rel="stylesheet" href="../css/inicio.css" />
+  <style>
+    .search-page {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+    .big-search {
+      width: 100%;
+      padding: 14px 18px;
+      font-size: 16px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--white);
+      box-sizing: border-box;
+      outline: none;
+    }
+    .big-search:focus { border-color: var(--orange); }
+    #resultsList {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    #resultsList .spot-card { max-width: 100%; }
+  </style>
+</head>
+<body>
+
+<div class="app">
+  <header class="header">
+    <span class="logo">Parkia</span>
+    <nav class="nav">
+      <a href="../index.html">Inicio</a>
+      <a href="buscador.html" class="active">Buscar</a>
+      <a href="reserva.html">Reservas</a>
+      <a href="historial.html">Historial</a>
+      <a href="#">Ayuda</a>
+    </nav>
+    <a href="perfil.html" class="avatar">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </a>
+  </header>
+
+  <main class="search-page">
+    <input id="searchInput" class="big-search" type="text" placeholder="Buscar estacionamiento por nombre o dirección..." autofocus />
+    <div id="apiStatus" class="api-msg api-msg-info" style="margin:12px 0 0;">Escribí para buscar.</div>
+    <div id="resultsList"></div>
+  </main>
+</div>
+
+<script>
+  function showApiMessage(type, text) {
+    var el = document.getElementById("apiStatus");
+    el.className = "api-msg api-msg-" + type;
+    el.style.margin = "12px 0 0";
+    el.textContent = text;
+  }
+
+  function renderResults(data) {
+    var list = document.getElementById("resultsList");
+    list.innerHTML = "";
+    if (!data || data.length === 0) {
+      showApiMessage("info", "No se encontraron estacionamientos.");
+      return;
+    }
+    showApiMessage("success", "Se encontraron " + data.length + " estacionamientos.");
+    data.forEach(function (e) {
+      var card = document.createElement("div");
+      card.className = "spot-card";
+      card.innerHTML = '<div class="spot-photo">' + (e.plan_destacado ? '<span class="spot-badge">Destacado</span>' : '') + '</div>'
+        + '<div class="spot-body">'
+        + '<p class="spot-name">' + e.nombre + '</p>'
+        + '<p class="spot-address">' + e.direccion + '</p>'
+        + '<p class="spot-availability">' + e.espacios_disponibles + '/' + e.espacios_totales + ' lugares disponibles</p>'
+        + '<p class="spot-price">$' + e.precio_por_hora + ' / hora</p>'
+        + '</div>';
+      card.addEventListener("click", function () {
+        window.location.href = "detalle.html?id=" + e.id;
+      });
+      list.appendChild(card);
+    });
+  }
+
+  function cargarEstacionamientos(query) {
+    fetch("http://127.0.0.1:8000/api/estacionamientos/")
+      .then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.json();
+      })
+      .then(function (data) {
+        var q = (query || "").toLowerCase();
+        var filtered = q
+          ? data.results.filter(function (e) {
+              return e.nombre.toLowerCase().indexOf(q) !== -1 || e.direccion.toLowerCase().indexOf(q) !== -1;
+            })
+          : data.results;
+        renderResults(filtered);
+      })
+      .catch(function () {
+        showApiMessage("error", "No se pudieron cargar los estacionamientos.");
+      });
+  }
+
+  var searchInput = document.getElementById("searchInput");
+  var timer = null;
+  searchInput.addEventListener("input", function () {
+    clearTimeout(timer);
+    var q = this.value;
+    timer = setTimeout(function () { cargarEstacionamientos(q); }, 300);
+  });
+</script>
+
+</body>
+</html>
