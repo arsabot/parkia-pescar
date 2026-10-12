@@ -31,9 +31,9 @@
 
       <!-- Sidebar izquierdo -->
       <div class="profile-sidebar">
-        <div class="profile-avatar">NA</div>
-        <h4>Nombre Apelido</h4>
-        <p>Usuario@email.com</p>
+        <div class="profile-avatar" id="profileAvatar">--</div>
+        <h4 id="profileName">Nombre Apellido</h4>
+        <p id="profileEmail">usuario@email.com</p>
 
         <div class="profile-menu">
           <a href="#" class="menu-item active">
@@ -48,7 +48,7 @@
           <a href="#" class="menu-item">
             <i data-lucide="settings" style="width:16px;height:16px;"></i> Configuración
           </a>
-          <a href="#" class="menu-item logout">
+          <a href="#" class="menu-item logout" id="logoutBtn">
             <i data-lucide="log-out" style="width:16px;height:16px;"></i> Cerrar sesión
           </a>
         </div>
@@ -61,22 +61,22 @@
         <div class="form-row">
           <div class="form-group">
             <label>Nombre</label>
-            <input type="text" placeholder="ingresa tu nombre" />
+            <input type="text" id="fieldFirstName" placeholder="ingresa tu nombre" />
           </div>
           <div class="form-group">
             <label>Apellido</label>
-            <input type="text" placeholder="ingresa apellido" />
+            <input type="text" id="fieldLastName" placeholder="ingresa apellido" />
           </div>
         </div>
 
         <div class="form-group">
           <label>Email</label>
-          <input type="email" value="" placeholder="ingresa tu email" />
+          <input type="email" id="fieldEmail" value="" placeholder="ingresa tu email" />
         </div>
 
         <div class="form-group">
           <label>Teléfono</label>
-          <input type="tel" placeholder="ingresa tu número de Teléfono" />
+          <input type="tel" id="fieldPhone" placeholder="ingresa tu número de Teléfono" />
         </div>
 
         <button class="btn-primary btn-edit"><i data-lucide="pencil" style="width:14px;height:14px;"></i> Editar</button>
@@ -98,6 +98,71 @@
 </div>
 
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-<script>lucide.createIcons();</script>
+<script>
+  lucide.createIcons();
+
+  var API = "http://127.0.0.1:8000";
+
+  function initials(first, last) {
+    return ((first || "").charAt(0) + (last || "").charAt(0)).toUpperCase() || "--";
+  }
+
+  function fillProfile(user) {
+    document.getElementById("profileAvatar").textContent = initials(user.first_name, user.last_name);
+    document.getElementById("profileName").textContent = user.full_name || (user.first_name + " " + user.last_name);
+    document.getElementById("profileEmail").textContent = user.email || "";
+    document.getElementById("fieldFirstName").value = user.first_name || "";
+    document.getElementById("fieldLastName").value = user.last_name || "";
+    document.getElementById("fieldEmail").value = user.email || "";
+    document.getElementById("fieldPhone").value = user.phone || "";
+  }
+
+  var stored = null;
+  try { stored = JSON.parse(localStorage.getItem("parkia_user") || "null"); } catch (e) { stored = null; }
+
+  if (stored) {
+    fillProfile(stored);
+    // Refrescar desde la API con el token guardado
+    var tokens = null;
+    try { tokens = JSON.parse(localStorage.getItem("parkia_tokens") || "null"); } catch (e) { tokens = null; }
+    if (tokens && tokens.access) {
+      fetch(API + "/api/auth/me/", { headers: { "Authorization": "Bearer " + tokens.access } })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (user) {
+          if (user) {
+            localStorage.setItem("parkia_user", JSON.stringify(user));
+            fillProfile(user);
+          }
+        })
+        .catch(function () {});
+    }
+  }
+
+  document.getElementById("logoutBtn").addEventListener("click", function (ev) {
+    ev.preventDefault();
+    localStorage.removeItem("parkia_user");
+    localStorage.removeItem("parkia_tokens");
+    window.location.href = "../index.html";
+  });
+</script>
+
+<script>
+  // Estado de sesión en el header: avatar con iniciales si hay login, si no link a login.
+  (function () {
+    try {
+      var user = JSON.parse(localStorage.getItem("parkia_user") || "null");
+      var av = document.querySelector(".header .avatar");
+      if (!av) return;
+      var inVistas = window.location.pathname.indexOf("/vistas/") !== -1;
+      if (user) {
+        av.href = inVistas ? "perfil.html" : "vistas/perfil.html";
+        var ini = ((user.first_name || "").charAt(0) + (user.last_name || "").charAt(0)).toUpperCase();
+        if (ini) av.textContent = ini;
+      } else {
+        av.href = inVistas ? "login.html" : "vistas/login.html";
+      }
+    } catch (e) {}
+  })();
+</script>
 </body>
 </html>

@@ -26,12 +26,17 @@
   </header>
 
   <div class="layout">
-    <aside class="sidebar">
-      <div class="search-box">
-        <span class="search-icon">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-        </span>
-        <input type="text" id="searchInput" placeholder="¿Dónde querés estacionar?" />
+    <aside class="sidebar" id="sidebar">
+      <div class="search-row">
+        <button id="filtersToggle" class="hamburger" type="button" aria-label="Ocultar filtros" aria-expanded="true" aria-controls="sidebar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+        </button>
+        <div class="search-box">
+          <span class="search-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          </span>
+          <input type="text" id="searchInput" placeholder="¿Dónde querés estacionar?" />
+        </div>
       </div>
 
       <div class="filters-label">
@@ -76,31 +81,34 @@
       <div class="map" id="map">
         <!-- Mapa real de Leaflet montado acá por JS -->
 
+        <button id="mapToggle" class="map-float-toggle" type="button" aria-label="Mostrar filtros" aria-expanded="false" aria-controls="sidebar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+        </button>
         <div class="zoom-controls">
           <button aria-label="Acercar">+</button>
           <button aria-label="Alejar">-</button>
         </div>
       </div>
-
-      <section class="featured">
-        <div class="featured-header">
-          <h2>Estacionamientos destacados</h2>
-          <a href="#">Ver todos →</a>
-        </div>
-        <div class="featured-grid" id="featuredGrid">
-          <div class="promo-card">
-            <div>
-              <p>20% off</p>
-              <p>con tu reserva en Parkia</p>
-            </div>
-            <span class="promo-arrow">→</span>
-          </div>
-        </div>
-      </section>
-
-      <div id="apiStatus" class="api-msg api-msg-info">Buscando estacionamientos...</div>
     </main>
   </div>
+
+  <section class="featured">
+    <div class="featured-header">
+      <h2>Estacionamientos destacados</h2>
+      <a href="#">Ver todos →</a>
+    </div>
+    <div class="featured-grid" id="featuredGrid">
+      <div class="promo-card">
+        <div>
+          <p>20% off</p>
+          <p>con tu reserva en Parkia</p>
+        </div>
+        <span class="promo-arrow">→</span>
+      </div>
+    </div>
+  </section>
+
+  <div id="apiStatus" class="api-msg api-msg-info">Buscando estacionamientos...</div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
@@ -310,6 +318,47 @@
       trigger.setAttribute("aria-expanded", "false");
     }
   });
+</script>
+
+<script>
+  // Colapso animado de la barra de filtros (botón en sidebar + flotante en mapa)
+  (function () {
+    var layout = document.querySelector(".layout");
+    var sidebar = document.getElementById("sidebar");
+    var sidebarBtn = document.getElementById("filtersToggle");
+    var mapBtn = document.getElementById("mapToggle");
+
+    function toggleSidebar() {
+      var collapsed = sidebar.classList.toggle("collapsed");
+      layout.classList.toggle("sidebar-collapsed", collapsed);
+      sidebarBtn.setAttribute("aria-expanded", collapsed ? "false" : "true");
+      sidebarBtn.setAttribute("aria-label", collapsed ? "Mostrar filtros" : "Ocultar filtros");
+      mapBtn.setAttribute("aria-expanded", collapsed ? "false" : "true");
+      if (typeof leafMap !== "undefined") {
+        setTimeout(function () { leafMap.invalidateSize(); }, 300);
+      }
+    }
+
+    sidebarBtn.addEventListener("click", toggleSidebar);
+    mapBtn.addEventListener("click", toggleSidebar);
+  })();
+
+  // Estado de sesión en el header: avatar con iniciales si hay login, si no link a login.
+  (function () {
+    try {
+      var user = JSON.parse(localStorage.getItem("parkia_user") || "null");
+      var av = document.querySelector(".header .avatar");
+      if (!av) return;
+      var inVistas = window.location.pathname.indexOf("/vistas/") !== -1;
+      if (user) {
+        av.href = inVistas ? "perfil.html" : "vistas/perfil.html";
+        var ini = ((user.first_name || "").charAt(0) + (user.last_name || "").charAt(0)).toUpperCase();
+        if (ini) av.textContent = ini;
+      } else {
+        av.href = inVistas ? "login.html" : "vistas/login.html";
+      }
+    } catch (e) {}
+  })();
 </script>
 
 </body>

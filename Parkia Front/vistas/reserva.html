@@ -92,5 +92,23 @@
 
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <script>lucide.createIcons();</script>
+<script>
+  // Estado de sesión en el header: avatar con iniciales si hay login, si no link a login.
+  (function () {
+    try {
+      var user = JSON.parse(localStorage.getItem("parkia_user") || "null");
+      var av = document.querySelector(".header .avatar");
+      if (!av) return;
+      var inVistas = window.location.pathname.indexOf("/vistas/") !== -1;
+      if (user) {
+        av.href = inVistas ? "perfil.html" : "vistas/perfil.html";
+        var ini = ((user.first_name || "").charAt(0) + (user.last_name || "").charAt(0)).toUpperCase();
+        if (ini) av.textContent = ini;
+      } else {
+        av.href = inVistas ? "login.html" : "vistas/login.html";
+      }
+    } catch (e) {}
+  })();
+</script>
 </body>
 </html>

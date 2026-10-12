@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parkia - Registro</title>
+  <link rel="stylesheet" href="../css/vistas.css" />
+  <style>
+    .auth-card {
+      max-width: 420px;
+      margin: 48px auto;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+    }
+    .auth-card h2 { margin: 0 0 4px; font-size: 20px; }
+    .auth-card p { color: var(--text-secondary); font-size: 14px; margin: 0 0 20px; }
+    .auth-card .btn-primary { width: 100%; margin-top: 12px; }
+    .auth-link { text-align: center; font-size: 13px; margin-top: 16px; color: var(--text-secondary); }
+    .auth-link a { color: var(--orange); text-decoration: none; }
+    .form-msg { padding: 8px 12px; border-radius: 8px; font-size: 13px; margin-bottom: 12px; display: none; }
+    .form-msg.error { display: block; background: #fee2e2; color: #991b1b; }
+    .form-msg.success { display: block; background: #dcfce7; color: #166534; }
+  </style>
+</head>
+<body>
+
+<div class="app">
+  <header class="header">
+    <span class="logo">Parkia</span>
+    <nav class="nav">
+      <a href="../index.html">Inicio</a>
+      <a href="buscador.html">Buscar</a>
+      <a href="reserva.html">Reservas</a>
+      <a href="historial.html">Historial</a>
+      <a href="#">Ayuda</a>
+    </nav>
+    <a href="login.html" class="avatar">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </a>
+  </header>
+
+  <div class="container">
+    <div class="auth-card">
+      <h2>Crear cuenta</h2>
+      <p>Registrate como conductor para reservar estacionamientos.</p>
+      <div id="formMsg" class="form-msg"></div>
+      <form id="registerForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nombre</label>
+            <input type="text" id="first_name" placeholder="Tu nombre" required />
+          </div>
+          <div class="form-group">
+            <label>Apellido</label>
+            <input type="text" id="last_name" placeholder="Tu apellido" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="email" placeholder="usuario@parkia.com" required />
+        </div>
+        <div class="form-group">
+          <label>Teléfono</label>
+          <input type="tel" id="phone" placeholder="Tu teléfono" />
+        </div>
+        <div class="form-group">
+          <label>Contraseña</label>
+          <input type="password" id="password" placeholder="Mínimo 6 caracteres" required minlength="6" />
+        </div>
+        <div class="form-group">
+          <label>Confirmar contraseña</label>
+          <input type="password" id="password_confirmation" placeholder="Repetí tu contraseña" required minlength="6" />
+        </div>
+        <button type="submit" class="btn-primary">Registrarse</button>
+      </form>
+      <div class="auth-link">¿Ya tenés cuenta? <a href="login.html">Entrá</a></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var API = "http://127.0.0.1:8000";
+
+  function showMsg(text, type) {
+    var el = document.getElementById("formMsg");
+    el.className = "form-msg " + type;
+    el.textContent = text;
+  }
+
+  document.getElementById("registerForm").addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    fetch(API + "/api/auth/register/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        first_name: document.getElementById("first_name").value,
+        last_name: document.getElementById("last_name").value,
+        email: document.getElementById("email").value,
+        phone: document.getElementById("phone").value,
+        password: document.getElementById("password").value,
+        password_confirmation: document.getElementById("password_confirmation").value,
+        role: "driver"
+      })
+    })
+      .then(function (r) { return r.json().then(function (body) { return { ok: r.ok, body: body }; }); })
+      .then(function (res) {
+        if (!res.ok) {
+          var errs = res.body.errors || {};
+          var msg = typeof errs === "string" ? errs : Object.keys(errs).map(function (k) { return [].concat(errs[k]).join(" "); }).join(" ");
+          showMsg(msg || "No se pudo completar el registro.", "error");
+          return;
+        }
+        localStorage.setItem("parkia_user", JSON.stringify(res.body.user));
+        localStorage.setItem("parkia_tokens", JSON.stringify(res.body.tokens));
+        showMsg(res.body.message || "Cuenta creada.", "success");
+        setTimeout(function () { window.location.href = "../index.html"; }, 600);
+      })
+      .catch(function () {
+        showMsg("No se pudo conectar con el servidor. Verificá que el backend esté levantado.", "error");
+      });
+  });
+</script>
+
+<script>
+  // Estado de sesión en el header: si ya hay login, ir directo al perfil.
+  (function () {
+    try {
+      var user = JSON.parse(localStorage.getItem("parkia_user") || "null");
+      if (user) window.location.href = "perfil.html";
+    } catch (e) {}
+  })();
+</script>
+
+</body>
+</html>
