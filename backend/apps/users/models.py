@@ -59,7 +59,7 @@ class User(AbstractUser):
     """
 
     class Role(models.TextChoices):
-        CONDUCTOR = 'conductor', _('Conductor')
+        DRIVER = 'driver', _('Conductor')
         EMPLEADO  = 'empleado',  _('Empleado')
         ADMIN     = 'admin',     _('Administrador')
 
@@ -71,7 +71,7 @@ class User(AbstractUser):
     dni        = models.CharField(_('DNI'), max_length=20, unique=True, null=True, blank=True)
     role       = models.CharField(
         _('Rol de usuario'), max_length=20,
-        choices=Role.choices, default=Role.CONDUCTOR, db_index=True,
+        choices=Role.choices, default=Role.DRIVER, db_index=True,
     )
     phone      = models.CharField(_('Teléfono'), max_length=30, blank=True, default='')
     avatar_url = models.URLField(_('URL del Avatar'), blank=True, default='')
