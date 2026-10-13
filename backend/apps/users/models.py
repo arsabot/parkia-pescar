@@ -395,3 +395,54 @@ class Resena(models.Model):
 
     def __str__(self):
         return f"Reseña #{self.id} — {self.puntuacion}/5 (Reserva #{self.reserva_id})"
+
+# ==============================================================================
+# PAGOS
+# ==============================================================================
+
+class Pago(models.Model):
+    """Pago asociado a una reserva."""
+
+    class Metodo(models.TextChoices):
+        BILLETERA = 'billetera_virtual', _('Billetera virtual')
+        DEBITO    = 'tarjeta_debito',    _('Tarjeta de débito')
+        CREDITO   = 'tarjeta_credito',   _('Tarjeta de crédito')
+        EFECTIVO  = 'efectivo',          _('Efectivo en comercio')
+
+    class Proveedor(models.TextChoices):
+        MERCADO_PAGO = 'mercado_pago', _('Mercado Pago')
+        MODO         = 'modo',         _('MODO')
+        UALA         = 'uala',         _('Ualá')
+        VISA         = 'visa',         _('Visa')
+        MASTERCARD   = 'mastercard',   _('Mastercard')
+        RAPIPAGO     = 'rapipago',     _('Rapipago')
+        PAGO_FACIL   = 'pago_facil',   _('Pago Fácil')
+
+    class Estado(models.TextChoices):
+        PENDIENTE = 'PENDIENTE', _('Pendiente')
+        APROBADO  = 'APROBADO',  _('Aprobado')
+        RECHAZADO = 'RECHAZADO', _('Rechazado')
+        REEMBOLSADO = 'REEMBOLSADO', _('Reembolsado')
+
+    reserva    = models.ForeignKey(
+        Reserva, on_delete=models.CASCADE,
+        related_name='pagos', verbose_name=_('Reserva'),
+    )
+    monto      = models.DecimalField(_('Monto'), max_digits=10, decimal_places=2)
+    metodo     = models.CharField(_('Método de pago'), max_length=20, choices=Metodo.choices)
+    proveedor  = models.CharField(_('Proveedor'), max_length=20, choices=Proveedor.choices)
+    estado     = models.CharField(
+        _('Estado'), max_length=20,
+        choices=Estado.choices, default=Estado.PENDIENTE, db_index=True,
+    )
+    referencia_externa = models.CharField(_('Referencia externa'), max_length=100, blank=True, default='')
+    fecha_pago = models.DateTimeField(_('Fecha de pago'), null=True, blank=True)
+    created_at = models.DateTimeField(_('Fecha de creación'), auto_now_add=True)
+
+    class Meta:
+        verbose_name        = _('Pago')
+        verbose_name_plural = _('Pagos')
+        ordering            = ['-created_at']
+
+    def __str__(self):
+        return f"Pago #{self.id} — ${self.monto} ({self.get_estado_display()})"
