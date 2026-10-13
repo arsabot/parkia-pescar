@@ -111,6 +111,8 @@ class Auto(models.Model):
         verbose_name=_('Propietario'),
     )
     patente = models.CharField(_('Patente'), max_length=20, unique=True)
+    marca   = models.CharField(_('Marca'), max_length=50, blank=True, default='')
+    modelo  = models.CharField(_('Modelo'), max_length=50, blank=True, default='')
 
     class Meta:
         verbose_name        = _('Auto')
@@ -193,6 +195,14 @@ class Estacionamiento(models.Model):
     horario_apertura = models.TimeField(_('Horario de Apertura'))
     horario_cierre   = models.TimeField(_('Horario de Cierre'))
     activo           = models.BooleanField(_('Activo'), default=True)
+    # Empleado que gestiona este estacionamiento
+    encargado        = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name='estacionamientos_a_cargo',
+        verbose_name=_('Encargado'),
+    )
     # Monetización B2B SaaS — plan contratado por el estacionamiento
     plan             = models.ForeignKey(
         PlanSuscripcion,
@@ -201,6 +211,8 @@ class Estacionamiento(models.Model):
         related_name='estacionamientos',
         verbose_name=_('Plan de Suscripción'),
     )
+    plan_desde       = models.DateField(_('Plan desde'), null=True, blank=True)
+    plan_hasta       = models.DateField(_('Plan hasta'), null=True, blank=True)
     # Relación M2M con Servicio a través de tabla intermedia explícita
     servicios        = models.ManyToManyField(
         Servicio,
