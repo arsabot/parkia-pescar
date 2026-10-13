@@ -53,9 +53,22 @@
     <div id="apiStatus" class="api-msg api-msg-info" style="margin:12px 0 0;">Escribí para buscar.</div>
     <div id="resultsList"></div>
   </main>
+
+  <!-- Bottom Nav Mobile -->
+  <nav class="bottom-nav">
+    <div class="bottom-nav-inner">
+      <a href="../index.html"><i data-lucide="house" class="nav-icon"></i> Inicio</a>
+      <a href="buscador.html" class="active"><i data-lucide="search" class="nav-icon"></i> Buscar</a>
+      <a href="reserva.html"><i data-lucide="calendar" class="nav-icon"></i> Reservas</a>
+      <a href="historial.html"><i data-lucide="clipboard-list" class="nav-icon"></i> Historial</a>
+      <a href="perfil.html"><i data-lucide="user" class="nav-icon"></i> Perfil</a>
+    </div>
+  </nav>
 </div>
 
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <script>
+  if (window.lucide) { lucide.createIcons(); }
   function showApiMessage(type, text) {
     var el = document.getElementById("apiStatus");
     el.className = "api-msg api-msg-" + type;
