@@ -4,6 +4,11 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Parkia - Home / Mapa</title>
+ <!-- Tipografía moderna Google Fonts (AGREGADO) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- 2.archivo de estilos CSS-->
 <link rel="stylesheet" href="css/inicio.css" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
@@ -11,17 +16,31 @@
 <body>
 
 <div class="app">
-  <header class="header">
-    <span class="logo">Parkia</span>
+    <header class="header">
+    <a href="index.html" class="header-left">
+      <div class="logo-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+        </svg>
+      </div>
+      <span class="logo-text">Parkia</span>
+    </a>
+
     <nav class="nav">
       <a href="index.html" class="active">Inicio</a>
-      <a href="vistas/buscador.html">Buscar</a>
-      <a href="vistas/reserva.html">Reservas</a>
-      <a href="vistas/historial.html">Historial</a>
+      <a href="vistas/buscador.html">Estacionamientos</a>
+      <a href="vistas/reserva.html">Cómo funciona</a>
       <a href="#">Ayuda</a>
     </nav>
-    <a href="vistas/perfil.html" class="avatar">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+
+    <a href="vistas/perfil.html" class="user-menu-btn">
+      <div class="avatar-circle">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+        </svg>
+      </div>
+      <span>Mi cuenta</span>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
     </a>
   </header>
 
