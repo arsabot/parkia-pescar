@@ -1,136 +1,268 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Parkia - Home / Mapa</title>
-<link rel="stylesheet" href="css/inicio.css" />
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parkia - Home / Mapa</title>
+
+  <!-- Tipografía moderna Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Archivo de estilos CSS -->
+  <link rel="stylesheet" href="css/inicio.css" />
+
+  <!-- Estilos del Mapa Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 </head>
 <body>
 
 <div class="app">
+  
+  <!-- 1. HEADER FIJO AZUL MARINO -->
   <header class="header">
-    <a href="index.html" class="logo">Parkia</a>
+    <a href="index.html" class="header-left">
+      <div class="logo-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+        </svg>
+      </div>
+      <span class="logo-text">Parkia</span>
+    </a>
+
     <nav class="nav">
       <a href="index.html" class="active">Inicio</a>
-      <a href="vistas/buscador.html">Buscar</a>
-      <a href="vistas/reserva.html">Reservas</a>
-      <a href="vistas/historial.html">Historial</a>
+      <a href="vistas/buscador.html">Estacionamientos</a>
+      <a href="vistas/reserva.html">Cómo funciona</a>
       <a href="#">Ayuda</a>
     </nav>
-    <a href="vistas/perfil.html" class="avatar">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+
+    <a href="vistas/perfil.html" class="user-menu-btn">
+      <div class="avatar-circle">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+        </svg>
+      </div>
+      <span>Mi cuenta</span>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
     </a>
   </header>
 
-  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
-
-  <!-- Botón flotante de filtros para mobile -->
-  <button class="mobile-filter-floating" id="mobileFilterBtn">
-    <i data-lucide="sliders-horizontal" style="width:16px;height:16px;"></i>
-    <span>Filtros</span>
-  </button>
-
-  <div class="layout">
-    <aside class="sidebar" id="sidebar">
-      <div class="sidebar-header-mobile">
-        <span>Filtros</span>
-        <button id="closeSidebarBtn" class="close-btn" aria-label="Cerrar filtros">✕</button>
-      </div>
-      <div class="search-box">
-        <span class="search-icon">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-        </span>
-        <input type="text" id="searchInput" placeholder="¿Dónde querés estacionar?" />
-      </div>
-
-      <div class="filters-label">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/></svg>
-        Filtros
-      </div>
-
-      <div class="filter-group">
-        <div class="filter-row">
-          <span>Precio por hora</span>
-          <strong id="priceOut">$0 – $15.000</strong>
+  <!-- 2. CONTENEDOR DEL MAPA Y ELEMENTOS FLOTANTES -->
+  <div class="map-wrapper">
+    
+    <!-- Buscador Flotante + Filtros sobre el mapa -->
+    <div class="floating-search-container">
+      
+      <!-- Barra de Búsqueda 3 en 1 -->
+      <div class="search-bar-card">
+    
+        <div class="search-input-group">
+          <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="text" id="searchInput" placeholder="Buscar por barrio, dirección, punto de interés..." value="Recoleta, Buenos Aires" />
         </div>
-        <input type="range" min="1000" max="15000" step="100" value="15000" id="priceRange" oninput="document.getElementById('priceOut').textContent = '$0 – $' + Number(this.value).toLocaleString('es-AR')" />
-      </div>
 
-      <div class="filter-group">
-        <div class="filter-title">Distancia</div>
-        <div class="custom-select" id="distanceSelect">
-          <button type="button" class="custom-select-trigger" aria-haspopup="listbox" aria-expanded="false">
-            <span class="custom-select-value">Cercano (1 km)</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        <div class="search-divider"></div>
+
+        <!-- 2. Selector de Horario -->
+        <button type="button" class="search-picker-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+          <span>Hoy, 14:00 – 18:00</span>
+        </button>
+
+        <div class="search-divider"></div>
+
+        <!-- 3. Selector de Vehículo -->
+        <div class="vehicle-picker">
+          <button type="button" class="search-picker-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9C2.1 11.1 2 11.6 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/>
+            </svg>
+            <span>Auto</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
-          <ul class="custom-select-options" role="listbox">
-            <li data-value="1" class="selected">Cercano (1 km)</li>
-            <li data-value="3">Medio (3 km)</li>
-            <li data-value="5">Amplio (5 km)</li>
-          </ul>
         </div>
+        
+        <button type="button" class="btn-search-primary" id="btnBuscar">
+          Buscar
+        </button>
       </div>
 
-      <div class="filter-group">
-        <div class="filter-title">Disponibilidad</div>
-        <label class="checkbox-row"><input type="checkbox" checked /> Disponible</label>
-        <label class="checkbox-row"><input type="checkbox" /> Pocos lugares</label>
-        <label class="checkbox-row"><input type="checkbox" /> Completo</label>
+      <!-- Píldoras de Filtros Rápidos -->
+      <div class="filter-chips-row">
+        <button type="button" class="chip active">Todos</button>
+        <button type="button" class="chip">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Abierto 24hs
+        </button>
+        <button type="button" class="chip">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          Techado
+        </button>
+        <button type="button" class="chip">
+          <span class="dot-mp"></span>
+          Acepta Mercado Pago
+        </button>
+        <button type="button" class="chip">&lt; $3.000/h</button>
+        <button type="button" class="chip">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Carga eléctrica
+        </button>
       </div>
 
-      <button class="btn-outline">Más filtros</button>
-    </aside>
+    </div>
 
-    <main class="main">
-      <div class="map" id="map">
-        <!-- Mapa real de Leaflet montado acá por JS -->
+    <!-- EL MAPA LEAFLET -->
+    <div class="map" id="map">
+      <div class="zoom-controls">
+        <button type="button" aria-label="Acercar">+</button>
+        <button type="button" aria-label="Alejar">-</button>
+      </div>
+    </div>
 
-        <div class="zoom-controls">
-          <button aria-label="Acercar">+</button>
-          <button aria-label="Alejar">-</button>
+    <!-- Mini Tarjeta Flotante Inferior Izquierda -->
+    <div class="mini-spot-card" id="miniSpotCard" onclick="openSidePanel()">
+      <img src="https://images.unsplash.com/photo-1590674899484-d5640e854abe?auto=format&fit=crop&w=150&q=80" alt="Cochera" class="mini-card-img" />
+      <div class="mini-card-info">
+        <h4 class="mini-card-title">Garage Plaza San Martín</h4>
+        <div class="mini-card-rating">
+          <span class="star-rating">★ 4.8</span>
+          <span class="reviews-count">(124)</span>
+        </div>
+        <div class="mini-card-bottom">
+          <span class="mini-card-price">$2.500/h</span>
+          <span class="mini-card-tag">Techado · 1.2 km</span>
         </div>
       </div>
+      <button type="button" class="mini-card-arrow">→</button>
+    </div>
 
-      <section class="featured">
-        <div class="featured-header">
-          <h2>Estacionamientos destacados</h2>
-          <a href="#">Ver todos →</a>
+    <!-- Panel Lateral Elegante (Side Sheet) -->
+    <aside class="side-detail-panel hidden" id="sideDetailPanel">
+      
+      <div class="panel-gallery">
+        <img id="panelMainImg" src="https://images.unsplash.com/photo-1590674899484-d5640e854abe?auto=format&fit=crop&w=600&q=80" alt="Cochera" />
+        <button type="button" class="btn-close-panel" onclick="closeSidePanel()" aria-label="Cerrar">✕</button>
+        <span class="gallery-counter">1/5</span>
+      </div>
+
+      <div class="panel-thumbnails">
+        <img src="https://images.unsplash.com/photo-1590674899484-d5640e854abe?auto=format&fit=crop&w=120&q=80" class="thumb active" />
+        <img src="https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=120&q=80" class="thumb" />
+        <img src="https://images.unsplash.com/photo-1573348722427-f1d6819fdf98?auto=format&fit=crop&w=120&q=80" class="thumb" />
+        <img src="https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=120&q=80" class="thumb" />
+      </div>
+
+      <div class="panel-content">
+        <h2 class="panel-title" id="panelSpotName">Garage Plaza San Martín</h2>
+        
+        <div class="panel-meta-row">
+          <span class="star-rating">★ 4.8</span>
+          <span class="reviews-count">(124 reseñas)</span>
+          <span class="meta-dot">·</span>
+          <span class="badge-available">
+            <span class="pulse-green"></span> Disponible ahora
+          </span>
         </div>
-        <div class="featured-grid" id="featuredGrid">
-          <div class="promo-card">
-            <div>
-              <p>20% off</p>
-              <p>con tu reserva en Parkia</p>
-            </div>
-            <span class="promo-arrow">→</span>
+
+        <p class="panel-address">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/>
+          </svg>
+          San Martín 932, Retiro, CABA · <strong>1.2 km</strong>
+        </p>
+
+        <div class="panel-features-grid">
+          <div class="feature-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+            Techado
+          </div>
+          <div class="feature-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            Altura máx. 2.10 m
+          </div>
+          <div class="feature-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Vigilancia 24hs
+          </div>
+          <div class="feature-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            Acceso con QR
           </div>
         </div>
-      </section>
 
-      <div id="apiStatus" class="api-msg api-msg-info">Buscando estacionamientos...</div>
-    </main>
+        <div class="panel-details-cols">
+          <div class="panel-rates-col">
+            <div class="rates-header">
+              <strong>Tarifas</strong>
+              <a href="#">Ver todas →</a>
+            </div>
+            <div class="rate-row">
+              <span>Fracción (30 min)</span>
+              <strong>$800</strong>
+            </div>
+            <div class="rate-row highlight">
+              <span>Por hora</span>
+              <strong class="rate-main" id="panelSpotPrice">$2.500</strong>
+            </div>
+            <div class="rate-row">
+              <span>12 hs (diurno)</span>
+              <strong>$18.000</strong>
+            </div>
+            <div class="rate-row">
+              <span>24 hs</span>
+              <strong>$32.000</strong>
+            </div>
+          </div>
+
+          <div class="panel-status-col">
+            <div class="capacity-block">
+              <span class="block-label">Capacidad en vivo</span>
+              <div class="capacity-bar">
+                <div class="capacity-fill" style="width: 80%;"></div>
+              </div>
+              <p class="capacity-pct">80% ocupado</p>
+              <p class="capacity-sub">¡Solo quedan 4 cocheras!</p>
+            </div>
+
+            <div class="payments-block">
+              <span class="block-label">Medios de pago</span>
+              <div class="payments-badges">
+                <span class="badge-mp">Mercado Pago</span>
+                <span class="badge-pay">Tarjetas</span>
+                <span class="badge-pay">Efectivo</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="panel-action-footer">
+        <a href="vistas/reserva.html" class="btn-panel-reserve">
+          <span>Reservar ahora</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+    </aside>
+
   </div>
 
-  <!-- Bottom Nav Mobile -->
-  <nav class="bottom-nav">
-    <div class="bottom-nav-inner">
-      <a href="index.html" class="active"><i data-lucide="house" class="nav-icon"></i> Inicio</a>
-      <a href="vistas/buscador.html"><i data-lucide="search" class="nav-icon"></i> Buscar</a>
-      <a href="vistas/reserva.html"><i data-lucide="calendar" class="nav-icon"></i> Reservas</a>
-      <a href="vistas/historial.html"><i data-lucide="clipboard-list" class="nav-icon"></i> Historial</a>
-      <a href="vistas/perfil.html"><i data-lucide="user" class="nav-icon"></i> Perfil</a>
-    </div>
-  </nav>
+  <div id="apiStatus" class="api-msg api-msg-info">Buscando estacionamientos...</div>
+
 </div>
 
-<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<!-- SCRIPTS DE LEAFLET Y LÓGICA -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
-  if (window.lucide) { lucide.createIcons(); }
   // ============================================================
   // Mapa REAL con Leaflet + CARTO Voyager (key gratuita de basemaps)
   // ============================================================
@@ -142,12 +274,12 @@
 
   var starSvg = '<svg width="12" height="12" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24"><polygon points="12 2 15 9 22 9 16.5 13.5 18.5 21 12 16.5 5.5 21 7.5 13.5 2 9 9 9"/></svg>';
 
-  // Inicializar el mapa centrado en Buenos Aires
+  // Inicializar Leaflet
   var leafMap = L.map("map", { zoomControl: false }).setView([-34.6037, -58.3816], 14);
 
   L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=cb1_4dp3_1_c49551f0a2b6e42178ceed8e", {
     maxZoom: 19,
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+    attribution: '&copy; OpenStreetMap &copy; CARTO'
   }).addTo(leafMap);
 
   function makeIcon(status) {
@@ -167,7 +299,7 @@
     var s = statusStyles[spot.status] || statusStyles['available'];
     return '<div class="leaflet-popup-custom">'
       + '<strong>' + spot.name + '</strong><br>'
-      + '<span class="star">' + starSvg + '</span> <strong style="color:#44403c;font-weight:500">' + spot.rating + '</strong> ' + spot.reviews + ' · ' + spot.dist + '<br>'
+      + '<span class="star">' + starSvg + '</span> <strong>' + spot.rating + '</strong> ' + spot.reviews + '<br>'
       + '<span class="status-dot" style="background:' + s.color + '"></span>' + s.label + '<br>'
       + '<span class="price-tag">' + spot.price + ' / hora</span>'
       + '</div>';
@@ -175,6 +307,7 @@
 
   function showApiMessage(type, text) {
     var el = document.getElementById("apiStatus");
+    if (!el) return;
     el.className = "api-msg api-msg-" + type;
     el.textContent = text;
   }
@@ -183,8 +316,10 @@
 
   function renderAll(data) {
     var grid = document.getElementById("featuredGrid");
-    var promo = grid.querySelector(".promo-card");
-    grid.querySelectorAll(".spot-card").forEach(function (c) { c.remove(); });
+    if (grid) {
+      var promo = grid.querySelector(".promo-card");
+      grid.querySelectorAll(".spot-card").forEach(function (c) { c.remove(); });
+    }
     markersLayer.clearLayers();
 
     if (!data.results || data.results.length === 0) {
@@ -205,7 +340,9 @@
       card.addEventListener("click", function () {
         window.location.href = "vistas/detalle.html?id=" + e.id;
       });
-      grid.insertBefore(card, promo);
+      if (grid && promo) {
+        grid.insertBefore(card, promo);
+      }
     });
 
     data.results.forEach(function (e) {
@@ -222,22 +359,33 @@
     showApiMessage("info", "Buscando estacionamientos...");
     fetch(url)
       .then(function (response) {
-        if (!response.ok) throw new Error("HTTP " + response.status + " " + response.statusText);
+        if (!response.ok) throw new Error("HTTP " + response.status);
         return response.json();
       })
       .then(function (data) {
-        // Filtro client-side: nombre O dirección (el backend sólo filtra por dirección)
-        var q = (query || "").toLowerCase();
-        var filtered = q
-          ? data.results.filter(function (e) {
-              return e.nombre.toLowerCase().indexOf(q) !== -1 || e.direccion.toLowerCase().indexOf(q) !== -1;
-            })
-          : data.results;
-        renderAll({ results: filtered });
+        markersLayer.clearLayers();
+        if (!data.results || data.results.length === 0) {
+          showApiMessage("info", "No se encontraron estacionamientos.");
+          return;
+        }
+
+        data.results.forEach(function (e) {
+          var status = e.activo ? (e.espacios_disponibles > 0 ? "available" : "full") : "full";
+          var marker = L.marker([parseFloat(e.latitud), parseFloat(e.longitud)], { icon: makeIcon(status) }).addTo(markersLayer);
+          marker.bindPopup(makePopup({ name: e.nombre, rating: "4.5", reviews: "(100)", price: "$" + e.precio_por_hora, status: status }));
+          
+          marker.on("click", function() {
+            // Abrir y actualizar panel lateral con datos del estacionamiento clickeado
+            document.getElementById("panelSpotName").textContent = e.nombre;
+            document.getElementById("panelSpotPrice").textContent = "$" + e.precio_por_hora;
+            openSidePanel();
+          });
+        });
+
+        showApiMessage("success", "Se encontraron " + data.results.length + " estacionamientos.");
       })
       .catch(function (err) {
-        showApiMessage("error", "No se pudieron cargar los estacionamientos.");
-        console.error("Error al cargar estacionamientos desde la API:", err);
+        showApiMessage("error", "Estacionamientos en modo demostración local.");
       });
   }
 
@@ -245,12 +393,14 @@
 
   // Buscador por dirección (debounce de 300 ms)
   var searchInput = document.getElementById("searchInput");
-  var searchTimer = null;
-  searchInput.addEventListener("input", function () {
-    clearTimeout(searchTimer);
-    var q = this.value;
-    searchTimer = setTimeout(function () { cargarEstacionamientos(q); }, 300);
-  });
+  if (searchInput) {
+    var searchTimer = null;
+    searchInput.addEventListener("input", function () {
+      clearTimeout(searchTimer);
+      var q = this.value;
+      searchTimer = setTimeout(function () { cargarEstacionamientos(q); }, 300);
+    });
+  }
 
   // Conectar botones de zoom personalizados al mapa Leaflet
   document.querySelectorAll(".zoom-controls button").forEach(function (btn) {
@@ -259,6 +409,37 @@
       leafMap.setZoom(leafMap.getZoom() + delta);
     });
   });
+
+  // Funciones del Panel Lateral
+  function openSidePanel() {
+    document.getElementById("sideDetailPanel").classList.remove("hidden");
+  }
+
+  function closeSidePanel() {
+    document.getElementById("sideDetailPanel").classList.add("hidden");
+  }
+</script>
+
+
+  <!-- Bottom Nav Mobile -->
+  <nav class="bottom-nav">
+    <div class="bottom-nav-inner">
+      <a href="index.html" class="active"><i data-lucide="house" class="nav-icon"></i> Inicio</a>
+      <a href="vistas/buscador.html"><i data-lucide="search" class="nav-icon"></i> Buscar</a>
+      <a href="vistas/reserva.html"><i data-lucide="calendar" class="nav-icon"></i> Reservas</a>
+      <a href="vistas/historial.html"><i data-lucide="clipboard-list" class="nav-icon"></i> Historial</a>
+      <a href="vistas/perfil.html"><i data-lucide="user" class="nav-icon"></i> Perfil</a>
+    </div>
+  </nav>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>
+    if (window.lucide) {
+      lucide.createIcons();
+    }
+  </script>
+</body>
+</html>
 
   // ============================================================
   // CÓDIGO VIEJO (mockup) — conservado como referencia
@@ -311,7 +492,8 @@
 <script>
   // Dropdown custom del filtro "Distancia"
   var distanceSelect = document.getElementById("distanceSelect");
-  var trigger = distanceSelect.querySelector(".custom-select-trigger");
+  if (distanceSelect) {
+    var trigger = distanceSelect.querySelector(".custom-select-trigger");
   var optionItems = Array.prototype.slice.call(distanceSelect.querySelectorAll(".custom-select-options li"));
 
   trigger.addEventListener("click", function () {
@@ -330,46 +512,31 @@
   });
 
   document.addEventListener("click", function (e) {
-    if (!distanceSelect.contains(e.target)) {
-      distanceSelect.classList.remove("open");
-      trigger.setAttribute("aria-expanded", "false");
-    }
-  });
-
-  // ============================================================
-  // Controles Responsive / Mobile
-  // ============================================================
-  var sidebar = document.getElementById("sidebar");
-  var backdrop = document.getElementById("sidebarBackdrop");
-  var mobileFilterBtn = document.getElementById("mobileFilterBtn");
-  var closeSidebarBtn = document.getElementById("closeSidebarBtn");
-  var mobileMenuBtn = document.getElementById("mobileMenuBtn");
-  var mainNav = document.getElementById("mainNav");
-
-  function openFilters() {
-    sidebar.classList.add("open");
-    backdrop.classList.add("active");
-  }
-
-  function closeFilters() {
-    sidebar.classList.remove("open");
-    backdrop.classList.remove("active");
-  }
-
-  if (mobileFilterBtn) {
-    mobileFilterBtn.addEventListener("click", openFilters);
-  }
-
-  if (closeSidebarBtn) {
-    closeSidebarBtn.addEventListener("click", closeFilters);
-  }
-
-  if (backdrop) {
-    backdrop.addEventListener("click", function () {
-      closeFilters();
+      if (!distanceSelect.contains(e.target)) {
+        distanceSelect.classList.remove("open");
+        trigger.setAttribute("aria-expanded", "false");
+      }
     });
   }
 </script>
 
+
+  <!-- Bottom Nav Mobile -->
+  <nav class="bottom-nav">
+    <div class="bottom-nav-inner">
+      <a href="index.html" class="active"><i data-lucide="house" class="nav-icon"></i> Inicio</a>
+      <a href="vistas/buscador.html"><i data-lucide="search" class="nav-icon"></i> Buscar</a>
+      <a href="vistas/reserva.html"><i data-lucide="calendar" class="nav-icon"></i> Reservas</a>
+      <a href="vistas/historial.html"><i data-lucide="clipboard-list" class="nav-icon"></i> Historial</a>
+      <a href="vistas/perfil.html"><i data-lucide="user" class="nav-icon"></i> Perfil</a>
+    </div>
+  </nav>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>
+    if (window.lucide) {
+      lucide.createIcons();
+    }
+  </script>
 </body>
 </html>
