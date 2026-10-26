@@ -192,8 +192,8 @@ class Estacionamiento(models.Model):
     precio_por_hora  = models.DecimalField(_('Precio por Hora'), max_digits=10, decimal_places=2)
     # Campos agregados — requeridos por el diagrama ER
     capacidad_total  = models.PositiveIntegerField(_('Capacidad Total'), default=0)
-    horario_apertura = models.TimeField(_('Horario de Apertura'))
-    horario_cierre   = models.TimeField(_('Horario de Cierre'))
+    horario_apertura = models.TimeField(_('Horario de Apertura'), default='08:00')
+    horario_cierre   = models.TimeField(_('Horario de Cierre'), default='22:00')
     activo           = models.BooleanField(_('Activo'), default=True)
     # Empleado que gestiona este estacionamiento
     encargado        = models.ForeignKey(
@@ -238,7 +238,13 @@ class Estacionamiento(models.Model):
     @property
     def espacios_disponibles(self) -> int:
         """Cantidad de espacios libres en este momento."""
+        if hasattr(self, '_espacios_disponibles_annotated'):
+            return self._espacios_disponibles_annotated
         return self.espacios.filter(estado=EspacioEstacionamiento.Estado.LIBRE).count()
+
+    @espacios_disponibles.setter
+    def espacios_disponibles(self, value):
+        self._espacios_disponibles_annotated = value
 
 
 # ==============================================================================
@@ -337,6 +343,7 @@ class Reserva(models.Model):
     # FK directa a Estacionamiento — nuevo, requerido por el diagrama ER
     estacionamiento = models.ForeignKey(
         Estacionamiento, on_delete=models.CASCADE,
+        null=True, blank=True,
         related_name='reservas', verbose_name=_('Estacionamiento'),
     )
     espacio         = models.ForeignKey(
