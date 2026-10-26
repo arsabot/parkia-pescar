@@ -37,6 +37,7 @@ INSTALLED_APPS = [
 
     # CRUD and queries
     'apps.estacionamientos',
+    'apps.pagos',
 ]
 
 MIDDLEWARE = [

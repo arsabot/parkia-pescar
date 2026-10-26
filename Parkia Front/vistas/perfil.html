@@ -3,52 +3,59 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Parkia - Perfil</title>
+  <title>Parkia - Perfil de Usuario</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="../css/vistas.css" />
+  <link rel="stylesheet" href="../css/chatbot.css" />
 </head>
 <body>
 
 <div class="app">
   <header class="header">
-    <span class="logo">Parkia</span>
+    <a href="../index.html" class="logo" style="text-decoration:none;">Parkia</a>
     <nav class="nav">
       <a href="../index.html">Inicio</a>
       <a href="buscador.html">Buscar</a>
-      <a href="reserva.html">Reservas</a>
+      <a href="reservas.html">Mis Reservas</a>
       <a href="historial.html">Historial</a>
-      <a href="#">Ayuda</a>
+      <a href="javascript:void(0)" onclick="if(window.parkiabotTriggerFaq) window.parkiabotTriggerFaq('soporte')">Ayuda</a>
     </nav>
-    <a href="perfil.html" class="avatar" style="border:2px solid var(--orange);">
+    <a href="perfil.html" class="avatar" style="border:2px solid var(--amber);">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
     </a>
   </header>
 
   <div class="container">
 
-    <div class="section-title">Perfil</div>
+    <div class="section-title">Mi cuenta y perfil</div>
 
     <div class="profile-layout">
 
       <!-- Sidebar izquierdo -->
       <div class="profile-sidebar">
-        <div class="profile-avatar">NA</div>
-        <h4>Nombre Apelido</h4>
-        <p>Usuario@email.com</p>
+        <div class="profile-avatar" style="background:#0B192C;color:#fff;">CP</div>
+        <h4>Conductor Parkia</h4>
+        <p>conductor@parkia.com</p>
+        <span class="parkiabot-badge-mp" style="margin-top:6px;">Mercado Pago Conectado</span>
 
-        <div class="profile-menu">
+        <div class="profile-menu" style="margin-top:16px;">
           <a href="#" class="menu-item active">
             <i data-lucide="user" style="width:16px;height:16px;"></i> Datos personales
           </a>
-          <a href="#" class="menu-item">
-            <i data-lucide="credit-card" style="width:16px;height:16px;"></i> Métodos de pago
+          <a href="reservas.html" class="menu-item">
+            <i data-lucide="calendar" style="width:16px;height:16px;"></i> Mis reservas activas
           </a>
           <a href="#" class="menu-item">
-            <i data-lucide="bell" style="width:16px;height:16px;"></i> Notificaciones
+            <i data-lucide="credit-card" style="width:16px;height:16px;"></i> Medios de pago (MP)
           </a>
-          <a href="#" class="menu-item">
-            <i data-lucide="settings" style="width:16px;height:16px;"></i> Configuración
+          <a href="#" class="menu-item" onclick="if(window.parkiabotTriggerFaq) window.parkiabotTriggerFaq('soporte')">
+            <i data-lucide="help-circle" style="width:16px;height:16px;"></i> Soporte y FAQ
           </a>
-          <a href="#" class="menu-item logout">
+          <a href="../index.html" class="menu-item logout">
             <i data-lucide="log-out" style="width:16px;height:16px;"></i> Cerrar sesión
           </a>
         </div>
@@ -61,25 +68,32 @@
         <div class="form-row">
           <div class="form-group">
             <label>Nombre</label>
-            <input type="text" placeholder="ingresa tu nombre" />
+            <input type="text" value="Rodrigo" placeholder="Ingresá tu nombre" />
           </div>
           <div class="form-group">
             <label>Apellido</label>
-            <input type="text" placeholder="ingresa apellido" />
+            <input type="text" value="Saavedra" placeholder="Ingresá tu apellido" />
           </div>
         </div>
 
         <div class="form-group">
-          <label>Email</label>
-          <input type="email" value="" placeholder="ingresa tu email" />
+          <label>Email registrado</label>
+          <input type="email" value="conductor@parkia.com" readonly style="background:#F1F5F9;" />
         </div>
 
         <div class="form-group">
-          <label>Teléfono</label>
-          <input type="tel" placeholder="ingresa tu número de Teléfono" />
+          <label>Teléfono de contacto</label>
+          <input type="tel" value="+54 11 4567-8900" placeholder="Ingresá tu número de teléfono" />
         </div>
 
-        <button class="btn-primary btn-edit"><i data-lucide="pencil" style="width:14px;height:14px;"></i> Editar</button>
+        <div class="form-group">
+          <label>Vehículo principal</label>
+          <input type="text" value="Volkswagen Gol Trend · Patente AF 342 PK" placeholder="Marca, modelo y patente" />
+        </div>
+
+        <button class="btn-primary btn-edit" style="border:none;cursor:pointer;" onclick="alert('Datos actualizados con éxito.')">
+          <i data-lucide="save" style="width:14px;height:14px;"></i> Guardar cambios
+        </button>
       </div>
 
     </div>
@@ -90,7 +104,8 @@
   <nav class="bottom-nav">
     <div class="bottom-nav-inner">
       <a href="../index.html"><i data-lucide="house" class="nav-icon"></i> Inicio</a>
-      <a href="detalle.html"><i data-lucide="search" class="nav-icon"></i> Reservas</a>
+      <a href="buscador.html"><i data-lucide="search" class="nav-icon"></i> Buscar</a>
+      <a href="reservas.html"><i data-lucide="calendar" class="nav-icon"></i> Reservas</a>
       <a href="historial.html"><i data-lucide="clipboard-list" class="nav-icon"></i> Historial</a>
       <a href="perfil.html" class="active"><i data-lucide="user" class="nav-icon"></i> Perfil</a>
     </div>
@@ -98,6 +113,9 @@
 </div>
 
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-<script>lucide.createIcons();</script>
+<script src="../js/chatbot.js"></script>
+<script>
+  if (window.lucide) { lucide.createIcons(); }
+</script>
 </body>
 </html>

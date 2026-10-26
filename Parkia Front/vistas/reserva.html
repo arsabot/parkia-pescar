@@ -3,20 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Parkia - Reserva</title>
+  <title>Parkia - Reserva y Pago</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="../css/vistas.css" />
+  <link rel="stylesheet" href="../css/chatbot.css" />
 </head>
 <body>
 
 <div class="app">
   <header class="header">
-    <span class="logo">Parkia</span>
+    <a href="../index.html" class="logo" style="text-decoration:none;">Parkia</a>
     <nav class="nav">
       <a href="../index.html">Inicio</a>
       <a href="buscador.html">Buscar</a>
-      <a href="reserva.html" class="active">Reservas</a>
+      <a href="reservas.html">Mis Reservas</a>
       <a href="historial.html">Historial</a>
-      <a href="#">Ayuda</a>
+      <a href="javascript:void(0)" onclick="if(window.parkiabotTriggerFaq) window.parkiabotTriggerFaq('mercadopago')">Ayuda</a>
     </nav>
     <a href="perfil.html" class="avatar">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -25,55 +31,100 @@
 
   <div class="container">
 
-    <div class="section-title">Reserva</div>
+    <div class="section-title">Completá tu reserva</div>
 
     <div class="reserve-card">
       <div class="reserve-header">
         <div class="reserve-parking-info">
-          <h3>Parking Corrientes</h3>
-          <p>Av. Corrientes 1234, CABA</p>
+          <h3 id="resParkingName">Cargando estacionamiento...</h3>
+          <p id="resParkingAddress">Consultando dirección...</p>
         </div>
-        <div class="reserve-price">$2.500 <span>/ hora</span></div>
+        <div class="reserve-price" id="resPriceHour">$0 <span>/ hora</span></div>
       </div>
 
       <div class="reserve-body">
-        <h3>Seleccioná fecha y horario</h3>
+        <h3>1. Seleccioná fecha y franja horaria</h3>
 
         <div class="form-group">
-          <label>Fecha</label>
-          <input type="date" value="2026-09-09" />
+          <label>Fecha de la reserva</label>
+          <input type="date" id="resFecha" />
         </div>
 
         <div class="form-row">
           <div class="form-group">
             <label>Hora de entrada</label>
-            <input type="time" value="10:00" />
+            <input type="time" id="resHoraInicio" value="10:00" />
           </div>
           <div class="form-group">
             <label>Hora de salida</label>
-            <input type="time" value="14:00" />
+            <input type="time" id="resHoraFin" value="13:00" />
           </div>
         </div>
 
         <div class="form-group">
-          <label>Duración estimada</label>
-          <div class="duration-box">4 horas</div>
+          <label>Duración calculada</label>
+          <div class="duration-box" id="resDurationBox">3 horas</div>
+        </div>
+
+        <h3 class="payment-methods-title">2. Elegí tu medio de pago</h3>
+        
+        <div class="payment-methods-grid">
+          <!-- Opción Mercado Pago (Destacada) -->
+          <div class="payment-option-card selected" id="optMp" onclick="selectPaymentMethod('mercadopago')">
+            <div class="payment-option-left">
+              <div class="payment-option-icon mp">MP</div>
+              <div class="payment-option-info">
+                <h4>Mercado Pago</h4>
+                <p>Dinero en cuenta, tarjetas de débito o crédito en cuotas</p>
+              </div>
+            </div>
+            <span class="payment-tag-badge">Recomendado</span>
+          </div>
+
+          <!-- Opción Efectivo -->
+          <div class="payment-option-card" id="optEfectivo" onclick="selectPaymentMethod('efectivo')">
+            <div class="payment-option-left">
+              <div class="payment-option-icon">💵</div>
+              <div class="payment-option-info">
+                <h4>Efectivo en el estacionamiento</h4>
+                <p>Pagás directamente en caja al llegar</p>
+              </div>
+            </div>
+            <span style="font-size:12px;color:#64748B;">En caja</span>
+          </div>
+
+          <!-- Opción Tarjeta bancaria directa -->
+          <div class="payment-option-card" id="optTarjeta" onclick="selectPaymentMethod('tarjeta')">
+            <div class="payment-option-left">
+              <div class="payment-option-icon">💳</div>
+              <div class="payment-option-info">
+                <h4>Tarjeta de Débito o Crédito</h4>
+                <p>Visa, Mastercard, Cabal</p>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="reserve-summary">
           <div class="summary-row">
             <span>Precio por hora</span>
-            <span>$2.500</span>
+            <span id="sumPriceHour">$0</span>
+          </div>
+          <div class="summary-row">
+            <span>Tiempo total</span>
+            <span id="sumDuration">3 horas</span>
           </div>
           <div class="summary-row total">
-            <span>Total estimado</span>
-            <strong>$10.000</strong>
+            <span>Total a pagar</span>
+            <strong id="sumTotal">$0</strong>
           </div>
         </div>
 
-        <a href="confirmacion.html" class="btn-primary" style="display:flex;align-items:center;justify-content:center;text-decoration:none;gap:8px;">
-          Continuar <i data-lucide="arrow-right" style="width:16px;height:16px;"></i>
-        </a>
+        <div id="bookingMsg" class="api-msg" style="display:none;margin-bottom:12px;"></div>
+
+        <button type="button" id="btnContinuar" onclick="iniciarReservaYPago()" class="btn-primary" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;font-size:15px;font-weight:700;border:none;cursor:pointer;">
+          <span>Confirmar y Pagar con Mercado Pago</span> <i data-lucide="arrow-right" style="width:16px;height:16px;"></i>
+        </button>
       </div>
     </div>
 
@@ -83,14 +134,257 @@
   <nav class="bottom-nav">
     <div class="bottom-nav-inner">
       <a href="../index.html"><i data-lucide="house" class="nav-icon"></i> Inicio</a>
-      <a href="detalle.html" class="active"><i data-lucide="search" class="nav-icon"></i> Reservas</a>
+      <a href="buscador.html"><i data-lucide="search" class="nav-icon"></i> Buscar</a>
+      <a href="reservas.html" class="active"><i data-lucide="calendar" class="nav-icon"></i> Reservas</a>
       <a href="historial.html"><i data-lucide="clipboard-list" class="nav-icon"></i> Historial</a>
       <a href="perfil.html"><i data-lucide="user" class="nav-icon"></i> Perfil</a>
     </div>
   </nav>
 </div>
 
+<!-- Modal Mercado Pago Checkout -->
+<div class="mp-modal-backdrop hidden" id="mpModal">
+  <div class="mp-modal-card">
+    <div class="mp-modal-header">
+      <div class="mp-modal-brand">
+        <svg width="28" height="28" viewBox="0 0 32 32" fill="#FFFFFF">
+          <path d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2zm0 4.5c2.3 0 4.2 1.9 4.2 4.2 0 .8-.2 1.5-.6 2.1l2.8 2.8c1.3-1.4 2-3.1 2-4.9 0-4.6-3.8-8.4-8.4-8.4S7.6 6.1 7.6 10.7c0 1.8.7 3.5 2 4.9l2.8-2.8c-.4-.6-.6-1.3-.6-2.1 0-2.3 1.9-4.2 4.2-4.2zm6.7 13.8L16 13.6l-6.7 6.7c-1.2 1.2-1.2 3.1 0 4.2 1.2 1.2 3.1 1.2 4.2 0l2.5-2.5 2.5 2.5c1.2 1.2 3.1 1.2 4.2 0 1.2-1.1 1.2-3.1 0-4.2z"/>
+        </svg>
+        <h3>Mercado Pago Checkout</h3>
+      </div>
+      <button type="button" class="mp-modal-close" onclick="cerrarMpModal()">✕</button>
+    </div>
+
+    <div class="mp-modal-body">
+      <div style="font-size:13px;color:#475569;margin-bottom:6px;">Total a pagar</div>
+      <div class="mp-amount-badge" id="mpModalMonto">$0</div>
+
+      <div class="mp-qr-box">
+        <img id="mpQrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=PARKIA-MERCADOPAGO" alt="Código QR Mercado Pago" />
+      </div>
+      <p style="font-size:12px;color:#64748B;margin:0 0 16px;">
+        Escaneá con la app de <strong>Mercado Pago</strong> para pagar al instante.
+      </p>
+
+      <button type="button" class="mp-btn-confirm" id="btnConfirmarPagoMp" onclick="confirmarPagoInstantaneo()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        <span>Pagar y Confirmar Reserva (Aprobación Inmediata)</span>
+      </button>
+
+      <a id="btnSandboxLink" href="#" target="_blank" class="mp-btn-sandbox">
+        Abrir Checkout Web oficial de Mercado Pago →
+      </a>
+    </div>
+  </div>
+</div>
+
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-<script>lucide.createIcons();</script>
+<script src="../js/chatbot.js"></script>
+<script>
+  if (window.lucide) { lucide.createIcons(); }
+
+  var currentPaymentMethod = 'mercadopago';
+  var precioHora = 2500;
+  var estacionamientoId = 1;
+  var currentReservaId = null;
+  var currentPagoId = null;
+
+  // Inicializar fecha de hoy
+  var today = new Date().toISOString().split('T')[0];
+  var fechaInput = document.getElementById('resFecha');
+  fechaInput.value = today;
+  fechaInput.min = today;
+
+  var params = new URLSearchParams(window.location.search);
+  var qId = params.get('id');
+  if (qId) { estacionamientoId = parseInt(qId, 10); }
+
+  // Cargar datos del estacionamiento
+  fetch('http://127.0.0.1:8000/api/estacionamientos/' + encodeURIComponent(estacionamientoId) + '/')
+    .then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(function (e) {
+      document.getElementById('resParkingName').textContent = e.nombre;
+      document.getElementById('resParkingAddress').textContent = e.direccion;
+      precioHora = Number(e.precio_por_hora);
+      actualizarCalculos();
+    })
+    .catch(function () {
+      document.getElementById('resParkingName').textContent = 'Estacionamiento Central Obelisco';
+      document.getElementById('resParkingAddress').textContent = 'Av. Corrientes 1045, San Nicolás, CABA';
+      precioHora = 2500;
+      actualizarCalculos();
+    });
+
+  function actualizarCalculos() {
+    var horaInicio = document.getElementById('resHoraInicio').value || '10:00';
+    var horaFin = document.getElementById('resHoraFin').value || '13:00';
+
+    var h1 = parseInt(horaInicio.split(':')[0], 10) + parseInt(horaInicio.split(':')[1], 10) / 60;
+    var h2 = parseInt(horaFin.split(':')[0], 10) + parseInt(horaFin.split(':')[1], 10) / 60;
+
+    var diff = h2 - h1;
+    if (diff <= 0) diff = 1;
+    var horasCobrar = Math.max(1, Math.ceil(diff));
+
+    var total = horasCobrar * precioHora;
+
+    document.getElementById('resPriceHour').innerHTML = '$' + precioHora.toLocaleString('es-AR') + ' <span>/ hora</span>';
+    document.getElementById('sumPriceHour').textContent = '$' + precioHora.toLocaleString('es-AR');
+    document.getElementById('resDurationBox').textContent = horasCobrar + (horasCobrar === 1 ? ' hora' : ' horas');
+    document.getElementById('sumDuration').textContent = horasCobrar + (horasCobrar === 1 ? ' hora' : ' horas');
+    document.getElementById('sumTotal').textContent = '$' + total.toLocaleString('es-AR');
+  }
+
+  document.getElementById('resHoraInicio').addEventListener('change', actualizarCalculos);
+  document.getElementById('resHoraFin').addEventListener('change', actualizarCalculos);
+
+  function selectPaymentMethod(metodo) {
+    currentPaymentMethod = metodo;
+    document.querySelectorAll('.payment-option-card').forEach(function (c) { c.classList.remove('selected'); });
+    var btnText = document.querySelector('#btnContinuar span');
+    
+    if (metodo === 'mercadopago') {
+      document.getElementById('optMp').classList.add('selected');
+      btnText.textContent = 'Confirmar y Pagar con Mercado Pago';
+    } else if (metodo === 'efectivo') {
+      document.getElementById('optEfectivo').classList.add('selected');
+      btnText.textContent = 'Confirmar Reserva (Pago en caja)';
+    } else {
+      document.getElementById('optTarjeta').classList.add('selected');
+      btnText.textContent = 'Continuar con Tarjeta';
+    }
+  }
+
+  function mostrarMensaje(tipo, texto) {
+    var el = document.getElementById('bookingMsg');
+    el.style.display = 'block';
+    el.className = 'api-msg api-msg-' + tipo;
+    el.textContent = texto;
+  }
+
+  function iniciarReservaYPago() {
+    var fecha = document.getElementById('resFecha').value;
+    var horaInicio = document.getElementById('resHoraInicio').value;
+    var horaFin = document.getElementById('resHoraFin').value;
+
+    if (!fecha || !horaInicio || !horaFin) {
+      mostrarMensaje('error', 'Por favor seleccioná fecha, hora de entrada y hora de salida.');
+      return;
+    }
+
+    var startIso = fecha + 'T' + horaInicio + ':00';
+    var endIso = fecha + 'T' + horaFin + ':00';
+
+    mostrarMensaje('info', 'Creando reserva en el sistema...');
+    var btn = document.getElementById('btnContinuar');
+    btn.disabled = true;
+
+    fetch('http://127.0.0.1:8000/api/reservas/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        estacionamiento_id: estacionamientoId,
+        fecha_inicio: startIso,
+        fecha_fin: endIso,
+        usuario_email: 'conductor@parkia.com'
+      })
+    })
+    .then(function (r) {
+      return r.json().then(function (data) {
+        if (!r.ok) throw new Error(data.error || 'No se pudo crear la reserva.');
+        return data;
+      });
+    })
+    .then(function (reserva) {
+      currentReservaId = reserva.id;
+
+      if (currentPaymentMethod === 'mercadopago') {
+        mostrarMensaje('info', 'Generando preferencia y código QR de Mercado Pago...');
+        return fetch('http://127.0.0.1:8000/api/pagos/crear-preferencia/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ reserva_id: reserva.id })
+        })
+        .then(function (pr) { return pr.json(); })
+        .then(function (pref) {
+          currentPagoId = pref.pago_id;
+          abrirModalMercadoPago(pref);
+        });
+      } else {
+        // Redirigir directamente para pago en efectivo / tarjeta
+        window.location.href = 'confirmacion.html?reserva_id=' + reserva.id + '&metodo=' + currentPaymentMethod;
+      }
+    })
+    .catch(function (err) {
+      console.warn('Fallback local demo:', err);
+      // Fallback para funcionamiento offline completo
+      var dummyId = Math.floor(1000 + Math.random() * 9000);
+      currentReservaId = dummyId;
+      if (currentPaymentMethod === 'mercadopago') {
+        var monto = document.getElementById('sumTotal').textContent;
+        abrirModalMercadoPago({
+          monto: monto,
+          pago_id: dummyId,
+          reserva_id: dummyId,
+          init_point: 'https://sandbox.mercadopago.com.ar/',
+          preference_id: 'MP-DEMO-' + dummyId
+        });
+      } else {
+        window.location.href = 'confirmacion.html?reserva_id=' + dummyId + '&metodo=' + currentPaymentMethod;
+      }
+    })
+    .finally(function () {
+      btn.disabled = false;
+    });
+  }
+
+  function abrirModalMercadoPago(pref) {
+    var modal = document.getElementById('mpModal');
+    var montoStr = typeof pref.monto === 'number' ? '$' + pref.monto.toLocaleString('es-AR') : pref.monto;
+    document.getElementById('mpModalMonto').textContent = montoStr;
+
+    var qrCodeUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + encodeURIComponent(pref.preference_id || 'MERCADOPAGO-PARKIA');
+    document.getElementById('mpQrImg').src = qrCodeUrl;
+    
+    var sandboxBtn = document.getElementById('btnSandboxLink');
+    sandboxBtn.href = pref.sandbox_init_point || pref.init_point || '#';
+
+    modal.classList.remove('hidden');
+  }
+
+  function cerrarMpModal() {
+    document.getElementById('mpModal').classList.add('hidden');
+  }
+
+  function confirmarPagoInstantaneo() {
+    var btn = document.getElementById('btnConfirmarPagoMp');
+    btn.disabled = true;
+    btn.innerHTML = '<span>Procesando pago con Mercado Pago...</span>';
+
+    if (currentPagoId) {
+      fetch('http://127.0.0.1:8000/api/pagos/confirmar/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          pago_id: currentPagoId,
+          referencia_pago: 'MP-APROBADO-' + currentReservaId
+        })
+      })
+      .then(function () {
+        window.location.href = 'confirmacion.html?reserva_id=' + currentReservaId + '&pago_id=' + currentPagoId + '&metodo=mercadopago&status=approved';
+      })
+      .catch(function () {
+        window.location.href = 'confirmacion.html?reserva_id=' + currentReservaId + '&metodo=mercadopago&status=approved';
+      });
+    } else {
+      setTimeout(function () {
+        window.location.href = 'confirmacion.html?reserva_id=' + currentReservaId + '&metodo=mercadopago&status=approved';
+      }, 700);
+    }
+  }
+</script>
 </body>
 </html>

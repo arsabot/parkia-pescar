@@ -1,0 +1,398 @@
+/* ============================================================
+   PARKIABOT - CHATBOT FAQ WIDGET ESTILOS
+   Paleta: Navy #0B192C, Amber #F59E0B, Mercado Pago #009EE3
+   ============================================================ */
+
+/* Botón flotante */
+.parkiabot-launcher {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--navy, #0B192C);
+  color: #ffffff;
+  padding: 10px 18px 10px 12px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 25px -5px rgba(11, 25, 44, 0.35), 0 4px 10px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+}
+
+.parkiabot-launcher:hover {
+  background: var(--navy-hover, #152843);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 14px 30px -5px rgba(11, 25, 44, 0.45);
+}
+
+.parkiabot-launcher-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--amber, #F59E0B);
+  color: #0F172A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.parkiabot-status-dot {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  width: 10px;
+  height: 10px;
+  background: #10B981;
+  border: 2px solid var(--navy, #0B192C);
+  border-radius: 50%;
+}
+
+.parkiabot-launcher-text {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.parkiabot-launcher-title {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.parkiabot-launcher-sub {
+  font-size: 11px;
+  color: #94A3B8;
+  line-height: 1.2;
+}
+
+/* Ventana de Chat */
+.parkiabot-window {
+  position: fixed;
+  bottom: 84px;
+  right: 24px;
+  width: 380px;
+  max-width: calc(100vw - 32px);
+  height: 560px;
+  max-height: calc(100vh - 110px);
+  background: #FFFFFF;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px -10px rgba(11, 25, 44, 0.3), 0 0 0 1px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 10000;
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  transform-origin: bottom right;
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.parkiabot-window.hidden {
+  opacity: 0;
+  transform: scale(0.85) translateY(20px);
+  pointer-events: none;
+}
+
+/* Header del Chat */
+.parkiabot-header {
+  background: var(--navy, #0B192C);
+  color: #FFFFFF;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.parkiabot-header-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.parkiabot-header-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--amber, #F59E0B);
+  color: #0F172A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.parkiabot-header-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.parkiabot-header-status {
+  font-size: 11px;
+  color: #10B981;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.parkiabot-header-status::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: #10B981;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.parkiabot-header-close {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #FFFFFF;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.15s;
+}
+
+.parkiabot-header-close:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Área de Mensajes */
+.parkiabot-messages {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #F8FAFC;
+}
+
+/* Burbujas */
+.parkiabot-msg {
+  display: flex;
+  gap: 8px;
+  max-width: 88%;
+  font-size: 13.5px;
+  line-height: 1.45;
+  animation: parkiabotFadeIn 0.2s ease forwards;
+}
+
+@keyframes parkiabotFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.parkiabot-msg.bot {
+  align-self: flex-start;
+}
+
+.parkiabot-msg.user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.parkiabot-msg-bubble {
+  padding: 10px 14px;
+  border-radius: 14px;
+  word-break: break-word;
+}
+
+.parkiabot-msg.bot .parkiabot-msg-bubble {
+  background: #FFFFFF;
+  color: #0F172A;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  border-top-left-radius: 4px;
+}
+
+.parkiabot-msg.user .parkiabot-msg-bubble {
+  background: var(--navy, #0B192C);
+  color: #FFFFFF;
+  border-top-right-radius: 4px;
+}
+
+.parkiabot-badge-mp {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #E0F2FE;
+  color: #0284C7;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 6px;
+  border: 1px solid #BAE6FD;
+}
+
+.parkiabot-action-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--navy, #0B192C);
+  color: #FFFFFF !important;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 8px;
+  margin-top: 8px;
+  transition: opacity 0.15s;
+}
+
+.parkiabot-action-link:hover {
+  opacity: 0.9;
+}
+
+.parkiabot-action-link.mp {
+  background: #009EE3;
+}
+
+/* Indicador de tipeo */
+.parkiabot-typing {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  width: fit-content;
+}
+
+.parkiabot-typing-dot {
+  width: 6px;
+  height: 6px;
+  background: #94A3B8;
+  border-radius: 50%;
+  animation: parkiabotBounce 1.2s infinite ease-in-out;
+}
+
+.parkiabot-typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.parkiabot-typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes parkiabotBounce {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+  40% { transform: scale(1.1); opacity: 1; }
+}
+
+/* Chips de Preguntas Frecuentes */
+.parkiabot-faq-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.parkiabot-faq-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748B;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 4px 0 2px;
+}
+
+.parkiabot-faq-chip {
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  color: var(--navy, #0B192C);
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.parkiabot-faq-chip:hover {
+  border-color: var(--amber, #F59E0B);
+  background: #FFFBEB;
+  color: #B45309;
+  transform: translateX(2px);
+}
+
+.parkiabot-faq-chip span.arrow {
+  color: #94A3B8;
+  font-weight: 700;
+}
+
+/* Input inferior */
+.parkiabot-footer {
+  padding: 12px;
+  background: #FFFFFF;
+  border-top: 1px solid #E2E8F0;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.parkiabot-input {
+  flex: 1;
+  border: 1px solid #CBD5E1;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 13px;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.15s;
+}
+
+.parkiabot-input:focus {
+  border-color: var(--navy, #0B192C);
+}
+
+.parkiabot-send-btn {
+  background: var(--navy, #0B192C);
+  color: #FFFFFF;
+  border: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.parkiabot-send-btn:hover {
+  background: var(--navy-hover, #152843);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .parkiabot-launcher {
+    bottom: 74px; /* arriba del bottom nav */
+    right: 16px;
+    padding: 8px 14px 8px 10px;
+  }
+  .parkiabot-window {
+    bottom: 130px;
+    right: 12px;
+    left: 12px;
+    width: auto;
+    height: 70vh;
+  }
+}

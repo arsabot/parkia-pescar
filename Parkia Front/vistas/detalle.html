@@ -4,19 +4,26 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Parkia - Detalle del Estacionamiento</title>
+  
+  <!-- Tipografía Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="../css/vistas.css" />
+  <link rel="stylesheet" href="../css/chatbot.css" />
 </head>
 <body>
 
 <div class="app">
   <header class="header">
-    <span class="logo">Parkia</span>
+    <a href="../index.html" class="logo" style="text-decoration:none;">Parkia</a>
     <nav class="nav">
       <a href="../index.html">Inicio</a>
       <a href="buscador.html">Buscar</a>
-      <a href="reserva.html">Reservas</a>
+      <a href="reservas.html">Mis Reservas</a>
       <a href="historial.html">Historial</a>
-      <a href="#">Ayuda</a>
+      <a href="javascript:void(0)" onclick="if(window.parkiabotTriggerFaq) window.parkiabotTriggerFaq('reserva')">Ayuda</a>
     </nav>
     <a href="perfil.html" class="avatar">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -29,67 +36,54 @@
 
     <div class="detail-card">
       <div class="detail-photo-banner">
-        <span class="badge-destacado">Destacado</span>
+        <span class="badge-destacado" id="destacadoBadge">Destacado</span>
       </div>
 
       <div class="detail-body">
         <div class="detail-header">
           <div class="detail-info">
-            <h2>Parking Corrientes</h2>
-            <p>Av. Corrientes 1234, CABA · 350 m · 32 lugares</p>
+            <h2 id="spotName">Cargando estacionamiento...</h2>
+            <p id="spotSubtitle">Buscando información en tiempo real...</p>
           </div>
-          <div class="detail-price">$2.500 <span>/ hora</span></div>
+          <div class="detail-price" id="spotPrice">$0 <span>/ hora</span></div>
         </div>
 
         <div class="detail-rating">
-          <span class="stars"><i data-lucide="star" style="width:13px;height:13px;"></i> 4.8 (120)</span>
+          <span class="stars"><i data-lucide="star" style="width:13px;height:13px;"></i> 4.8 (120 opiniones)</span>
         </div>
 
-        <div class="detail-location">
-          <i data-lucide="map-pin" style="width:13px;height:13px;"></i> Av. Corrientes 1234, CABA
+        <div class="detail-location" id="spotLocation">
+          <i data-lucide="map-pin" style="width:13px;height:13px;"></i> Dirección
         </div>
 
-        <div class="features-grid">
-          <div><i data-lucide="clock" style="width:18px;height:18px;"></i> Abierto 24 hs</div>
-          <div><i data-lucide="shield" style="width:18px;height:18px;"></i> Vigilancia 24 hs</div>
-          <div><i data-lucide="lock" style="width:18px;height:18px;"></i> Seguridad</div>
-          <div><i data-lucide="droplets" style="width:18px;height:18px;"></i> Lavadero</div>
-          <div><i data-lucide="smartphone" style="width:18px;height:18px;"></i> Acceso con QR</div>
+        <div class="availability" id="spotAvail">
+          <span class="avail-dot green"></span> Consultando disponibilidad...
         </div>
 
+        <!-- Métodos de pago aceptados -->
         <div class="detail-section">
-          <h3>Disponibilidad</h3>
-          <div class="availability">
-            <span class="avail-dot green"></span> 12 lugares disponibles
+          <h3>Medios de pago aceptados</h3>
+          <div class="services-tags">
+            <span class="tag" style="background:#E0F2FE;color:#0284C7;border-color:#BAE6FD;font-weight:700;">
+              💳 Mercado Pago (QR, Débito, Crédito)
+            </span>
+            <span class="tag"><i data-lucide="banknote" style="width:12px;height:12px;"></i> Efectivo en caja</span>
+            <span class="tag"><i data-lucide="credit-card" style="width:12px;height:12px;"></i> Tarjetas bancarias</span>
           </div>
         </div>
 
         <div class="detail-section">
-          <h3>Horarios</h3>
-          <p>Lun - Dom · Abierto 24 hs</p>
-        </div>
-
-        <div class="detail-section">
-          <h3>Servicios</h3>
+          <h3>Servicios incluidos</h3>
           <div class="services-tags">
-            <span class="tag"><i data-lucide="wifi" style="width:12px;height:12px;"></i> WiFi</span>
-            <span class="tag"><i data-lucide="bath" style="width:12px;height:12px;"></i> Baños</span>
-            <span class="tag"><i data-lucide="coffee" style="width:12px;height:12px;"></i> Cafetería</span>
+            <span class="tag"><i data-lucide="shield-check" style="width:12px;height:12px;"></i> Techado</span>
+            <span class="tag"><i data-lucide="clock" style="width:12px;height:12px;"></i> Abierto 24 horas</span>
             <span class="tag"><i data-lucide="zap" style="width:12px;height:12px;"></i> Carga eléctrica</span>
+            <span class="tag"><i data-lucide="camera" style="width:12px;height:12px;"></i> Vigilancia por cámaras</span>
           </div>
         </div>
 
-        <div class="detail-section">
-          <h3>Seguridad</h3>
-          <div class="services-tags">
-            <span class="tag"><i data-lucide="camera" style="width:12px;height:12px;"></i> Cámaras</span>
-            <span class="tag"><i data-lucide="shield-check" style="width:12px;height:12px;"></i> Personal de seguridad</span>
-            <span class="tag"><i data-lucide="lightbulb" style="width:12px;height:12px;"></i> Iluminación</span>
-          </div>
-        </div>
-
-        <a href="reserva.html" class="btn-primary" style="display:flex;align-items:center;justify-content:center;text-decoration:none;gap:8px;">
-          <i data-lucide="calendar" style="width:16px;height:16px;"></i> Reservar lugar
+        <a href="reserva.html" id="btnReservar" class="btn-primary" style="display:flex;align-items:center;justify-content:center;text-decoration:none;gap:8px;font-size:15px;font-weight:700;">
+          <i data-lucide="calendar" style="width:16px;height:16px;"></i> Reservar lugar ahora
         </a>
       </div>
     </div>
@@ -100,7 +94,8 @@
   <nav class="bottom-nav">
     <div class="bottom-nav-inner">
       <a href="../index.html"><i data-lucide="house" class="nav-icon"></i> Inicio</a>
-      <a href="detalle.html" class="active"><i data-lucide="search" class="nav-icon"></i> Reservas</a>
+      <a href="buscador.html"><i data-lucide="search" class="nav-icon"></i> Buscar</a>
+      <a href="reservas.html"><i data-lucide="calendar" class="nav-icon"></i> Reservas</a>
       <a href="historial.html"><i data-lucide="clipboard-list" class="nav-icon"></i> Historial</a>
       <a href="perfil.html"><i data-lucide="user" class="nav-icon"></i> Perfil</a>
     </div>
@@ -108,29 +103,51 @@
 </div>
 
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script src="../js/chatbot.js"></script>
 <script>
-  lucide.createIcons();
+  if (window.lucide) { lucide.createIcons(); }
 
   var params = new URLSearchParams(window.location.search);
-  var estId = params.get('id');
-  if (estId) {
-    fetch('http://127.0.0.1:8000/api/estacionamientos/' + encodeURIComponent(estId) + '/')
-      .then(function (r) {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return r.json();
-      })
-      .then(function (e) {
-        document.querySelector('.detail-info h2').textContent = e.nombre;
-        document.querySelector('.detail-info p').textContent = e.direccion + ' · ' + e.espacios_disponibles + ' lugares disponibles';
-        document.querySelector('.detail-price').innerHTML = '$' + e.precio_por_hora.replace('.00', '') + ' <span>/ hora</span>';
-        document.querySelector('.detail-location').lastChild.textContent = ' ' + e.direccion;
-        var avail = document.querySelector('.availability');
-        avail.innerHTML = '<span class="avail-dot green"></span> ' + e.espacios_disponibles + ' lugares disponibles (de ' + e.espacios_totales + ')';
-      })
-      .catch(function (err) {
-        console.error('No se pudo cargar el estacionamiento:', err);
-      });
-  }
+  var estId = params.get('id') || '1';
+
+  var btnReservar = document.getElementById('btnReservar');
+  btnReservar.href = 'reserva.html?id=' + encodeURIComponent(estId);
+
+  fetch('http://127.0.0.1:8000/api/estacionamientos/' + encodeURIComponent(estId) + '/')
+    .then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(function (e) {
+      document.getElementById('spotName').textContent = e.nombre;
+      document.getElementById('spotSubtitle').textContent = e.direccion + ' · ' + (e.espacios_disponibles || 0) + ' lugares libres de ' + (e.espacios_totales || 0);
+      var precioFormatted = Number(e.precio_por_hora).toLocaleString('es-AR');
+      document.getElementById('spotPrice').innerHTML = '$' + precioFormatted + ' <span>/ hora</span>';
+      document.getElementById('spotLocation').innerHTML = '<i data-lucide="map-pin" style="width:13px;height:13px;"></i> ' + e.direccion;
+      
+      var availEl = document.getElementById('spotAvail');
+      var libres = Number(e.espacios_disponibles || 0);
+      if (libres > 0) {
+        availEl.innerHTML = '<span class="avail-dot green"></span> ' + libres + ' lugares disponibles en este momento';
+      } else {
+        availEl.innerHTML = '<span class="avail-dot red" style="background:#EF4444;"></span> Cochera completa en este momento';
+      }
+
+      if (!e.plan_destacado) {
+        document.getElementById('destacadoBadge').style.display = 'none';
+      }
+
+      if (window.lucide) { lucide.createIcons(); }
+    })
+    .catch(function (err) {
+      console.warn('Cargando datos fallback:', err);
+      document.getElementById('spotName').textContent = 'Estacionamiento Central Obelisco';
+      document.getElementById('spotSubtitle').textContent = 'Av. Corrientes 1045, San Nicolás · 18 lugares libres';
+      document.getElementById('spotPrice').innerHTML = '$2.500 <span>/ hora</span>';
+      document.getElementById('spotLocation').innerHTML = '<i data-lucide="map-pin" style="width:13px;height:13px;"></i> Av. Corrientes 1045, CABA';
+      document.getElementById('spotAvail').innerHTML = '<span class="avail-dot green"></span> 18 lugares disponibles';
+      if (window.lucide) { lucide.createIcons(); }
+    });
 </script>
 </body>
 </html>

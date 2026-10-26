@@ -1,15 +1,21 @@
 :root {
-  --orange: #ea580c;
-  --orange-dark: #c2410c;
-  --orange-light: #fff3ea;
-  --text: #1c1917;
-  --text-secondary: #78716c;
-  --text-muted: #a8a29e;
-  --border: #e7e5e4;
-  --bg: #fafaf9;
-  --white: #ffffff;
-  --green: #1d9e75;
-  --green-bg: #f0fdf4;
+  --navy: #0B192C;             
+  --navy-hover: #152843;        
+  --amber: #F59E0B;             
+  --orange: #0B192C;
+  --orange-dark: #152843;
+  --orange-light: #F1F5F9;
+  --text: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #94A3B8;
+  --border: #E2E8F0;
+  --bg: #F8FAFC;
+  --white: #FFFFFF;
+  --green: #10B981;
+  --green-bg: #ECFDF5;
+  --mp-blue: #009EE3;
+  --mp-blue-dark: #007EB5;
+  --mp-blue-light: #E0F2FE;
 }
 
 * { box-sizing: border-box; }
@@ -1203,4 +1209,246 @@ body {
     flex-direction: column;
     gap: 0;
   }
+}
+
+/* ============================================================
+   ESTILOS DE MÉTODOS DE PAGO Y MODAL MERCADO PAGO
+   ============================================================ */
+
+.payment-methods-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 18px 0 10px;
+}
+
+.payment-methods-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.payment-option-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: #FFFFFF;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.payment-option-card:hover {
+  border-color: #94A3B8;
+}
+
+.payment-option-card.selected {
+  border-color: var(--mp-blue);
+  background: var(--mp-blue-light);
+}
+
+.payment-option-card.selected.amber {
+  border-color: var(--amber);
+  background: #FFFBEB;
+}
+
+.payment-option-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.payment-option-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: #F1F5F9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0F172A;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.payment-option-icon.mp {
+  background: #009EE3;
+  color: #FFFFFF;
+}
+
+.payment-option-info h4 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.payment-option-info p {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.payment-tag-badge {
+  background: #009EE3;
+  color: #FFFFFF;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  text-transform: uppercase;
+}
+
+/* Modal Mercado Pago */
+.mp-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(11, 25, 44, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  transition: opacity 0.2s ease;
+}
+
+.mp-modal-backdrop.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.mp-modal-card {
+  width: 440px;
+  max-width: 100%;
+  background: #FFFFFF;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: mpModalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes mpModalPop {
+  from { transform: scale(0.92) translateY(12px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.mp-modal-header {
+  background: #009EE3;
+  color: #FFFFFF;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mp-modal-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mp-modal-brand h3 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  color: #FFFFFF;
+}
+
+.mp-modal-close {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: #FFFFFF;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.mp-modal-body {
+  padding: 24px;
+  text-align: center;
+}
+
+.mp-amount-badge {
+  display: inline-block;
+  background: #F0F9FF;
+  border: 1px solid #BAE6FD;
+  color: #0369A1;
+  padding: 6px 16px;
+  border-radius: 9999px;
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+
+.mp-qr-box {
+  width: 180px;
+  height: 180px;
+  margin: 0 auto 16px;
+  padding: 10px;
+  background: #FFFFFF;
+  border: 2px dashed #CBD5E1;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mp-qr-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.mp-btn-confirm {
+  width: 100%;
+  padding: 14px;
+  background: #009EE3;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 0.15s;
+}
+
+.mp-btn-confirm:hover {
+  background: #007EB5;
+}
+
+.mp-btn-sandbox {
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px;
+  background: #F8FAFC;
+  color: #475569;
+  border: 1px solid #CBD5E1;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  display: block;
+  text-align: center;
+}
+
+.mp-btn-sandbox:hover {
+  background: #F1F5F9;
 }

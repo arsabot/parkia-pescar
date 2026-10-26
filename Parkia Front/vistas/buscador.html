@@ -3,54 +3,78 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Parkia - Buscar</title>
+  <title>Parkia - Buscar Estacionamientos</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="../css/inicio.css" />
+  <link rel="stylesheet" href="../css/chatbot.css" />
   <style>
     .search-page {
-      max-width: 720px;
+      max-width: 760px;
       margin: 0 auto;
       padding: 32px 24px;
     }
     .big-search {
       width: 100%;
-      padding: 14px 18px;
+      padding: 16px 20px;
       font-size: 16px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
       background: var(--white);
       box-sizing: border-box;
       outline: none;
+      box-shadow: 0 4px 12px rgba(11, 25, 44, 0.04);
+      transition: all 0.2s ease;
     }
-    .big-search:focus { border-color: var(--orange); }
+    .big-search:focus {
+      border-color: var(--navy);
+      box-shadow: 0 6px 16px rgba(11, 25, 44, 0.08);
+    }
     #resultsList {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 14px;
       margin-top: 20px;
     }
-    #resultsList .spot-card { max-width: 100%; }
+    #resultsList .spot-card {
+      max-width: 100%;
+      width: 100%;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    #resultsList .spot-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(11, 25, 44, 0.08);
+    }
   </style>
 </head>
 <body>
 
 <div class="app">
   <header class="header">
-    <span class="logo">Parkia</span>
+    <a href="../index.html" class="logo" style="text-decoration:none;font-weight:800;font-size:20px;color:var(--white);">Parkia</a>
     <nav class="nav">
       <a href="../index.html">Inicio</a>
       <a href="buscador.html" class="active">Buscar</a>
-      <a href="reserva.html">Reservas</a>
+      <a href="reservas.html">Mis Reservas</a>
       <a href="historial.html">Historial</a>
-      <a href="#">Ayuda</a>
+      <a href="javascript:void(0)" onclick="if(window.parkiabotTriggerFaq) window.parkiabotTriggerFaq('reserva')">Ayuda</a>
     </nav>
-    <a href="perfil.html" class="avatar">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <a href="perfil.html" class="user-menu-btn" style="text-decoration:none;">
+      <div class="avatar-circle">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <span>Mi cuenta</span>
     </a>
   </header>
 
   <main class="search-page">
-    <input id="searchInput" class="big-search" type="text" placeholder="Buscar estacionamiento por nombre o dirección..." autofocus />
-    <div id="apiStatus" class="api-msg api-msg-info" style="margin:12px 0 0;">Escribí para buscar.</div>
+    <h2 style="font-size:22px;font-weight:800;margin-top:0;margin-bottom:12px;color:var(--text);">Buscador de estacionamientos</h2>
+    <input id="searchInput" class="big-search" type="text" placeholder="Buscar por barrio, calle, punto de interés (ej: Obelisco, Palermo)..." autofocus />
+    <div id="apiStatus" class="api-msg api-msg-info" style="margin:14px 0 0;">Cargando estacionamientos disponibles...</div>
     <div id="resultsList"></div>
   </main>
 
@@ -59,7 +83,7 @@
     <div class="bottom-nav-inner">
       <a href="../index.html"><i data-lucide="house" class="nav-icon"></i> Inicio</a>
       <a href="buscador.html" class="active"><i data-lucide="search" class="nav-icon"></i> Buscar</a>
-      <a href="reserva.html"><i data-lucide="calendar" class="nav-icon"></i> Reservas</a>
+      <a href="reservas.html"><i data-lucide="calendar" class="nav-icon"></i> Reservas</a>
       <a href="historial.html"><i data-lucide="clipboard-list" class="nav-icon"></i> Historial</a>
       <a href="perfil.html"><i data-lucide="user" class="nav-icon"></i> Perfil</a>
     </div>
@@ -67,12 +91,14 @@
 </div>
 
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script src="../js/chatbot.js"></script>
 <script>
   if (window.lucide) { lucide.createIcons(); }
+
   function showApiMessage(type, text) {
     var el = document.getElementById("apiStatus");
     el.className = "api-msg api-msg-" + type;
-    el.style.margin = "12px 0 0";
+    el.style.margin = "14px 0 0";
     el.textContent = text;
   }
 
@@ -80,20 +106,34 @@
     var list = document.getElementById("resultsList");
     list.innerHTML = "";
     if (!data || data.length === 0) {
-      showApiMessage("info", "No se encontraron estacionamientos.");
+      showApiMessage("info", "No se encontraron estacionamientos con ese criterio.");
       return;
     }
-    showApiMessage("success", "Se encontraron " + data.length + " estacionamientos.");
+    showApiMessage("success", "Se encontraron " + data.length + " estacionamientos con disponibilidad.");
     data.forEach(function (e) {
       var card = document.createElement("div");
       card.className = "spot-card";
-      card.innerHTML = '<div class="spot-photo">' + (e.plan_destacado ? '<span class="spot-badge">Destacado</span>' : '') + '</div>'
-        + '<div class="spot-body">'
-        + '<p class="spot-name">' + e.nombre + '</p>'
-        + '<p class="spot-address">' + e.direccion + '</p>'
-        + '<p class="spot-availability">' + e.espacios_disponibles + '/' + e.espacios_totales + ' lugares disponibles</p>'
-        + '<p class="spot-price">$' + e.precio_por_hora + ' / hora</p>'
-        + '</div>';
+      var precioFormatted = Number(e.precio_por_hora).toLocaleString('es-AR');
+      card.innerHTML = `
+        <div class="spot-photo" style="background:linear-gradient(135deg, #0B192C 0%, #152843 100%);color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;">
+          🚗
+          ${e.plan_destacado ? '<span class="spot-badge">Destacado</span>' : ''}
+        </div>
+        <div class="spot-body">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+            <p class="spot-name" style="margin:0;font-size:16px;font-weight:700;">${e.nombre}</p>
+            <span class="parkiabot-badge-mp">Mercado Pago</span>
+          </div>
+          <p class="spot-address" style="margin:4px 0 6px;color:#64748B;font-size:13px;">${e.direccion}</p>
+          <p class="spot-availability" style="margin:0 0 8px;font-size:12px;color:#10B981;font-weight:600;">
+            ✓ ${e.espacios_disponibles || 0} lugares disponibles de ${e.espacios_totales || 0}
+          </p>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
+            <p class="spot-price" style="margin:0;font-size:15px;font-weight:800;color:var(--navy);">$${precioFormatted} / hora</p>
+            <span style="font-size:12px;font-weight:700;color:var(--amber);">Ver detalle y reservar →</span>
+          </div>
+        </div>
+      `;
       card.addEventListener("click", function () {
         window.location.href = "detalle.html?id=" + e.id;
       });
@@ -108,25 +148,37 @@
         return r.json();
       })
       .then(function (data) {
+        var items = data.results || [];
         var q = (query || "").toLowerCase();
         var filtered = q
-          ? data.results.filter(function (e) {
+          ? items.filter(function (e) {
               return e.nombre.toLowerCase().indexOf(q) !== -1 || e.direccion.toLowerCase().indexOf(q) !== -1;
             })
-          : data.results;
+          : items;
         renderResults(filtered);
       })
       .catch(function () {
-        showApiMessage("error", "No se pudieron cargar los estacionamientos.");
+        // Fallback demo local
+        var sample = [
+          { id: 1, nombre: "Estacionamiento Central Obelisco", direccion: "Av. Corrientes 1045, San Nicolás", espacios_disponibles: 18, espacios_totales: 30, precio_por_hora: 2500, plan_destacado: true },
+          { id: 5, nombre: "Cocheras Palermo Soho", direccion: "Honduras 4820, Palermo", espacios_disponibles: 8, espacios_totales: 20, precio_por_hora: 3000, plan_destacado: true },
+          { id: 3, nombre: "Garage Puerto Madero Dique 3", direccion: "Juana Manso 1100, Puerto Madero", espacios_disponibles: 14, espacios_totales: 40, precio_por_hora: 4500, plan_destacado: false }
+        ];
+        var q = (query || "").toLowerCase();
+        var filtered = q ? sample.filter(function(e) { return e.nombre.toLowerCase().includes(q) || e.direccion.toLowerCase().includes(q); }) : sample;
+        renderResults(filtered);
       });
   }
+
+  // Cargar inmediatamente al iniciar la vista
+  cargarEstacionamientos("");
 
   var searchInput = document.getElementById("searchInput");
   var timer = null;
   searchInput.addEventListener("input", function () {
     clearTimeout(timer);
     var q = this.value;
-    timer = setTimeout(function () { cargarEstacionamientos(q); }, 300);
+    timer = setTimeout(function () { cargarEstacionamientos(q); }, 250);
   });
 </script>
 

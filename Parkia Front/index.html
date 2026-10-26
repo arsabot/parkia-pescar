@@ -12,6 +12,7 @@
 
   <!-- Archivo de estilos CSS -->
   <link rel="stylesheet" href="css/inicio.css" />
+  <link rel="stylesheet" href="css/chatbot.css" />
 
   <!-- Estilos del Mapa Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -245,7 +246,7 @@
       </div>
 
       <div class="panel-action-footer">
-        <a href="vistas/reserva.html" class="btn-panel-reserve">
+        <a href="vistas/reserva.html" class="btn-panel-reserve" id="panelReserveBtn">
           <span>Reservar ahora</span>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
@@ -375,9 +376,17 @@
           marker.bindPopup(makePopup({ name: e.nombre, rating: "4.5", reviews: "(100)", price: "$" + e.precio_por_hora, status: status }));
           
           marker.on("click", function() {
-            // Abrir y actualizar panel lateral con datos del estacionamiento clickeado
+            // Abrir y actualizar panel lateral y mini card con datos del estacionamiento clickeado
             document.getElementById("panelSpotName").textContent = e.nombre;
-            document.getElementById("panelSpotPrice").textContent = "$" + e.precio_por_hora;
+            document.getElementById("panelSpotPrice").textContent = "$" + Number(e.precio_por_hora).toLocaleString('es-AR');
+            var resBtn = document.getElementById("panelReserveBtn");
+            if (resBtn) { resBtn.href = "vistas/reserva.html?id=" + e.id; }
+            var miniTitle = document.querySelector(".mini-card-title");
+            if (miniTitle) { miniTitle.textContent = e.nombre; }
+            var miniPrice = document.querySelector(".mini-card-price");
+            if (miniPrice) { miniPrice.textContent = "$" + Number(e.precio_por_hora).toLocaleString('es-AR') + "/h"; }
+            var miniTag = document.querySelector(".mini-card-tag");
+            if (miniTag) { miniTag.textContent = e.direccion; }
             openSidePanel();
           });
         });
@@ -426,7 +435,7 @@
     <div class="bottom-nav-inner">
       <a href="index.html" class="active"><i data-lucide="house" class="nav-icon"></i> Inicio</a>
       <a href="vistas/buscador.html"><i data-lucide="search" class="nav-icon"></i> Buscar</a>
-      <a href="vistas/reserva.html"><i data-lucide="calendar" class="nav-icon"></i> Reservas</a>
+      <a href="vistas/reservas.html"><i data-lucide="calendar" class="nav-icon"></i> Reservas</a>
       <a href="vistas/historial.html"><i data-lucide="clipboard-list" class="nav-icon"></i> Historial</a>
       <a href="vistas/perfil.html"><i data-lucide="user" class="nav-icon"></i> Perfil</a>
     </div>
@@ -438,105 +447,6 @@
       lucide.createIcons();
     }
   </script>
-</body>
-</html>
-
-  // ============================================================
-  // CÓDIGO VIEJO (mockup) — conservado como referencia
-  // ============================================================
-  /*
-  var pins = [
-    { top: "22%", left: "38%", status: "available", price: "$2.500" },
-    { top: "34%", left: "58%", status: "available", price: "$3.500" },
-    { top: "14%", left: "70%", status: "few", price: "$2.800" },
-    { top: "48%", left: "24%", status: "available", price: "$2.200" },
-    { top: "58%", left: "48%", status: "full", price: "$3.000" },
-    { top: "44%", left: "68%", status: "available", price: "$2.600" },
-    { top: "68%", left: "58%", status: "few", price: "$4.100" }
-  ];
-
-  var statusStyles = {
-    available: { color: "#1d9e75", label: "Disponible" },
-    few: { color: "#ba7517", label: "Pocos lugares" },
-    full: { color: "#a32d2d", label: "Completo" }
-  };
-
-  var map = document.getElementById("map");
-  var mapCard = document.getElementById("mapCard");
-  var statusDot = document.getElementById("statusDot");
-  var statusLabel = document.getElementById("statusLabel");
-  var statusPrice = document.getElementById("statusPrice");
-
-  pins.forEach(function (pin, i) {
-    var btn = document.createElement("button");
-    btn.className = "pin";
-    btn.style.top = pin.top;
-    btn.style.left = pin.left;
-    btn.setAttribute("aria-label", "Estacionamiento");
-    var color = statusStyles[pin.status].color;
-    btn.innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="' + color + '" stroke="' + color + '" stroke-width="1.5"><path d="M12 21s-7-7.2-7-12a7 7 0 0 1 14 0c0 4.8-7 12-7 12z"/><circle cx="12" cy="9" r="2.5" fill="white" stroke="white"/></svg>';
-
-    btn.addEventListener("click", function () {
-      statusDot.style.background = color;
-      statusLabel.textContent = statusStyles[pin.status].label;
-      statusPrice.textContent = pin.price + " / hora";
-      mapCard.style.left = "calc(" + pin.left + " )";
-      mapCard.style.top = "24px";
-    });
-
-    map.insertBefore(btn, mapCard);
-  });
-  */
-</script>
-
-<script>
-  // Dropdown custom del filtro "Distancia"
-  var distanceSelect = document.getElementById("distanceSelect");
-  if (distanceSelect) {
-    var trigger = distanceSelect.querySelector(".custom-select-trigger");
-  var optionItems = Array.prototype.slice.call(distanceSelect.querySelectorAll(".custom-select-options li"));
-
-  trigger.addEventListener("click", function () {
-    var open = distanceSelect.classList.toggle("open");
-    trigger.setAttribute("aria-expanded", open ? "true" : "false");
-  });
-
-  optionItems.forEach(function (opt) {
-    opt.addEventListener("click", function () {
-      optionItems.forEach(function (o) { o.classList.remove("selected"); });
-      opt.classList.add("selected");
-      distanceSelect.querySelector(".custom-select-value").textContent = opt.textContent;
-      distanceSelect.classList.remove("open");
-      trigger.setAttribute("aria-expanded", "false");
-    });
-  });
-
-  document.addEventListener("click", function (e) {
-      if (!distanceSelect.contains(e.target)) {
-        distanceSelect.classList.remove("open");
-        trigger.setAttribute("aria-expanded", "false");
-      }
-    });
-  }
-</script>
-
-
-  <!-- Bottom Nav Mobile -->
-  <nav class="bottom-nav">
-    <div class="bottom-nav-inner">
-      <a href="index.html" class="active"><i data-lucide="house" class="nav-icon"></i> Inicio</a>
-      <a href="vistas/buscador.html"><i data-lucide="search" class="nav-icon"></i> Buscar</a>
-      <a href="vistas/reserva.html"><i data-lucide="calendar" class="nav-icon"></i> Reservas</a>
-      <a href="vistas/historial.html"><i data-lucide="clipboard-list" class="nav-icon"></i> Historial</a>
-      <a href="vistas/perfil.html"><i data-lucide="user" class="nav-icon"></i> Perfil</a>
-    </div>
-  </nav>
-
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-  <script>
-    if (window.lucide) {
-      lucide.createIcons();
-    }
-  </script>
+  <script src="js/chatbot.js"></script>
 </body>
 </html>
