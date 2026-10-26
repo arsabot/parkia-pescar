@@ -1079,106 +1079,175 @@
 }
 
 /* ==========================================================================
+   LAYOUT SPLIT DUAL-PANE (DESKTOP: IZQ=HUB, DER=MAPA | MOBILE: COMPLETO)
+   ========================================================================== */
+
+.home-split-layout {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: calc(100vh - 64px);
+  overflow: hidden;
+  position: relative;
+  background: var(--bg);
+}
+
+/* Columna Izquierda: Hub de Estacionamientos */
+.split-hub-column {
+  flex: 0 0 520px;
+  width: 520px;
+  max-width: 48%;
+  min-width: 420px;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #F8FAFC;
+  border-right: 1px solid var(--border);
+  box-shadow: 2px 0 12px rgba(11, 25, 44, 0.05);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+.split-hub-column::-webkit-scrollbar {
+  width: 6px;
+}
+.split-hub-column::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+.split-hub-column::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+}
+.split-hub-column::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+/* Columna Derecha: Mapa Leaflet */
+.split-map-column {
+  flex: 1;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  background: #E2E8F0;
+}
+
+.split-map-column .map-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  overflow: hidden;
+}
+
+.split-map-column .map {
+  width: 100%;
+  height: 100%;
+}
+
+.split-map-column .floating-search-container {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  max-width: 440px;
+  z-index: 500;
+}
+
+/* Tabs Mobile (Ocultos en desktop) */
+.mobile-view-tabs {
+  display: none;
+}
+
+.btn-floating-mobile-map {
+  display: none;
+}
+
+.btn-floating-view-hub {
+  display: none;
+}
+
+/* ==========================================================================
    HUB DE ESTACIONAMIENTOS DISPONIBLES CERCA (PARKIA HUB)
    ========================================================================== */
 
-.btn-floating-view-hub {
-  position: absolute;
-  bottom: 24px;
-  right: 24px;
-  z-index: 500;
-  background: var(--navy);
-  color: #FFFFFF !important;
-  text-decoration: none;
-  font-size: 13px;
-  font-weight: 700;
-  padding: 10px 18px;
-  border-radius: 9999px;
-  border: 1px solid rgba(255,255,255,0.2);
-  box-shadow: 0 10px 25px -5px rgba(11, 25, 44, 0.4);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: transform 0.2s, background 0.2s;
-}
-.btn-floating-view-hub:hover {
-  background: var(--navy-hover);
-  transform: translateY(-2px);
-}
-
 .nearby-hub-section {
-  max-width: 1240px;
-  margin: 40px auto 60px;
-  padding: 0 24px;
   width: 100%;
+  margin: 0;
+  padding: 24px 20px 48px;
+  box-sizing: border-box;
 }
 
 .hub-hero-header {
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .hub-badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 5px 12px;
+  padding: 4px 10px;
   border-radius: 9999px;
   background: #ECFDF5;
   color: #065F46;
   border: 1px solid #A7F3D0;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .hub-title {
-  font-size: 28px;
+  font-size: 22px;
   font-weight: 800;
   color: var(--navy);
-  margin: 0 0 8px;
-  letter-spacing: -0.5px;
+  margin: 0 0 6px;
+  letter-spacing: -0.4px;
+  line-height: 1.25;
 }
 
 .hub-subtitle {
-  font-size: 15px;
+  font-size: 13px;
   color: var(--text-secondary);
-  margin: 0 0 20px;
+  margin: 0 0 16px;
+  line-height: 1.45;
 }
 
 /* Control Bar */
 .hub-control-bar {
   background: #FFFFFF;
   border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 16px 20px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+  border-radius: 16px;
+  padding: 14px 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  margin-bottom: 24px;
+  gap: 12px;
+  margin-bottom: 18px;
 }
 
 .hub-control-top {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: 14px;
+  gap: 10px;
 }
 
 .btn-use-location {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   background: #E0F2FE;
   color: #0369A1;
   border: 1px solid #BAE6FD;
-  padding: 9px 16px;
-  border-radius: 12px;
-  font-size: 13px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 12px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
+  white-space: nowrap;
 }
 .btn-use-location:hover {
   background: #BAE6FD;
@@ -1193,32 +1262,46 @@
 
 .hub-search-input-wrap {
   position: relative;
-  flex: 1;
-  max-width: 340px;
-  min-width: 200px;
+  flex: 1 1 180px;
+  min-width: 140px;
 }
 .hub-search-input-wrap input {
   width: 100%;
-  padding: 9px 12px 9px 34px;
+  padding: 8px 12px 8px 32px;
   border-radius: 10px;
   border: 1px solid var(--border);
-  font-size: 13px;
+  font-size: 12px;
   outline: none;
   background: #F8FAFC;
+  box-sizing: border-box;
+}
+.hub-search-input-wrap input:focus {
+  border-color: var(--navy);
+  background: #FFFFFF;
 }
 .hub-search-input-wrap svg {
   position: absolute;
-  left: 10px;
+  left: 9px;
   top: 50%;
   transform: translateY(-50%);
   color: var(--text-muted);
 }
 
+.hub-sort-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
 .hub-sort-select {
-  padding: 9px 12px;
+  padding: 8px 10px;
   border-radius: 10px;
   border: 1px solid var(--border);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text-main);
   background: #F8FAFC;
@@ -1229,16 +1312,16 @@
 .hub-filter-pills {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   overflow-x: auto;
-  padding-bottom: 4px;
+  padding-bottom: 2px;
   flex-wrap: wrap;
 }
 
 .hub-pill {
-  padding: 6px 14px;
+  padding: 5px 12px;
   border-radius: 9999px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   border: 1px solid var(--border);
   background: #F8FAFC;
@@ -1260,73 +1343,73 @@
 /* Hub Metrics Strip */
 .hub-metrics-strip {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 14px;
-  margin-bottom: 24px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 18px;
 }
 .hub-metric-box {
   background: #FFFFFF;
   border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 14px 18px;
+  border-radius: 12px;
+  padding: 10px 12px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 .hub-metric-box-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 15px;
   flex-shrink: 0;
 }
 .hub-metric-box-title {
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 800;
   color: var(--navy);
   margin: 0;
+  line-height: 1.2;
 }
 .hub-metric-box-sub {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-muted);
   margin: 0;
+  line-height: 1.2;
 }
 
-/* Parking Cards Grid */
+/* Parking Cards Feed */
 .hub-cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-  gap: 22px;
-}
-@media (max-width: 640px) {
-  .hub-cards-grid {
-    grid-template-columns: 1fr;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
 }
 
 .hub-card {
   background: #FFFFFF;
   border: 1px solid var(--border);
-  border-radius: 20px;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.03);
   transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
 }
 .hub-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 24px rgba(11, 25, 44, 0.08);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(11, 25, 44, 0.08);
   border-color: #CBD5E1;
 }
 
 .hub-card-image-wrap {
   position: relative;
   width: 100%;
-  height: 190px;
+  height: 175px;
   background: #E2E8F0;
   overflow: hidden;
 }
@@ -1337,19 +1420,19 @@
   transition: transform 0.4s ease;
 }
 .hub-card:hover .hub-card-img {
-  transform: scale(1.04);
+  transform: scale(1.03);
 }
 
 .hub-badge-destacado {
   position: absolute;
-  top: 12px;
-  left: 12px;
+  top: 10px;
+  left: 10px;
   background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
   color: #B45309;
   border: 1px solid #FCD34D;
   font-size: 11px;
   font-weight: 800;
-  padding: 4px 10px;
+  padding: 3px 9px;
   border-radius: 9999px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   display: flex;
@@ -1359,12 +1442,12 @@
 
 .hub-fav-btn {
   position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 34px;
-  height: 34px;
+  top: 10px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  background: rgba(255,255,255,0.9);
+  background: rgba(255,255,255,0.92);
   backdrop-filter: blur(4px);
   border: none;
   display: flex;
@@ -1382,16 +1465,16 @@
 
 .hub-badge-schedule {
   position: absolute;
-  bottom: 12px;
-  left: 12px;
-  background: rgba(11, 25, 44, 0.85);
+  bottom: 10px;
+  left: 10px;
+  background: rgba(11, 25, 44, 0.88);
   backdrop-filter: blur(6px);
   color: #FFFFFF;
   border: 1px solid rgba(255,255,255,0.2);
   font-size: 11px;
   font-weight: 700;
-  padding: 4px 9px;
-  border-radius: 8px;
+  padding: 3px 8px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -1399,15 +1482,15 @@
 
 .hub-badge-avail {
   position: absolute;
-  bottom: 12px;
-  right: 12px;
+  bottom: 10px;
+  right: 10px;
   font-size: 11px;
   font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 8px;
+  padding: 3px 9px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
 }
 .hub-badge-avail.available {
   background: rgba(16, 185, 129, 0.95);
@@ -1423,7 +1506,7 @@
 }
 
 .hub-card-body {
-  padding: 18px;
+  padding: 16px;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -1440,8 +1523,8 @@
   font-weight: 700;
   color: #0369A1;
   background: #E0F2FE;
-  padding: 2px 8px;
-  border-radius: 6px;
+  padding: 2px 7px;
+  border-radius: 5px;
 }
 
 .hub-card-title {
@@ -1454,43 +1537,43 @@
 .hub-card-address {
   font-size: 12px;
   color: var(--text-secondary);
-  margin: 0 0 10px;
+  margin: 0 0 8px;
 }
 
 .hub-rating-row {
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   font-size: 12px;
 }
 
 .hub-amenities-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 16px;
+  gap: 5px;
+  margin-bottom: 14px;
 }
 .hub-amenity-tag {
   background: #F1F5F9;
   color: #475569;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 600;
-  padding: 3px 8px;
-  border-radius: 6px;
+  padding: 2.5px 7px;
+  border-radius: 5px;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
 }
 
 .hub-card-footer {
   margin-top: auto;
-  padding-top: 14px;
+  padding-top: 12px;
   border-top: 1px solid #F1F5F9;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 10px;
 }
 
 .hub-price-col {
@@ -1504,7 +1587,7 @@
   color: var(--text-muted);
 }
 .hub-price-val {
-  font-size: 19px;
+  font-size: 18px;
   font-weight: 800;
   color: var(--navy);
 }
@@ -1515,12 +1598,12 @@
   gap: 8px;
 }
 .btn-hub-map {
-  padding: 8px 12px;
-  border-radius: 10px;
+  padding: 7px 11px;
+  border-radius: 9px;
   border: 1px solid var(--border);
   background: #FFFFFF;
   color: var(--navy);
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.15s;
@@ -1531,20 +1614,150 @@
 }
 
 .btn-hub-reserve {
-  padding: 9px 16px;
-  border-radius: 10px;
+  padding: 8px 14px;
+  border-radius: 9px;
   background: var(--navy);
   color: #FFFFFF;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   transition: background 0.15s, transform 0.15s;
 }
 .btn-hub-reserve:hover {
   background: #152843;
   transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   ADAPTACIÓN RESPONSIVA Y MODO MOBILE (EL HUB COMPLETO)
+   ========================================================================== */
+
+@media (max-width: 992px) {
+  .mobile-view-tabs {
+    display: flex;
+    align-items: center;
+    background: var(--navy);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 8px 12px;
+    gap: 10px;
+    position: sticky;
+    top: 64px;
+    z-index: 999;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+
+  .mobile-tab-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 9px 12px;
+    border-radius: 10px;
+    border: none;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    color: #94A3B8;
+    background: rgba(255, 255, 255, 0.08);
+    transition: all 0.2s ease;
+  }
+  .mobile-tab-btn.active {
+    background: var(--amber);
+    color: #0F172A;
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.35);
+  }
+
+  .home-split-layout {
+    display: block;
+    height: auto;
+    overflow: visible;
+    position: static;
+  }
+
+  /* El Hub Completo en Mobile */
+  .split-hub-column {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    flex: none !important;
+    height: auto !important;
+    overflow-y: visible !important;
+    border-right: none;
+    box-shadow: none;
+    padding-bottom: 74px; /* Espacio para bottom nav */
+  }
+
+  .nearby-hub-section {
+    padding: 18px 14px 80px;
+  }
+
+  .hub-title {
+    font-size: 24px;
+  }
+
+  .split-map-column {
+    width: 100% !important;
+    height: calc(100vh - 64px - 53px - 64px) !important;
+    min-height: 480px;
+    display: none; /* Por defecto inicia en lista o mapa según setMobileView */
+    position: relative;
+  }
+
+  .split-map-column .map-wrapper {
+    height: 100%;
+    min-height: 100%;
+  }
+
+  /* Botón Flotante para cambiar de Vista en Mobile */
+  .btn-floating-mobile-map {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: fixed;
+    bottom: 80px;
+    right: 18px;
+    z-index: 950;
+    background: var(--navy);
+    color: #FFFFFF;
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 9999px;
+    padding: 11px 20px;
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow: 0 8px 24px rgba(11, 25, 44, 0.35);
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+  }
+  .btn-floating-mobile-map:hover {
+    transform: translateY(-2px);
+    background: var(--navy-hover);
+  }
+
+  .btn-floating-view-hub {
+    display: flex !important;
+    position: absolute;
+    bottom: 24px;
+    right: 18px;
+    z-index: 500;
+    background: var(--navy);
+    color: #FFFFFF !important;
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 9999px;
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow: 0 8px 24px rgba(11, 25, 44, 0.35);
+    cursor: pointer;
+  }
+}
+
+@media (max-width: 480px) {
+  .hub-metrics-strip {
+    grid-template-columns: 1fr;
+  }
 }
 

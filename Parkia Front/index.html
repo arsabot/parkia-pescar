@@ -52,311 +52,289 @@
     </a>
   </header>
 
-  <!-- 2. CONTENEDOR DEL MAPA Y ELEMENTOS FLOTANTES -->
-  <div class="map-wrapper">
-    
-    <!-- Buscador Flotante + Filtros sobre el mapa -->
-    <div class="floating-search-container">
-      
-      <!-- Barra de Búsqueda 3 en 1 -->
-      <div class="search-bar-card">
-    
-        <div class="search-input-group">
-          <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-          </svg>
-          <input type="text" id="searchInput" placeholder="Buscar por barrio, dirección, punto de interés..." value="Recoleta, Buenos Aires" />
-        </div>
+  <!-- TABS DE VISTA MOBILE (Visible exclusivamente en pantallas <= 992px) -->
+  <div class="mobile-view-tabs" id="mobileViewTabs">
+    <button type="button" class="mobile-tab-btn active" id="tabBtnList" onclick="setMobileView('list')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1.5" fill="currentColor"/><circle cx="4" cy="12" r="1.5" fill="currentColor"/><circle cx="4" cy="18" r="1.5" fill="currentColor"/></svg>
+      <span>Cocheras (<span id="mobileCountBadge">5</span>)</span>
+    </button>
+    <button type="button" class="mobile-tab-btn" id="tabBtnMap" onclick="setMobileView('map')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+      <span>Ver Mapa</span>
+    </button>
+  </div>
 
-        <div class="search-divider"></div>
+  <!-- ========================================================
+       CONTENEDOR PRINCIPAL SPLIT DUAL-PANE:
+       IZQUIERDA: HUB DE COCHERAS | DERECHA: MAPA LEAFLET EN DESKTOP
+       COMPLETO EN MOBILE
+       ======================================================== -->
+  <main class="home-split-layout" id="homeSplitLayout">
 
-        <!-- 2. Selector de Horario -->
-        <button type="button" class="search-picker-btn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-          </svg>
-          <span>Hoy, 14:00 – 18:00</span>
-        </button>
-
-        <div class="search-divider"></div>
-
-        <!-- 3. Selector de Vehículo -->
-        <div class="vehicle-picker">
-          <button type="button" class="search-picker-btn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9C2.1 11.1 2 11.6 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/>
-            </svg>
-            <span>Auto</span>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-        </div>
+    <!-- COLUMNA IZQUIERDA: HUB DE ESTACIONAMIENTOS DISPONIBLES CERCA -->
+    <aside class="split-hub-column" id="hubColumn">
+      <section class="nearby-hub-section" id="hubEstacionamientos">
         
-        <button type="button" class="btn-search-primary" id="btnBuscar">
-          Buscar
-        </button>
-      </div>
-
-      <!-- Píldoras de Filtros Rápidos -->
-      <div class="filter-chips-row">
-        <button type="button" class="chip active">Todos</button>
-        <button type="button" class="chip">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          Abierto 24hs
-        </button>
-        <button type="button" class="chip">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-          Techado
-        </button>
-        <button type="button" class="chip">
-          <span class="dot-mp"></span>
-          Acepta Mercado Pago
-        </button>
-        <button type="button" class="chip">&lt; $3.000/h</button>
-        <button type="button" class="chip">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-          Carga eléctrica
-        </button>
-      </div>
-
-    </div>
-
-    <!-- EL MAPA LEAFLET -->
-    <div class="map" id="map">
-      <div class="zoom-controls">
-        <button type="button" aria-label="Acercar">+</button>
-        <button type="button" aria-label="Alejar">-</button>
-      </div>
-    </div>
-
-    <!-- Mini Tarjeta Flotante Inferior Izquierda -->
-    <div class="mini-spot-card" id="miniSpotCard" onclick="openSidePanel()">
-      <img src="https://images.unsplash.com/photo-1590674899484-d5640e854abe?auto=format&fit=crop&w=150&q=80" alt="Cochera" class="mini-card-img" />
-      <div class="mini-card-info">
-        <h4 class="mini-card-title">Garage Plaza San Martín</h4>
-        <div class="mini-card-rating">
-          <span class="star-rating">★ 4.8</span>
-          <span class="reviews-count">(124)</span>
-        </div>
-        <div class="mini-card-bottom">
-          <span class="mini-card-price">$2.500/h</span>
-          <span class="mini-card-tag">Techado · 1.2 km</span>
-        </div>
-      </div>
-      <button type="button" class="mini-card-arrow">→</button>
-    </div>
-
-    <!-- Panel Lateral Elegante (Side Sheet) -->
-    <aside class="side-detail-panel hidden" id="sideDetailPanel">
-      
-      <div class="panel-gallery">
-        <img id="panelMainImg" src="https://images.unsplash.com/photo-1590674899484-d5640e854abe?auto=format&fit=crop&w=600&q=80" alt="Cochera" />
-        <button type="button" class="btn-close-panel" onclick="closeSidePanel()" aria-label="Cerrar">✕</button>
-        <span class="gallery-counter">1/5</span>
-      </div>
-
-      <div class="panel-thumbnails">
-        <img src="https://images.unsplash.com/photo-1590674899484-d5640e854abe?auto=format&fit=crop&w=120&q=80" class="thumb active" />
-        <img src="https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=120&q=80" class="thumb" />
-        <img src="https://images.unsplash.com/photo-1573348722427-f1d6819fdf98?auto=format&fit=crop&w=120&q=80" class="thumb" />
-        <img src="https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=120&q=80" class="thumb" />
-      </div>
-
-      <div class="panel-content">
-        <h2 class="panel-title" id="panelSpotName">Garage Plaza San Martín</h2>
-        
-        <div class="panel-meta-row">
-          <span class="star-rating">★ 4.8</span>
-          <span class="reviews-count">(124 reseñas)</span>
-          <span class="meta-dot">·</span>
-          <span class="badge-available">
-            <span class="pulse-green"></span> Disponible ahora
-          </span>
+        <!-- Header del Hub -->
+        <div class="hub-hero-header">
+          <div class="hub-badge">
+            <span class="pulse-green"></span> Disponibilidad en Tiempo Real
+          </div>
+          <h2 class="hub-title">Estacionamientos Disponibles Cerca</h2>
+          <p class="hub-subtitle">
+            Encontrá, compará tarifas y asegurá tu cochera antes de llegar con confirmación inmediata y código QR de acceso.
+          </p>
         </div>
 
-        <p class="panel-address">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/>
-          </svg>
-          San Martín 932, Retiro, CABA · <strong>1.2 km</strong>
-        </p>
+        <!-- Barra de Control: Geolocalización + Búsqueda + Filtros + Orden -->
+        <div class="hub-control-bar">
+          <div class="hub-control-top">
+            <!-- Botón GPS Geolocalización (Lógica parkia backup) -->
+            <button type="button" class="btn-use-location" id="btnGeoLocation" onclick="obtenerUbicacionActual()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+              <span id="btnGeoText">Usar mi ubicación actual</span>
+            </button>
 
-        <div class="panel-features-grid">
-          <div class="feature-item">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-            Techado
+            <!-- Buscador en tiempo real dentro del Hub -->
+            <div class="hub-search-input-wrap">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" id="hubSearchInput" placeholder="Filtrar por nombre, calle o zona..." />
+            </div>
+
+            <!-- Selector de Orden -->
+            <div class="hub-sort-wrapper">
+              <label for="hubSortSelect">Ordenar:</label>
+              <select id="hubSortSelect" class="hub-sort-select" onchange="aplicarFiltrosYOrden()">
+                <option value="distancia">Más cercanos primero</option>
+                <option value="precio_asc">Menor precio ($/h)</option>
+                <option value="disponibles_desc">Mayor disponibilidad</option>
+                <option value="destacados">Destacados primero</option>
+              </select>
+            </div>
           </div>
-          <div class="feature-item">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-            Altura máx. 2.10 m
-          </div>
-          <div class="feature-item">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            Vigilancia 24hs
-          </div>
-          <div class="feature-item">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-            Acceso con QR
+
+          <!-- Píldoras de Filtro Rápido -->
+          <div class="hub-filter-pills" id="hubFilterPills">
+            <button type="button" class="hub-pill active" data-filter="todos">Todos (<span id="countTodos">0</span>)</button>
+            <button type="button" class="hub-pill" data-filter="disponible">🟢 Libres Ahora (<span id="countDisponibles">0</span>)</button>
+            <button type="button" class="hub-pill" data-filter="24hs">🕒 Abierto 24hs</button>
+            <button type="button" class="hub-pill" data-filter="techado">🏢 Techados</button>
+            <button type="button" class="hub-pill" data-filter="mp">💳 Con Mercado Pago</button>
+            <button type="button" class="hub-pill" data-filter="destacado">⭐ Destacados</button>
           </div>
         </div>
 
-        <div class="panel-details-cols">
-          <div class="panel-rates-col">
-            <div class="rates-header">
-              <strong>Tarifas</strong>
-              <a href="#">Ver todas →</a>
-            </div>
-            <div class="rate-row">
-              <span>Fracción (30 min)</span>
-              <strong>$800</strong>
-            </div>
-            <div class="rate-row highlight">
-              <span>Por hora</span>
-              <strong class="rate-main" id="panelSpotPrice">$2.500</strong>
-            </div>
-            <div class="rate-row">
-              <span>12 hs (diurno)</span>
-              <strong>$18.000</strong>
-            </div>
-            <div class="rate-row">
-              <span>24 hs</span>
-              <strong>$32.000</strong>
+        <!-- Métricas Rápidas de Confianza (Estilo Landing Page Backup) -->
+        <div class="hub-metrics-strip">
+          <div class="hub-metric-box">
+            <div class="hub-metric-box-icon" style="background:#E0F2FE;color:#0284C7;">🚗</div>
+            <div>
+              <div class="hub-metric-box-title" id="metricCocherasActivas">5 Activos</div>
+              <div class="hub-metric-box-sub">Garages verificados en CABA</div>
             </div>
           </div>
-
-          <div class="panel-status-col">
-            <div class="capacity-block">
-              <span class="block-label">Capacidad en vivo</span>
-              <div class="capacity-bar">
-                <div class="capacity-fill" style="width: 80%;"></div>
-              </div>
-              <p class="capacity-pct">80% ocupado</p>
-              <p class="capacity-sub">¡Solo quedan 4 cocheras!</p>
+          <div class="hub-metric-box">
+            <div class="hub-metric-box-icon" style="background:#ECFDF5;color:#10B981;">⚡</div>
+            <div>
+              <div class="hub-metric-box-title" id="metricPlazasLibres">Cargando...</div>
+              <div class="hub-metric-box-sub">Lugares libres en tiempo real</div>
             </div>
-
-            <div class="payments-block">
-              <span class="block-label">Medios de pago</span>
-              <div class="payments-badges">
-                <span class="badge-mp">Mercado Pago</span>
-                <span class="badge-pay">Tarjetas</span>
-                <span class="badge-pay">Efectivo</span>
-              </div>
+          </div>
+          <div class="hub-metric-box">
+            <div class="hub-metric-box-icon" style="background:#FEF3C7;color:#D97706;">🛡️</div>
+            <div>
+              <div class="hub-metric-box-title">Garantizado</div>
+              <div class="hub-metric-box-sub">Lugar bloqueado al reservar</div>
+            </div>
+          </div>
+          <div class="hub-metric-box">
+            <div class="hub-metric-box-icon" style="background:#F1F5F9;color:#0B192C;">🎟️</div>
+            <div>
+              <div class="hub-metric-box-title">Acceso por QR</div>
+              <div class="hub-metric-box-sub">Sin tickets ni demoras en cabina</div>
             </div>
           </div>
         </div>
 
-      </div>
+        <div id="apiStatus" class="api-msg api-msg-info">Buscando estacionamientos...</div>
 
-      <div class="panel-action-footer">
-        <a href="vistas/reserva.html" class="btn-panel-reserve" id="panelReserveBtn">
-          <span>Reservar ahora</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
-      </div>
+        <!-- Grid / Feed de Tarjetas de Estacionamientos (Lógica Parkia Backup) -->
+        <div class="hub-cards-grid" id="hubCardsContainer">
+          <!-- Renderizado dinámicamente con JavaScript -->
+        </div>
+
+      </section>
+
+      <!-- Botón Flotante en Mobile para ver el Mapa -->
+      <button type="button" class="btn-floating-mobile-map" id="btnFloatingMobileMap" onclick="setMobileView('map')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+        <span>Ver en Mapa</span>
+      </button>
 
     </aside>
 
-    <!-- Botón Flotante sobre el Mapa para saltar directo al Hub -->
-    <a href="#hubEstacionamientos" class="btn-floating-view-hub" id="btnFloatingHub">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-      <span>Ver cocheras cerca (<span id="hubCountBadgeTop">5</span>) ↓</span>
-    </a>
+    <!-- COLUMNA DERECHA: MAPA LEAFLET INTERACTIVO -->
+    <section class="split-map-column" id="mapColumn">
+      <div class="map-wrapper">
+        
+        <!-- Buscador Flotante sobre el mapa -->
+        <div class="floating-search-container">
+          <div class="search-bar-card">
+            <div class="search-input-group">
+              <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <input type="text" id="searchInput" placeholder="Buscar por barrio, dirección o punto..." value="Recoleta, Buenos Aires" />
+            </div>
+            <div class="search-divider"></div>
+            <button type="button" class="btn-search-primary" id="btnBuscar">Buscar</button>
+          </div>
+        </div>
 
-  </div>
+        <!-- EL MAPA LEAFLET -->
+        <div class="map" id="map">
+          <div class="zoom-controls">
+            <button type="button" aria-label="Acercar">+</button>
+            <button type="button" aria-label="Alejar">-</button>
+          </div>
+        </div>
 
-  <div id="apiStatus" class="api-msg api-msg-info">Buscando estacionamientos...</div>
+        <!-- Mini Tarjeta Flotante Inferior Izquierda -->
+        <div class="mini-spot-card" id="miniSpotCard" onclick="openSidePanel()">
+          <img src="https://images.unsplash.com/photo-1590674899484-d5640e854abe?auto=format&fit=crop&w=150&q=80" alt="Cochera" class="mini-card-img" />
+          <div class="mini-card-info">
+            <h4 class="mini-card-title">Garage Plaza San Martín</h4>
+            <div class="mini-card-rating">
+              <span class="star-rating">★ 4.8</span>
+              <span class="reviews-count">(124)</span>
+            </div>
+            <div class="mini-card-bottom">
+              <span class="mini-card-price">$2.500/h</span>
+              <span class="mini-card-tag">Techado · 1.2 km</span>
+            </div>
+          </div>
+          <button type="button" class="mini-card-arrow">→</button>
+        </div>
 
-  <!-- ========================================================
-       HUB DE ESTACIONAMIENTOS DISPONIBLES CERCA (LÓGICA PARKIA BACKUP)
-       ======================================================== -->
-  <section class="nearby-hub-section" id="hubEstacionamientos">
-    
-    <!-- Header del Hub -->
-    <div class="hub-hero-header">
-      <div class="hub-badge">
-        <span class="pulse-green"></span> Disponibilidad en Tiempo Real
-      </div>
-      <h2 class="hub-title">Estacionamientos Disponibles Cerca</h2>
-      <p class="hub-subtitle">
-        Encontrá, compará tarifas y asegurá tu cochera antes de llegar con confirmación inmediata y código QR de acceso.
-      </p>
-    </div>
+        <!-- Panel Lateral Elegante (Side Sheet) -->
+        <aside class="side-detail-panel hidden" id="sideDetailPanel">
+          <div class="panel-gallery">
+            <img id="panelMainImg" src="https://images.unsplash.com/photo-1590674899484-d5640e854abe?auto=format&fit=crop&w=600&q=80" alt="Cochera" />
+            <button type="button" class="btn-close-panel" onclick="closeSidePanel()" aria-label="Cerrar">✕</button>
+            <span class="gallery-counter">1/5</span>
+          </div>
 
-    <!-- Barra de Control: Geolocalización + Búsqueda + Filtros + Orden -->
-    <div class="hub-control-bar">
-      <div class="hub-control-top">
-        <!-- Botón GPS Geolocalización (Lógica parkia backup) -->
-        <button type="button" class="btn-use-location" id="btnGeoLocation" onclick="obtenerUbicacionActual()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
-          <span id="btnGeoText">Usar mi ubicación actual</span>
+          <div class="panel-thumbnails">
+            <img src="https://images.unsplash.com/photo-1590674899484-d5640e854abe?auto=format&fit=crop&w=120&q=80" class="thumb active" />
+            <img src="https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=120&q=80" class="thumb" />
+            <img src="https://images.unsplash.com/photo-1573348722427-f1d6819fdf98?auto=format&fit=crop&w=120&q=80" class="thumb" />
+            <img src="https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=120&q=80" class="thumb" />
+          </div>
+
+          <div class="panel-content">
+            <h2 class="panel-title" id="panelSpotName">Garage Plaza San Martín</h2>
+            
+            <div class="panel-meta-row">
+              <span class="star-rating">★ 4.8</span>
+              <span class="reviews-count">(124 reseñas)</span>
+              <span class="meta-dot">·</span>
+              <span class="badge-available">
+                <span class="pulse-green"></span> Disponible ahora
+              </span>
+            </div>
+
+            <p class="panel-address">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/>
+              </svg>
+              San Martín 932, Retiro, CABA · <strong>1.2 km</strong>
+            </p>
+
+            <div class="panel-features-grid">
+              <div class="feature-item">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                Techado
+              </div>
+              <div class="feature-item">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                Altura máx. 2.10 m
+              </div>
+              <div class="feature-item">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Vigilancia 24hs
+              </div>
+              <div class="feature-item">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                Acceso con QR
+              </div>
+            </div>
+
+            <div class="panel-details-cols">
+              <div class="panel-rates-col">
+                <div class="rates-header">
+                  <strong>Tarifas</strong>
+                  <a href="#">Ver todas →</a>
+                </div>
+                <div class="rate-row">
+                  <span>Fracción (30 min)</span>
+                  <strong>$800</strong>
+                </div>
+                <div class="rate-row highlight">
+                  <span>Por hora</span>
+                  <strong class="rate-main" id="panelSpotPrice">$2.500</strong>
+                </div>
+                <div class="rate-row">
+                  <span>12 hs (diurno)</span>
+                  <strong>$18.000</strong>
+                </div>
+                <div class="rate-row">
+                  <span>24 hs</span>
+                  <strong>$32.000</strong>
+                </div>
+              </div>
+
+              <div class="panel-status-col">
+                <div class="capacity-block">
+                  <span class="block-label">Capacidad en vivo</span>
+                  <div class="capacity-bar">
+                    <div class="capacity-fill" style="width: 80%;"></div>
+                  </div>
+                  <p class="capacity-pct">80% ocupado</p>
+                  <p class="capacity-sub">¡Solo quedan 4 cocheras!</p>
+                </div>
+
+                <div class="payments-block">
+                  <span class="block-label">Medios de pago</span>
+                  <div class="payments-badges">
+                    <span class="badge-mp">Mercado Pago</span>
+                    <span class="badge-pay">Tarjetas</span>
+                    <span class="badge-pay">Efectivo</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="panel-action-footer">
+            <a href="vistas/reserva.html" class="btn-panel-reserve" id="panelReserveBtn">
+              <span>Reservar ahora</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+
+        </aside>
+
+        <!-- Botón Flotante sobre el Mapa en Mobile para volver a la Lista -->
+        <button type="button" class="btn-floating-view-hub" id="btnFloatingHub" onclick="setMobileView('list')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1.5" fill="currentColor"/><circle cx="4" cy="12" r="1.5" fill="currentColor"/><circle cx="4" cy="18" r="1.5" fill="currentColor"/></svg>
+          <span>Ver Cocheras (<span id="hubCountBadgeTop">5</span>)</span>
         </button>
 
-        <!-- Buscador en tiempo real dentro del Hub -->
-        <div class="hub-search-input-wrap">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" id="hubSearchInput" placeholder="Filtrar por nombre, calle o zona..." />
-        </div>
+      </div>
+    </section>
 
-        <!-- Selector de Orden -->
-        <div style="display:flex;align-items:center;gap:8px;">
-          <label for="hubSortSelect" style="font-size:12px;font-weight:700;color:var(--text-secondary);">Ordenar:</label>
-          <select id="hubSortSelect" class="hub-sort-select" onchange="aplicarFiltrosYOrden()">
-            <option value="distancia">Más cercanos primero</option>
-            <option value="precio_asc">Menor precio ($/h)</option>
-            <option value="disponibles_desc">Mayor disponibilidad</option>
-            <option value="destacados">Destacados primero</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Píldoras de Filtro Rápido -->
-      <div class="hub-filter-pills" id="hubFilterPills">
-        <button type="button" class="hub-pill active" data-filter="todos">Todos (<span id="countTodos">0</span>)</button>
-        <button type="button" class="hub-pill" data-filter="disponible">🟢 Libres Ahora (<span id="countDisponibles">0</span>)</button>
-        <button type="button" class="hub-pill" data-filter="24hs">🕒 Abierto 24hs</button>
-        <button type="button" class="hub-pill" data-filter="techado">🏢 Techados</button>
-        <button type="button" class="hub-pill" data-filter="mp">💳 Con Mercado Pago</button>
-        <button type="button" class="hub-pill" data-filter="destacado">⭐ Destacados</button>
-      </div>
-    </div>
-
-    <!-- Métricas Rápidas de Confianza (Estilo Landing Page Backup) -->
-    <div class="hub-metrics-strip">
-      <div class="hub-metric-box">
-        <div class="hub-metric-box-icon" style="background:#E0F2FE;color:#0284C7;">🚗</div>
-        <div>
-          <div class="hub-metric-box-title" id="metricCocherasActivas">5 Activos</div>
-          <div class="hub-metric-box-sub">Garages verificados en CABA</div>
-        </div>
-      </div>
-      <div class="hub-metric-box">
-        <div class="hub-metric-box-icon" style="background:#ECFDF5;color:#10B981;">⚡</div>
-        <div>
-          <div class="hub-metric-box-title" id="metricPlazasLibres">Cargando...</div>
-          <div class="hub-metric-box-sub">Lugares libres en tiempo real</div>
-        </div>
-      </div>
-      <div class="hub-metric-box">
-        <div class="hub-metric-box-icon" style="background:#FEF3C7;color:#D97706;">🛡️</div>
-        <div>
-          <div class="hub-metric-box-title">100% Garantizado</div>
-          <div class="hub-metric-box-sub">Lugar bloqueado al reservar</div>
-        </div>
-      </div>
-      <div class="hub-metric-box">
-        <div class="hub-metric-box-icon" style="background:#F1F5F9;color:#0B192C;">🎟️</div>
-        <div>
-          <div class="hub-metric-box-title">Acceso por QR</div>
-          <div class="hub-metric-box-sub">Sin tickets ni demoras en cabina</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Grid de Tarjetas de Estacionamientos (Lógica Parkia Backup) -->
-    <div class="hub-cards-grid" id="hubCardsContainer">
-      <!-- Renderizado dinámicamente con JavaScript -->
-    </div>
-
-  </section>
+  </main>
 
 </div>
 
@@ -553,21 +531,57 @@
     openSidePanel();
   }
 
+  // Manejo de Vistas en Mobile (Lista / Mapa)
+  function setMobileView(view) {
+    var isMobile = window.innerWidth <= 992;
+    var tabList = document.getElementById("tabBtnList");
+    var tabMap = document.getElementById("tabBtnMap");
+    var hubCol = document.getElementById("hubColumn");
+    var mapCol = document.getElementById("mapColumn");
+
+    if (view === 'list') {
+      if (tabList) tabList.classList.add("active");
+      if (tabMap) tabMap.classList.remove("active");
+      if (isMobile) {
+        if (hubCol) hubCol.style.display = 'flex';
+        if (mapCol) mapCol.style.display = 'none';
+      }
+    } else {
+      if (tabList) tabList.classList.remove("active");
+      if (tabMap) tabMap.classList.add("active");
+      if (isMobile) {
+        if (hubCol) hubCol.style.display = 'none';
+        if (mapCol) mapCol.style.display = 'block';
+        setTimeout(function() {
+          if (leafMap) leafMap.invalidateSize();
+        }, 150);
+      }
+    }
+  }
+
   // Enfocar en mapa desde botón "Ver en mapa" de la tarjeta
   function enfocarEnMapa(parkingId) {
     var p = allParkingsData.find(function(item) { return item.id === parkingId; });
     if (!p) return;
 
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    leafMap.setView([parseFloat(p.latitud), parseFloat(p.longitud)], 16);
+    var isMobile = window.innerWidth <= 992;
+    if (isMobile) {
+      setMobileView('map');
+    }
 
     setTimeout(function() {
-      var marker = parkingMarkersMap[parkingId];
-      if (marker) {
-        marker.openPopup();
+      if (leafMap) {
+        leafMap.invalidateSize();
+        leafMap.flyTo([parseFloat(p.latitud), parseFloat(p.longitud)], 16, { animate: true, duration: 0.8 });
       }
-      seleccionarCochera(p);
-    }, 450);
+      setTimeout(function() {
+        var marker = parkingMarkersMap[parkingId];
+        if (marker) {
+          marker.openPopup();
+        }
+        seleccionarCochera(p);
+      }, 450);
+    }, isMobile ? 200 : 50);
   }
 
   // Geolocalización del conductor (Lógica Parkia Backup)
@@ -643,7 +657,10 @@
 
     document.getElementById("countTodos").textContent = countTodos;
     document.getElementById("countDisponibles").textContent = countLibres;
-    document.getElementById("hubCountBadgeTop").textContent = countLibres;
+    var badgeTop = document.getElementById("hubCountBadgeTop");
+    if (badgeTop) badgeTop.textContent = countLibres;
+    var mobileBadge = document.getElementById("mobileCountBadge");
+    if (mobileBadge) mobileBadge.textContent = countLibres;
     document.getElementById("metricCocherasActivas").textContent = countTodos + " Activos";
     document.getElementById("metricPlazasLibres").textContent = sumLibres + " Libres";
 
@@ -805,10 +822,33 @@
       var q = searchInput.value;
       if (hubSearchInput) { hubSearchInput.value = q; }
       aplicarFiltrosYOrden();
-      var hubEl = document.getElementById("hubEstacionamientos");
-      if (hubEl) { hubEl.scrollIntoView({ behavior: 'smooth' }); }
+      if (window.innerWidth <= 992) {
+        setMobileView('list');
+      }
     });
   }
+
+  // Listener para cambios de tamaño de pantalla (Mobile vs Desktop)
+  window.addEventListener('resize', function() {
+    var hubCol = document.getElementById("hubColumn");
+    var mapCol = document.getElementById("mapColumn");
+    if (window.innerWidth > 992) {
+      if (hubCol) hubCol.style.display = '';
+      if (mapCol) mapCol.style.display = '';
+    } else {
+      var tabList = document.getElementById("tabBtnList");
+      if (tabList && tabList.classList.contains("active")) {
+        if (hubCol) hubCol.style.display = 'flex';
+        if (mapCol) mapCol.style.display = 'none';
+      } else {
+        if (hubCol) hubCol.style.display = 'none';
+        if (mapCol) mapCol.style.display = 'block';
+      }
+    }
+    if (leafMap) {
+      leafMap.invalidateSize();
+    }
+  });
 
   // Conectar botones de zoom personalizados al mapa Leaflet
   document.querySelectorAll(".zoom-controls button").forEach(function (btn) {
