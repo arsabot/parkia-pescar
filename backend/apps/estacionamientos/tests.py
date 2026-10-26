@@ -89,3 +89,93 @@ class CrudTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + response.data["tokens"]["access"])
         self.assertEqual(self.client.post(self.url, self.payload, format="json").status_code, 201)
+
+    def test_pilar1_comision_marketplace(self):
+        """Pilar 1: Comisión por reserva (8% retenido por Parkia)."""
+        ahora = timezone.now() + timedelta(hours=2)
+        res = self.client.post("/api/reservas/", {
+            "estacionamiento_id": self.item.id,
+            "espacio_id": self.espacio.id,
+            "fecha_inicio": ahora.isoformat(),
+            "fecha_fin": (ahora + timedelta(hours=2)).isoformat(),
+            "usuario_email": self.driver.email,
+        }, format="json")
+        self.assertEqual(res.status_code, 201)
+        reserva_id = res.data["id"]
+        detalle = self.client.get(f"/api/reservas/{reserva_id}/")
+        self.assertEqual(detalle.status_code, 200)
+        self.assertEqual(detalle.data["comision_pct"], "8.00")
+        self.assertGreater(float(detalle.data["comision_monto"]), 0)
+        self.assertGreater(float(detalle.data["neto_propietario"]), 0)
+
+    def test_pilar2_suscripcion_b2b_saas(self):
+        """Pilar 2: Suscripción SaaS para cocheras (Básico vs Premium)."""
+        from apps.users.models import PlanSuscripcion
+        PlanSuscripcion.objects.get_or_create(nivel="basico", defaults={"precio_mensual": 15000})
+        PlanSuscripcion.objects.get_or_create(nivel="premium", defaults={"precio_mensual": 35000, "destacado_listado": True, "estadisticas": True})
+
+        # Listar planes
+        res_planes = self.client.get("/api/suscripciones/estacionamiento/planes/")
+        self.assertEqual(res_planes.status_code, 200)
+        self.assertGreaterEqual(len(res_planes.data["results"]), 2)
+
+        # Contratar plan premium
+        res_upgrade = self.client.post("/api/suscripciones/estacionamiento/contratar/", {
+            "estacionamiento_id": self.item.id,
+            "plan_nivel": "premium"
+        }, format="json")
+        self.assertEqual(res_upgrade.status_code, 200)
+        self.assertEqual(res_upgrade.data["plan_nivel"], "premium")
+        self.assertTrue(res_upgrade.data["destacado_listado"])
+
+    def test_pilar3_publicidad_geolocalizada(self):
+        """Pilar 3: Comercios cercanos patrocinados en la zona."""
+        from apps.users.models import ComercioCercano
+        ComercioCercano.objects.create(
+            nombre="Café Test",
+            rubro=ComercioCercano.Rubro.CAFETERIA,
+            direccion="Corrientes 100",
+            descuento="15% OFF",
+            distancia_metros=80,
+            estacionamiento=self.item,
+            pauta_mensual=15000
+        )
+        res = self.client.get(f"/api/comercios-cercanos/?estacionamiento_id={self.item.id}")
+        self.assertEqual(res.status_code, 200)
+        self.assertGreaterEqual(res.data["count"], 1)
+        self.assertEqual(res.data["results"][0]["nombre"], "Café Test")
+
+    def test_pilar4_parkia_pass_freemium(self):
+        """Pilar 4: Suscripción Parkia Pass B2C (10% descuento y reportes)."""
+        # Estado inicial
+        res_status = self.client.get(f"/api/suscripciones/parkia-pass/?email={self.driver.email}")
+        self.assertEqual(res_status.status_code, 200)
+        self.assertFalse(res_status.data["es_parkia_pass"])
+
+        # Alta de suscripción
+        res_alta = self.client.post("/api/suscripciones/parkia-pass/contratar/", {
+            "usuario_email": self.driver.email,
+            "meses": 1
+        }, format="json")
+        self.assertEqual(res_alta.status_code, 200)
+        self.assertTrue(res_alta.data["es_parkia_pass"])
+
+        # Crear reserva con usuario Parkia Pass (debe recibir 10% de descuento)
+        self.driver.refresh_from_db()
+        self.assertTrue(self.driver.es_parkia_pass)
+
+        # Reporte de gastos
+        res_reporte = self.client.get(f"/api/suscripciones/parkia-pass/reporte-gastos/?email={self.driver.email}")
+        self.assertEqual(res_reporte.status_code, 200)
+        self.assertTrue(res_reporte.data["es_parkia_pass"])
+
+    def test_pilar5_y_6_analytics_insights(self):
+        """Pilar 5 & 6: Fee digital y Dashboard de Insights B2B."""
+        res = self.client.get(f"/api/analytics/insights/?estacionamiento_id={self.item.id}")
+        self.assertEqual(res.status_code, 200)
+        self.assertIn("kpis_financieros", res.data)
+        self.assertIn("horas_pico", res.data)
+        self.assertIn("benchmark_mercado_zonal", res.data)
+        self.assertEqual(res.data["kpis_financieros"]["comision_parkia_pct"], "8.00")
+        self.assertEqual(res.data["kpis_financieros"]["fee_pasarela_pct"], "2.50")
+

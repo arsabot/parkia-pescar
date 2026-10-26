@@ -21,7 +21,7 @@
       <a href="../index.html">Inicio</a>
       <a href="buscador.html">Buscar</a>
       <a href="reservas.html">Mis Reservas</a>
-      <a href="historial.html">Historial</a>
+      <a href="dashboard_negocio.html" class="nav-badge-b2b"><span>★</span> Panel Cocheras</a>
       <a href="javascript:void(0)" onclick="if(window.parkiabotTriggerFaq) window.parkiabotTriggerFaq('mercadopago')">Ayuda</a>
     </nav>
     <a href="perfil.html" class="avatar">
@@ -114,10 +114,19 @@
             <span>Tiempo total</span>
             <span id="sumDuration">3 horas</span>
           </div>
+          <div class="summary-row" id="rowDiscountParkiaPass" style="display:none;color:#059669;font-weight:700;">
+            <span>⭐ Descuento Parkia Pass (10%)</span>
+            <span id="sumDiscount">-$0</span>
+          </div>
           <div class="summary-row total">
             <span>Total a pagar</span>
             <strong id="sumTotal">$0</strong>
           </div>
+        </div>
+
+        <div id="bannerPromoPass" style="font-size:12px;color:#B45309;background:#FFFBEB;border:1px solid #FDE68A;padding:8px 12px;border-radius:10px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;">
+          <span>⭐ Ahorrá 10% en cada reserva con Parkia Pass</span>
+          <a href="perfil.html" style="color:#B45309;font-weight:700;text-decoration:underline;">Activar ($2.999/mes) →</a>
         </div>
 
         <div id="bookingMsg" class="api-msg" style="display:none;margin-bottom:12px;"></div>
@@ -218,6 +227,18 @@
       actualizarCalculos();
     });
 
+  var isParkiaPassUser = false;
+
+  fetch('http://127.0.0.1:8000/api/suscripciones/parkia-pass/?email=conductor@parkia.com')
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d && d.es_parkia_pass) {
+        isParkiaPassUser = true;
+        actualizarCalculos();
+      }
+    })
+    .catch(function(){});
+
   function actualizarCalculos() {
     var horaInicio = document.getElementById('resHoraInicio').value || '10:00';
     var horaFin = document.getElementById('resHoraFin').value || '13:00';
@@ -229,7 +250,24 @@
     if (diff <= 0) diff = 1;
     var horasCobrar = Math.max(1, Math.ceil(diff));
 
-    var total = horasCobrar * precioHora;
+    var subtotal = horasCobrar * precioHora;
+    var total = subtotal;
+
+    if (isParkiaPassUser) {
+      var desc = Math.round(subtotal * 0.10);
+      total = subtotal - desc;
+      var rowDisc = document.getElementById('rowDiscountParkiaPass');
+      if (rowDisc) rowDisc.style.display = 'flex';
+      var sumDisc = document.getElementById('sumDiscount');
+      if (sumDisc) sumDisc.textContent = '-$' + desc.toLocaleString('es-AR');
+      var promo = document.getElementById('bannerPromoPass');
+      if (promo) promo.style.display = 'none';
+    } else {
+      var rowDisc = document.getElementById('rowDiscountParkiaPass');
+      if (rowDisc) rowDisc.style.display = 'none';
+      var promo = document.getElementById('bannerPromoPass');
+      if (promo) promo.style.display = 'flex';
+    }
 
     document.getElementById('resPriceHour').innerHTML = '$' + precioHora.toLocaleString('es-AR') + ' <span>/ hora</span>';
     document.getElementById('sumPriceHour').textContent = '$' + precioHora.toLocaleString('es-AR');

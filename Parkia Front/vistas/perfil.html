@@ -21,7 +21,7 @@
       <a href="../index.html">Inicio</a>
       <a href="buscador.html">Buscar</a>
       <a href="reservas.html">Mis Reservas</a>
-      <a href="historial.html">Historial</a>
+      <a href="dashboard_negocio.html" class="nav-badge-b2b"><span>★</span> Panel Cocheras</a>
       <a href="javascript:void(0)" onclick="if(window.parkiabotTriggerFaq) window.parkiabotTriggerFaq('soporte')">Ayuda</a>
     </nav>
     <a href="perfil.html" class="avatar" style="border:2px solid var(--amber);">
@@ -39,7 +39,7 @@
       <div class="profile-sidebar">
         <div class="profile-avatar" style="background:#0B192C;color:#fff;">CP</div>
         <h4>Conductor Parkia</h4>
-        <p>conductor@parkia.com</p>
+        <p id="userEmailLabel">conductor@parkia.com</p>
         <span class="parkiabot-badge-mp" style="margin-top:6px;">Mercado Pago Conectado</span>
 
         <div class="profile-menu" style="margin-top:16px;">
@@ -49,8 +49,11 @@
           <a href="reservas.html" class="menu-item">
             <i data-lucide="calendar" style="width:16px;height:16px;"></i> Mis reservas activas
           </a>
-          <a href="#" class="menu-item">
-            <i data-lucide="credit-card" style="width:16px;height:16px;"></i> Medios de pago (MP)
+          <a href="javascript:void(0)" onclick="abrirReporteGastosModal()" class="menu-item">
+            <i data-lucide="file-text" style="width:16px;height:16px;"></i> Reporte de Gastos (Pass)
+          </a>
+          <a href="dashboard_negocio.html" class="menu-item">
+            <i data-lucide="bar-chart-2" style="width:16px;height:16px;"></i> Panel Propietario Cocheras
           </a>
           <a href="#" class="menu-item" onclick="if(window.parkiabotTriggerFaq) window.parkiabotTriggerFaq('soporte')">
             <i data-lucide="help-circle" style="width:16px;height:16px;"></i> Soporte y FAQ
@@ -63,6 +66,34 @@
 
       <!-- Contenido principal -->
       <div class="profile-content">
+
+        <!-- Pilar 4: Parkia Pass VIP Subscription Banner -->
+        <div class="parkia-pass-vip-card" id="passCard">
+          <div class="pass-header">
+            <div class="pass-logo">Parkia Pass</div>
+            <span class="pass-badge" id="passStatusBadge">Plan Free</span>
+          </div>
+
+          <p style="font-size:13px;color:#CBD5E1;margin:0 0 14px;max-width:440px;" id="passDesc">
+            Ahorrá un <strong>10% directo</strong> en cada reserva, obtené prioridad en cocheras llenas y descargá tus reportes de gastos deducibles.
+          </p>
+
+          <ul class="pass-benefits-list">
+            <li><i data-lucide="check" style="width:16px;height:16px;color:#F59E0B;"></i> 10% OFF automático en todas tus reservas de estacionamiento</li>
+            <li><i data-lucide="check" style="width:16px;height:16px;color:#F59E0B;"></i> Reserva prioritaria en cocheras de alta demanda</li>
+            <li><i data-lucide="check" style="width:16px;height:16px;color:#F59E0B;"></i> Reporte y exportación de gastos deducibles en PDF/CSV</li>
+          </ul>
+
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;">
+            <button id="btnActivarPass" class="btn-primary" style="background:#F59E0B;color:#0B192C;font-weight:800;border:none;cursor:pointer;padding:10px 18px;" onclick="activarParkiaPass()">
+              Suscribirme por $2.999/mes con Mercado Pago
+            </button>
+            <button id="btnVerGastosPass" class="btn-outline" style="border-color:#F59E0B;color:#FBBF24;display:none;" onclick="abrirReporteGastosModal()">
+              Ver Reporte de Gastos Deducibles
+            </button>
+          </div>
+        </div>
+
         <h2>Datos personales</h2>
 
         <div class="form-row">
@@ -78,7 +109,7 @@
 
         <div class="form-group">
           <label>Email registrado</label>
-          <input type="email" value="conductor@parkia.com" readonly style="background:#F1F5F9;" />
+          <input type="email" id="profileEmail" value="conductor@parkia.com" readonly style="background:#F1F5F9;" />
         </div>
 
         <div class="form-group">
@@ -100,13 +131,48 @@
 
   </div>
 
+  <!-- Modal Reporte de Gastos Deducibles (Pilar 4) -->
+  <div class="mp-modal-backdrop hidden" id="gastosModal">
+    <div class="mp-modal-card" style="max-width:540px;">
+      <div class="mp-modal-header">
+        <div class="mp-modal-brand">
+          <i data-lucide="file-spreadsheet" style="width:24px;height:24px;color:#FFFFFF;"></i>
+          <h3>Reporte de Gastos Parkia Pass</h3>
+        </div>
+        <button type="button" class="mp-modal-close" onclick="cerrarReporteGastosModal()">✕</button>
+      </div>
+
+      <div class="mp-modal-body" style="text-align:left;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;background:#F8FAFC;padding:12px;border-radius:12px;">
+          <div>
+            <div style="font-size:12px;color:#64748B;">Total Gastado en Cocheras:</div>
+            <strong id="repTotalGastado" style="font-size:18px;color:#0B192C;">$16.500</strong>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:12px;color:#64748B;">Ahorro con Parkia Pass (10%):</div>
+            <strong id="repTotalAhorrado" style="font-size:18px;color:#059669;">$1.650</strong>
+          </div>
+        </div>
+
+        <div style="font-size:13px;font-weight:700;margin-bottom:8px;color:#0B192C;">Historial detallado de tickets para deducción impositiva:</div>
+        <div id="repHistoricoList" style="max-height:200px;overflow-y:auto;border:1px solid #E2E8F0;border-radius:10px;padding:8px;">
+          <!-- Renderizado dinámicamente -->
+        </div>
+
+        <button type="button" class="btn-primary" style="width:100%;margin-top:16px;display:flex;align-items:center;justify-content:center;gap:8px;" onclick="window.print()">
+          <i data-lucide="printer" style="width:16px;height:16px;"></i> Imprimir / Exportar Comprobante Oficial
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Bottom Nav Mobile -->
   <nav class="bottom-nav">
     <div class="bottom-nav-inner">
       <a href="../index.html"><i data-lucide="house" class="nav-icon"></i> Inicio</a>
       <a href="buscador.html"><i data-lucide="search" class="nav-icon"></i> Buscar</a>
       <a href="reservas.html"><i data-lucide="calendar" class="nav-icon"></i> Reservas</a>
-      <a href="historial.html"><i data-lucide="clipboard-list" class="nav-icon"></i> Historial</a>
+      <a href="dashboard_negocio.html"><i data-lucide="bar-chart-2" class="nav-icon"></i> Cocheras</a>
       <a href="perfil.html" class="active"><i data-lucide="user" class="nav-icon"></i> Perfil</a>
     </div>
   </nav>
@@ -116,6 +182,95 @@
 <script src="../js/chatbot.js"></script>
 <script>
   if (window.lucide) { lucide.createIcons(); }
+
+  var userEmail = 'conductor@parkia.com';
+
+  function verificarEstadoParkiaPass() {
+    fetch('http://127.0.0.1:8000/api/suscripciones/parkia-pass/?email=' + encodeURIComponent(userEmail))
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        var badge = document.getElementById('passStatusBadge');
+        var btn = document.getElementById('btnActivarPass');
+        var btnGastos = document.getElementById('btnVerGastosPass');
+        var desc = document.getElementById('passDesc');
+
+        if (data.es_parkia_pass) {
+          badge.textContent = '⭐ VIP PASS ACTIVO';
+          badge.style.background = '#10B981';
+          badge.style.color = '#FFFFFF';
+          badge.style.borderColor = '#059669';
+          btn.textContent = 'Membresía Activa (10% OFF)';
+          btn.style.background = '#10B981';
+          btn.style.color = '#FFFFFF';
+          btnGastos.style.display = 'inline-flex';
+          desc.innerHTML = '¡Tu membresía <strong>Parkia Pass</strong> está activa! Tenés 10% de descuento automático en cada cochera y reserva prioritaria.';
+        } else {
+          badge.textContent = 'Plan Free';
+          btn.textContent = 'Suscribirme por $2.999/mes con Mercado Pago';
+          btnGastos.style.display = 'none';
+        }
+      })
+      .catch(function(e) {
+        console.warn('Error Parkia Pass:', e);
+      });
+  }
+
+  function activarParkiaPass() {
+    fetch('http://127.0.0.1:8000/api/suscripciones/parkia-pass/contratar/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ usuario_email: userEmail, meses: 1 })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(res) {
+      alert('¡Felicitaciones! Has activado Parkia Pass.\n\nDesde ahora contás con un 10% de descuento directo en todas tus reservas de estacionamiento procesadas con Mercado Pago.');
+      verificarEstadoParkiaPass();
+    })
+    .catch(function() {
+      alert('Error al activar la suscripción.');
+    });
+  }
+
+  function abrirReporteGastosModal() {
+    fetch('http://127.0.0.1:8000/api/suscripciones/parkia-pass/reporte-gastos/?email=' + encodeURIComponent(userEmail))
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        document.getElementById('repTotalGastado').textContent = '$' + Number(data.total_gastado || 0).toLocaleString('es-AR');
+        document.getElementById('repTotalAhorrado').textContent = '$' + Number(data.ahorro_acumulado_parkia_pass || 0).toLocaleString('es-AR');
+
+        var items = data.items || [];
+        var html = '';
+        if (items.length === 0) {
+          html = '<div style="font-size:12px;color:#94A3B8;padding:8px;">No hay reservas registradas en el historial.</div>';
+        } else {
+          items.forEach(function(it) {
+            html += 
+              '<div style="display:flex;justify-content:space-between;padding:8px;border-bottom:1px solid #F1F5F9;font-size:12px;">' +
+                '<div>' +
+                  '<strong>' + it.codigo + '</strong> · ' + it.estacionamiento + '<br>' +
+                  '<span style="color:#64748B;">' + it.fecha + ' (' + it.duracion_horas + ' hs)</span>' +
+                '</div>' +
+                '<div style="text-align:right;">' +
+                  '<strong>$' + Number(it.monto).toLocaleString('es-AR') + '</strong><br>' +
+                  '<span style="color:#059669;font-weight:700;">' + it.estado + '</span>' +
+                '</div>' +
+              '</div>';
+          });
+        }
+        document.getElementById('repHistoricoList').innerHTML = html;
+        document.getElementById('gastosModal').classList.remove('hidden');
+        if (window.lucide) { lucide.createIcons(); }
+      })
+      .catch(function(e) {
+        console.error(e);
+      });
+  }
+
+  function cerrarReporteGastosModal() {
+    document.getElementById('gastosModal').classList.add('hidden');
+  }
+
+  verificarEstadoParkiaPass();
 </script>
 </body>
 </html>

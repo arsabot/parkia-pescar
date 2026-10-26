@@ -21,7 +21,7 @@
       <a href="../index.html">Inicio</a>
       <a href="buscador.html">Buscar</a>
       <a href="reservas.html">Mis Reservas</a>
-      <a href="historial.html">Historial</a>
+      <a href="dashboard_negocio.html" class="nav-badge-b2b"><span>★</span> Panel Cocheras</a>
       <a href="javascript:void(0)" onclick="if(window.parkiabotTriggerFaq) window.parkiabotTriggerFaq('qr')">Ayuda</a>
     </nav>
     <a href="perfil.html" class="avatar">
@@ -97,6 +97,34 @@
       </div>
     </div>
 
+    <!-- Pilar 3: Beneficios y Publicidad Geolocalizada en la Zona -->
+    <div class="nearby-deals-section" id="nearbyDealsSection" style="max-width:540px;margin:24px auto 0;">
+      <div class="nearby-deals-header">
+        <div>
+          <h4 style="margin:0;font-size:16px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:6px;">
+            <span>🎁</span> Beneficios exclusivos cerca de tu cochera
+          </h4>
+          <p style="margin:3px 0 0;font-size:12px;color:var(--text-muted);">
+            ¿Sabías que tenés promociones a pocos metros al estacionar con Parkia?
+          </p>
+        </div>
+      </div>
+
+      <div id="dealsContainer">
+        <!-- Renderizado dinámicamente -->
+        <div class="nearby-deal-item">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="font-size:24px;">☕</div>
+            <div>
+              <strong style="font-size:14px;color:var(--navy);">Café Martínez Obelisco</strong>
+              <div style="font-size:12px;color:#059669;font-weight:700;">15% OFF en merienda y café (a 80m)</div>
+            </div>
+          </div>
+          <span class="deal-coupon-badge">PARKIA15</span>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <!-- Bottom Nav Mobile -->
@@ -105,7 +133,7 @@
       <a href="../index.html"><i data-lucide="house" class="nav-icon"></i> Inicio</a>
       <a href="buscador.html"><i data-lucide="search" class="nav-icon"></i> Buscar</a>
       <a href="reservas.html" class="active"><i data-lucide="calendar" class="nav-icon"></i> Reservas</a>
-      <a href="historial.html"><i data-lucide="clipboard-list" class="nav-icon"></i> Historial</a>
+      <a href="dashboard_negocio.html"><i data-lucide="bar-chart-2" class="nav-icon"></i> Cocheras</a>
       <a href="perfil.html"><i data-lucide="user" class="nav-icon"></i> Perfil</a>
     </div>
   </nav>
@@ -136,6 +164,35 @@
     statusText.textContent = '✓ Abonado con Mercado Pago (Aprobado)';
   }
 
+  function cargarComerciosCercanos(estId) {
+    fetch('http://127.0.0.1:8000/api/comercios-cercanos/?estacionamiento_id=' + encodeURIComponent(estId || 1))
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        var items = data.results || [];
+        if (items.length === 0) return;
+
+        var html = '';
+        items.forEach(function(item) {
+          var coupon = 'PARK' + Math.floor(10 + Math.random() * 89);
+          html += 
+            '<div class="nearby-deal-item">' +
+              '<div style="display:flex;align-items:center;gap:12px;">' +
+                '<div style="font-size:24px;">' + (item.icono || '📍') + '</div>' +
+                '<div>' +
+                  '<strong style="font-size:14px;color:var(--navy);">' + item.nombre + '</strong>' +
+                  '<div style="font-size:12px;color:#059669;font-weight:700;">' + item.descuento + ' (a ' + item.distancia_metros + 'm)</div>' +
+                '</div>' +
+              '</div>' +
+              '<span class="deal-coupon-badge" title="Mostrá este cupón en el local">' + coupon + '</span>' +
+            '</div>';
+        });
+        document.getElementById('dealsContainer').innerHTML = html;
+      })
+      .catch(function(e) {
+        console.warn('Comercios no cargados:', e);
+      });
+  }
+
   if (reservaId) {
     document.getElementById('confQrCode').textContent = '#PK-' + String(reservaId).padStart(5, '0');
     document.getElementById('confQrImg').src = 'https://api.qrserver.com/v1/create-qr-code/?size=164x164&data=PARKIA-RES-' + reservaId;
@@ -160,11 +217,15 @@
           var d2 = new Date(res.fecha_fin);
           document.getElementById('confSalida').textContent = d2.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }) + ' hs';
         }
+
+        cargarComerciosCercanos(res.estacionamiento || 1);
       })
       .catch(function () {
-        // Fallback demo
         document.getElementById('confTotal').textContent = '$7.500';
+        cargarComerciosCercanos(1);
       });
+  } else {
+    cargarComerciosCercanos(1);
   }
 </script>
 </body>

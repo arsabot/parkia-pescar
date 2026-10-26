@@ -83,6 +83,7 @@ def crear_preferencia_mercadopago(reserva: Reserva, base_url: str = 'http://127.
         sandbox_init_point = f"https://sandbox.mercadopago.com.ar/checkout/v1/redirect?pref_id={preference_id}"
 
     # Registrar o actualizar el Pago en base de datos
+    fee_digital = (Decimal(str(monto)) * Decimal('0.025')).quantize(Decimal('0.01'))
     pago, _ = Pago.objects.get_or_create(
         reserva=reserva,
         defaults={
@@ -91,10 +92,15 @@ def crear_preferencia_mercadopago(reserva: Reserva, base_url: str = 'http://127.
             "proveedor": Pago.Proveedor.MERCADO_PAGO,
             "estado": Pago.Estado.PENDIENTE,
             "referencia_externa": preference_id,
+            "fee_procesamiento": fee_digital,
         }
     )
     pago.referencia_externa = preference_id
-    pago.save(update_fields=["referencia_externa"])
+    if pago.fee_procesamiento == 0:
+        pago.fee_procesamiento = fee_digital
+        pago.save(update_fields=["referencia_externa", "fee_procesamiento"])
+    else:
+        pago.save(update_fields=["referencia_externa"])
 
     qr_payload = f"00020101021243650016com.mercadopago0214MP-{reserva.id}5204000053030325802AR5914PARKIA_ARGENTI6011BUENOS_AIRES62070503***6304"
 
@@ -106,6 +112,7 @@ def crear_preferencia_mercadopago(reserva: Reserva, base_url: str = 'http://127.
         "sandbox_init_point": sandbox_init_point,
         "qr_payload": qr_payload,
         "monto": monto,
+        "fee_procesamiento": str(pago.fee_procesamiento),
         "titulo": titulo,
         "estado": pago.estado,
         "proveedor": "mercado_pago"
@@ -115,12 +122,15 @@ def crear_preferencia_mercadopago(reserva: Reserva, base_url: str = 'http://127.
 def procesar_pago_aprobado(pago: Pago, referencia_pago: str = None) -> Pago:
     """
     Confirma el pago como APROBADO y confirma la reserva asociada en una transacción.
+    Calcula el fee de procesamiento digital (Pilar 5: 2.5%).
     """
     pago.estado = Pago.Estado.APROBADO
     pago.fecha_pago = timezone.now()
+    if pago.fee_procesamiento == 0:
+        pago.fee_procesamiento = (pago.monto * Decimal('0.025')).quantize(Decimal('0.01'))
     if referencia_pago:
         pago.referencia_externa = referencia_pago
-    pago.save(update_fields=["estado", "fecha_pago", "referencia_externa"])
+    pago.save(update_fields=["estado", "fecha_pago", "fee_procesamiento", "referencia_externa"])
 
     # Confirmar la reserva si está pendiente
     if pago.reserva.estado == Reserva.Estado.PENDIENTE:

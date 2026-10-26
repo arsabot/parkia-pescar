@@ -18,9 +18,11 @@ class UserSerializer(serializers.ModelSerializer):
             'role',
             'phone',
             'avatar_url',
+            'es_parkia_pass',
+            'parkia_pass_vence',
             'created_at'
         ]
-        read_only_fields = ['id', 'created_at', 'full_name']
+        read_only_fields = ['id', 'created_at', 'full_name', 'es_parkia_pass', 'parkia_pass_vence']
 
     def get_full_name(self, obj):
         return f"{obj.first_name} {obj.last_name}".strip() or obj.email

@@ -80,6 +80,30 @@ Sumate a la red Parkia para maximizar tu ocupación:
       link: { text: "Contactar área comercial", url: "mailto:empresas@parkia.com" }
     },
     {
+      id: "parkia_pass",
+      pregunta: "⭐ ¿Qué es Parkia Pass y qué descuentos incluye?",
+      keywords: ["pass", "parkia pass", "vip", "descuento", "membresia", "freemium", "suscripcion", "beneficios", "ahorro"],
+      respuesta: `**Parkia Pass** es nuestra membresía mensual exclusiva para conductores ($2.999/mes):
+• 🏷️ **10% de descuento directo** en todas tus reservas de estacionamiento.
+• ⚡ **Reserva prioritaria** en garages con alta demanda en horario pico.
+• 📊 **Reporte de gastos descargable** para deducciones impositivas y control de flota.
+• 🎁 **Beneficios y 2x1** en cafeterías y lavaderos de la zona asociada.`,
+      link: { text: "Ver y Activar Parkia Pass", url: (window.location.pathname.includes('/vistas/') ? 'perfil.html' : 'vistas/perfil.html') }
+    },
+    {
+      id: "modelo_negocio",
+      pregunta: "💼 ¿Cómo funciona el modelo de negocio para cocheras?",
+      keywords: ["modelo", "negocio", "comision", "porcentaje", "saas", "plan basico", "plan premium", "publicidad", "monetizacion", "insights"],
+      respuesta: `El ecosistema Parkia opera bajo 6 pilares de monetización:
+1. 🏷️ **Comisión Marketplace (8%)**: El estacionamiento solo abona comisión sobre reservas confirmadas.
+2. 👑 **Suscripción B2B SaaS**: Plan Básico ($15.000) o Premium ($35.000 con badge dorado, top ranking y analítica).
+3. ☕ **Publicidad Geolocalizada**: Comercios vecinos (cafés, lavaderos) pagan pauta para ofrecer beneficios a los conductores.
+4. ⭐ **Parkia Pass (B2C)**: Membresía para usuarios frecuentes con 10% OFF.
+5. 💳 **Fee Pasarela Digital (2.5%)**: Procesamiento seguro con Mercado Pago.
+6. 📈 **Datos e Insights B2B**: Reportes de horas pico, ocupación y precios zonales.`,
+      link: { text: "Abrir Panel Cocheras B2B", url: (window.location.pathname.includes('/vistas/') ? 'dashboard_negocio.html' : 'vistas/dashboard_negocio.html') }
+    },
+    {
       id: "soporte",
       pregunta: "📞 ¿Cómo hablo con soporte humano?",
       keywords: ["humano", "persona", "soporte", "contacto", "telefono", "whatsapp", "ayuda", "asesor"],

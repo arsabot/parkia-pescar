@@ -1,5 +1,7 @@
 from rest_framework import serializers
+from decimal import Decimal
 from apps.users.models import Reserva, Estacionamiento, EspacioEstacionamiento, User, Pago
+
 
 class ReservaItemSerializer(serializers.ModelSerializer):
     estacionamiento_nombre = serializers.CharField(source='estacionamiento.nombre', read_only=True)
@@ -9,13 +11,17 @@ class ReservaItemSerializer(serializers.ModelSerializer):
     codigo_qr = serializers.SerializerMethodField()
     pago_estado = serializers.SerializerMethodField()
     pago_proveedor = serializers.SerializerMethodField()
+    fee_procesamiento = serializers.SerializerMethodField()
+    neto_propietario = serializers.SerializerMethodField()
 
     class Meta:
         model = Reserva
         fields = [
             'id', 'estacionamiento', 'estacionamiento_nombre', 'estacionamiento_direccion',
             'espacio', 'espacio_numero', 'fecha_inicio', 'fecha_fin',
-            'precio_total', 'estado', 'estado_display', 'codigo_qr',
+            'precio_total', 'comision_pct', 'comision_monto',
+            'fee_procesamiento', 'neto_propietario',
+            'estado', 'estado_display', 'codigo_qr',
             'pago_estado', 'pago_proveedor', 'created_at'
         ]
 
@@ -29,6 +35,17 @@ class ReservaItemSerializer(serializers.ModelSerializer):
     def get_pago_proveedor(self, obj):
         pago = obj.pagos.first()
         return pago.proveedor if pago else None
+
+    def get_fee_procesamiento(self, obj):
+        pago = obj.pagos.first()
+        return str(pago.fee_procesamiento) if pago else "0.00"
+
+    def get_neto_propietario(self, obj):
+        comision = obj.comision_monto or Decimal('0.00')
+        pago = obj.pagos.first()
+        fee = pago.fee_procesamiento if pago else Decimal('0.00')
+        neto = obj.precio_total - comision - fee
+        return str(max(neto, Decimal('0.00')))
 
 
 class CrearReservaSerializer(serializers.Serializer):

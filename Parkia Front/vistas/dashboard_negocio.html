@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parkia - Panel de Negocio & Inteligencia B2B</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/vistas.css" />
+  <link rel="stylesheet" href="../css/chatbot.css" />
+</head>
+<body>
+
+<div class="app">
+  <header class="header">
+    <div style="display:flex;align-items:center;gap:16px;">
+      <a href="../index.html" class="logo" style="text-decoration:none;">Parkia</a>
+      <span class="nav-badge-b2b"><span>★</span> B2B Partner Hub</span>
+    </div>
+    <nav class="nav">
+      <a href="../index.html">Mapa Conductor</a>
+      <a href="buscador.html">Buscador</a>
+      <a href="reservas.html">Reservas</a>
+      <a href="dashboard_negocio.html" class="active">Panel Cocheras</a>
+      <a href="javascript:void(0)" onclick="if(window.parkiabotTriggerFaq) window.parkiabotTriggerFaq('tarifas')">Ayuda</a>
+    </nav>
+    <a href="perfil.html" class="avatar" title="Mi Cuenta">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </a>
+  </header>
+
+  <div class="biz-dashboard-container">
+    
+    <!-- Top Bar: Selector de Cochera y Estado SaaS -->
+    <div class="biz-top-bar">
+      <div class="biz-selector-group">
+        <label for="selectParking" style="font-size:13px;font-weight:700;color:var(--text-secondary);">Cochera a Administrar:</label>
+        <select id="selectParking" class="biz-select" onchange="cargarInsightsDashboard()">
+          <option value="1">Estacionamiento Central Obelisco (Centro)</option>
+          <option value="5">Cocheras Palermo Soho (Palermo)</option>
+          <option value="2">Parking Plaza de Mayo (Monserrat)</option>
+          <option value="3">Garage Puerto Madero Dique 3</option>
+          <option value="4">Parkia Recoleta Mall</option>
+        </select>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span id="bizPlanBadge" class="biz-plan-badge premium">
+          ⭐ Plan Premium Activo
+        </span>
+        <button id="btnUpgradePlan" class="btn-primary" style="padding:8px 16px;font-size:13px;display:none;" onclick="abrirModalUpgradeSaaS()">
+          Subir a Plan Premium ($35.000)
+        </button>
+      </div>
+    </div>
+
+    <!-- Sección 1: KPIs Financieros (Pilares 1, 5, 2) -->
+    <div class="biz-kpi-grid">
+      <!-- Facturación Bruta -->
+      <div class="biz-kpi-card blue">
+        <div class="biz-kpi-label">
+          <span>Facturación Bruta</span>
+          <i data-lucide="wallet" style="width:16px;height:16px;color:#0284C7;"></i>
+        </div>
+        <div class="biz-kpi-val" id="kpiFacturacion">$148.500</div>
+        <div class="biz-kpi-sub" id="kpiReservasCount">Total reservas procesadas este período</div>
+      </div>
+
+      <!-- Pilar 1: Comisión Marketplace Parkia (8%) -->
+      <div class="biz-kpi-card amber">
+        <div class="biz-kpi-label">
+          <span>Comisión Parkia (8%)</span>
+          <i data-lucide="percent" style="width:16px;height:16px;color:#F59E0B;"></i>
+        </div>
+        <div class="biz-kpi-val" id="kpiComisionParkia">$11.880</div>
+        <div class="biz-kpi-sub">Retención plataforma marketplace (Pilar 1)</div>
+      </div>
+
+      <!-- Pilar 5: Fee Pasarela Digital (2.5%) -->
+      <div class="biz-kpi-card mp">
+        <div class="biz-kpi-label">
+          <span>Fee Mercado Pago (2.5%)</span>
+          <i data-lucide="credit-card" style="width:16px;height:16px;color:#009EE3;"></i>
+        </div>
+        <div class="biz-kpi-val" id="kpiFeeDigital">$3.712</div>
+        <div class="biz-kpi-sub">Costo transaccional digital pasarela (Pilar 5)</div>
+      </div>
+
+      <!-- Neto a Liquidar -->
+      <div class="biz-kpi-card green">
+        <div class="biz-kpi-label">
+          <span>Neto a Liquidar</span>
+          <i data-lucide="circle-check" style="width:16px;height:16px;color:#10B981;"></i>
+        </div>
+        <div class="biz-kpi-val" id="kpiNetoLiquidar" style="color:#059669;">$132.908</div>
+        <div class="biz-kpi-sub">Monto neto acreditado en tu cuenta bancaria</div>
+      </div>
+    </div>
+
+    <!-- Sección 2: Dos columnas principales -->
+    <div class="biz-grid-2col">
+      
+      <!-- Columna Izquierda: Curva de Demanda 24hs & Ocupación en Tiempo Real -->
+      <div class="biz-card">
+        <div class="biz-card-header">
+          <h3 class="biz-card-title">
+            <i data-lucide="bar-chart-3" style="width:18px;height:18px;color:#F59E0B;"></i>
+            Curva de Demanda & Horas Pico (Pilar 6)
+          </h3>
+          <span style="font-size:12px;color:var(--text-muted);">Actualizado en vivo</span>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;background:#F8FAFC;padding:12px 16px;border-radius:12px;">
+          <div>
+            <div style="font-size:12px;color:var(--text-secondary);">Ocupación promedio del día:</div>
+            <strong id="bizTasaOcupacion" style="font-size:20px;color:var(--navy);">82.4%</strong>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:12px;color:var(--text-secondary);">Capacidad instalada:</div>
+            <strong id="bizCapacidadText" style="font-size:14px;color:var(--text-secondary);">35 cocheras totales</strong>
+          </div>
+        </div>
+
+        <!-- Gráfico de Demanda Horaria 24h -->
+        <div style="font-size:13px;font-weight:700;color:var(--text-secondary);margin-bottom:8px;">
+          Distribución de Ocupación por Hora (00:00 a 23:00 hs)
+        </div>
+        <div class="demand-chart-container" id="demandChartBars">
+          <!-- Renderizado dinámicamente con JS -->
+        </div>
+
+        <!-- Badges de Horarios Pico detectados -->
+        <div style="margin-top:20px;display:grid;grid-template-columns:repeat(auto-fit, minmax(180px,1fr));gap:10px;">
+          <div style="padding:10px;background:#FFFBEB;border:1px solid #FDE68A;border-radius:10px;font-size:12px;color:#92400E;">
+            <strong>🌅 Mañana: 08:00 - 10:00</strong><br>
+            Demanda pico del 95%
+          </div>
+          <div style="padding:10px;background:#FFFBEB;border:1px solid #FDE68A;border-radius:10px;font-size:12px;color:#92400E;">
+            <strong>☀️ Almuerzo: 13:00 - 15:00</strong><br>
+            Demanda pico del 90%
+          </div>
+          <div style="padding:10px;background:#FFFBEB;border:1px solid #FDE68A;border-radius:10px;font-size:12px;color:#92400E;">
+            <strong>🌆 Tarde: 18:00 - 20:00</strong><br>
+            Demanda pico del 96%
+          </div>
+        </div>
+
+        <!-- Pilar 3: Publicidad Geolocalizada en la Zona -->
+        <div style="margin-top:28px;border-top:1px solid #F1F5F9;padding-top:18px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <h4 style="margin:0;font-size:15px;color:var(--navy);display:flex;align-items:center;gap:8px;">
+              <i data-lucide="map-pin" style="width:16px;height:16px;color:#0284C7;"></i>
+              Comercios Patrocinados Cercanos (Pilar 3)
+            </h4>
+            <span id="bizPautaTotalBadge" style="font-size:12px;font-weight:700;color:#0284C7;background:#E0F2FE;padding:3px 8px;border-radius:999px;">
+              +$33.000/mes pauta
+            </span>
+          </div>
+          <p style="font-size:12px;color:var(--text-muted);margin:4px 0 12px;">
+            Comercios a menos de 200m que pagan pauta mensual para figurar como recomendación a los conductores que reservan en tu cochera.
+          </p>
+
+          <div class="biz-merchants-grid" id="bizMerchantsList">
+            <!-- Renderizado dinámicamente -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Columna Derecha: Inteligencia Zonal & Suscripción B2B -->
+      <div>
+        
+        <!-- Tarjeta Benchmark Zonal (Pilar 6) -->
+        <div class="biz-card" style="margin-bottom:20px;">
+          <div class="biz-card-header">
+            <h3 class="biz-card-title">
+              <i data-lucide="trending-up" style="width:18px;height:18px;color:#10B981;"></i>
+              Inteligencia Zonal (Pilar 6)
+            </h3>
+            <span id="bizBenchmarkBadge" class="benchmark-badge-pill positive">Posición Fuerte</span>
+          </div>
+
+          <div class="benchmark-row">
+            <span style="color:var(--text-secondary);">Zona de influencia:</span>
+            <strong id="bizZonaNombre">Microcentro & Obelisco</strong>
+          </div>
+          <div class="benchmark-row">
+            <span style="color:var(--text-secondary);">Tu tarifa por hora:</span>
+            <strong id="bizTuTarifa" style="color:var(--navy);font-size:15px;">$2.500/h</strong>
+          </div>
+          <div class="benchmark-row">
+            <span style="color:var(--text-secondary);">Promedio cocheras de la zona:</span>
+            <strong id="bizTarifaPromedio">$3.400/h</strong>
+          </div>
+          <div class="benchmark-row">
+            <span style="color:var(--text-secondary);">Índice de Demanda Barrial:</span>
+            <span style="color:#059669;font-weight:700;" id="bizIndiceDemanda">94/100 (Muy Alta)</span>
+          </div>
+
+          <!-- Recomendación Estratégica -->
+          <div class="recommendation-box">
+            <i data-lucide="sparkles" style="width:20px;height:20px;color:#16A34A;flex-shrink:0;"></i>
+            <span id="bizRecomendacion">
+              Tu tarifa está 26.5% por debajo del promedio zonal. Tenés margen para aplicar tarifa dinámica en horario pico y capturar un 8.5% más de rentabilidad neta.
+            </span>
+          </div>
+
+          <button onclick="window.print()" class="btn-outline" style="width:100%;margin-top:16px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;">
+            <i data-lucide="printer" style="width:15px;height:15px;"></i> Imprimir Reporte de Inteligencia de Mercado
+          </button>
+        </div>
+
+        <!-- Tarjeta Suscripción SaaS (Pilar 2) -->
+        <div class="biz-card">
+          <div class="biz-card-header">
+            <h3 class="biz-card-title">
+              <i data-lucide="crown" style="width:18px;height:18px;color:#F59E0B;"></i>
+              Tu Plan B2B SaaS (Pilar 2)
+            </h3>
+          </div>
+
+          <p style="font-size:13px;color:var(--text-secondary);margin:0 0 14px;">
+            Los estacionamientos en Parkia eligen entre dos niveles de servicio para maximizar su captación digital:
+          </p>
+
+          <div style="border:1px solid #E2E8F0;border-radius:12px;padding:12px;margin-bottom:10px;background:#F8FAFC;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <strong>Plan Básico ($15.000/mes)</strong>
+              <span style="font-size:11px;color:#64748B;">Estándar</span>
+            </div>
+            <ul style="margin:8px 0 0;padding-left:18px;font-size:12px;color:#475569;">
+              <li>Presencia en el listado y mapa</li>
+              <li>Tarifas y horarios visibles</li>
+              <li>Gestión básica de reservas</li>
+            </ul>
+          </div>
+
+          <div style="border:2px solid #F59E0B;border-radius:12px;padding:12px;margin-bottom:16px;background:#FFFBEB;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <strong style="color:#B45309;">Plan Premium ($35.000/mes)</strong>
+              <span style="background:#F59E0B;color:#FFF;padding:2px 6px;border-radius:6px;font-size:10px;font-weight:700;">DESTACADO</span>
+            </div>
+            <ul style="margin:8px 0 0;padding-left:18px;font-size:12px;color:#92400E;">
+              <li>Aparición destacada #1 en búsquedas</li>
+              <li>Badge dorado en el mapa de conductores</li>
+              <li>Acceso completo a analítica, ocupación y horas pico</li>
+              <li>Reportes de inteligencia de mercado zonal</li>
+            </ul>
+          </div>
+
+          <button id="btnCambiarPlanAction" class="btn-primary" style="width:100%;font-size:14px;display:flex;align-items:center;justify-content:center;gap:8px;" onclick="abrirModalUpgradeSaaS()">
+            <i data-lucide="zap" style="width:16px;height:16px;"></i> Renovar o Cambiar Plan con Mercado Pago
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Bottom Nav Mobile -->
+  <nav class="bottom-nav">
+    <div class="bottom-nav-inner">
+      <a href="../index.html"><i data-lucide="house" class="nav-icon"></i> Inicio</a>
+      <a href="buscador.html"><i data-lucide="search" class="nav-icon"></i> Buscar</a>
+      <a href="reservas.html"><i data-lucide="calendar" class="nav-icon"></i> Reservas</a>
+      <a href="dashboard_negocio.html" class="active"><i data-lucide="bar-chart-2" class="nav-icon"></i> Cocheras</a>
+      <a href="perfil.html"><i data-lucide="user" class="nav-icon"></i> Perfil</a>
+    </div>
+  </nav>
+</div>
+
+<!-- Modal Suscripción B2B con Mercado Pago -->
+<div class="mp-modal-backdrop hidden" id="saasModal">
+  <div class="mp-modal-card">
+    <div class="mp-modal-header">
+      <div class="mp-modal-brand">
+        <svg width="26" height="26" viewBox="0 0 32 32" fill="#FFFFFF">
+          <path d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2zm0 4.5c2.3 0 4.2 1.9 4.2 4.2 0 .8-.2 1.5-.6 2.1l2.8 2.8c1.3-1.4 2-3.1 2-4.9 0-4.6-3.8-8.4-8.4-8.4S7.6 6.1 7.6 10.7c0 1.8.7 3.5 2 4.9l2.8-2.8c-.4-.6-.6-1.3-.6-2.1 0-2.3 1.9-4.2 4.2-4.2zm6.7 13.8L16 13.6l-6.7 6.7c-1.2 1.2-1.2 3.1 0 4.2 1.2 1.2 3.1 1.2 4.2 0l2.5-2.5 2.5 2.5c1.2 1.2 3.1 1.2 4.2 0 1.2-1.1 1.2-3.1 0-4.2z"/>
+        </svg>
+        <h3>Suscripción B2B SaaS Cochera</h3>
+      </div>
+      <button type="button" class="mp-modal-close" onclick="cerrarModalUpgradeSaaS()">✕</button>
+    </div>
+
+    <div class="mp-modal-body">
+      <div style="font-size:13px;color:#475569;margin-bottom:6px;">Plan Seleccionado:</div>
+      <div style="font-size:18px;font-weight:800;color:#0B192C;margin-bottom:4px;">Plan Premium ($35.000/mes)</div>
+      <div class="mp-amount-badge" style="background:#FFFBEB;color:#B45309;border:1px solid #FCD34D;">$35.000 / mes</div>
+
+      <div class="mp-qr-box" style="margin:16px auto;">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=PARKIA-B2B-PREMIUM-SUBSCRIPTION" alt="QR Suscripción Mercado Pago" />
+      </div>
+      <p style="font-size:12px;color:#64748B;margin:0 0 16px;">
+        Aboná con <strong>Mercado Pago Suscripciones</strong> con débito automático mensual o tarjeta de crédito en 1 pago.
+      </p>
+
+      <button type="button" class="mp-btn-confirm" onclick="confirmarUpgradeSaaS()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        <span>Activar Plan Premium Inmediatamente</span>
+      </button>
+
+      <button type="button" class="mp-btn-sandbox" onclick="cerrarModalUpgradeSaaS()">
+        Cancelar y volver al panel
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script src="../js/chatbot.js"></script>
+<script>
+  if (window.lucide) { lucide.createIcons(); }
+
+  var currentParkingId = 1;
+
+  function formatMoney(num) {
+    return '$' + Math.round(Number(num || 0)).toLocaleString('es-AR');
+  }
+
+  function cargarInsightsDashboard() {
+    var select = document.getElementById('selectParking');
+    currentParkingId = select.value || 1;
+
+    fetch('http://127.0.0.1:8000/api/analytics/insights/?estacionamiento_id=' + encodeURIComponent(currentParkingId))
+      .then(function(r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function(data) {
+        renderDashboardData(data);
+      })
+      .catch(function(err) {
+        console.error('Error cargando analytics:', err);
+      });
+  }
+
+  function renderDashboardData(d) {
+    // 1. Estacionamiento y Plan
+    var est = d.estacionamiento || {};
+    var badge = document.getElementById('bizPlanBadge');
+    var btnUpgrade = document.getElementById('btnUpgradePlan');
+
+    if (est.plan_nivel === 'premium') {
+      badge.className = 'biz-plan-badge premium';
+      badge.innerHTML = '⭐ Plan Premium Activo';
+      btnUpgrade.style.display = 'none';
+    } else {
+      badge.className = 'biz-plan-badge basico';
+      badge.innerHTML = '📋 Plan Básico Activo';
+      btnUpgrade.style.display = 'inline-flex';
+    }
+
+    // 2. KPIs Financieros (Pilares 1 y 5)
+    var kpis = d.kpis_financieros || {};
+    document.getElementById('kpiFacturacion').textContent = formatMoney(kpis.facturacion_bruta);
+    document.getElementById('kpiComisionParkia').textContent = formatMoney(kpis.comision_parkia_monto);
+    document.getElementById('kpiFeeDigital').textContent = formatMoney(kpis.fee_pasarela_monto);
+    document.getElementById('kpiNetoLiquidar').textContent = formatMoney(kpis.neto_a_liquidar);
+    document.getElementById('kpiReservasCount').textContent = (kpis.total_reservas_confirmadas || 0) + ' reservas confirmadas';
+
+    // 3. Ocupación y Capacidad
+    var ocu = d.ocupacion || {};
+    document.getElementById('bizTasaOcupacion').textContent = (ocu.tasa_ocupacion_pct || 80) + '%';
+    document.getElementById('bizCapacidadText').textContent = (ocu.capacidad_total || 30) + ' cocheras (' + (ocu.espacios_libres || 0) + ' libres)';
+
+    // 4. Curva de Demanda 24hs
+    var curva = (d.horas_pico && d.horas_pico.curva_24h) || [];
+    var barsHtml = '';
+    curva.forEach(function(item) {
+      var isPeak = item.es_pico;
+      var hPercent = Math.max(item.demanda_pct, 6);
+      barsHtml += 
+        '<div class="demand-bar-wrap" title="' + item.hora + ': ' + item.demanda_pct + '% de ocupación">' +
+          '<div class="demand-bar ' + (isPeak ? 'peak' : '') + '" style="height:' + hPercent + '%;"></div>' +
+          (parseInt(item.hora) % 4 === 0 ? '<span class="demand-label">' + item.hora + '</span>' : '') +
+        '</div>';
+    });
+    document.getElementById('demandChartBars').innerHTML = barsHtml;
+
+    // 5. Benchmark Zonal (Pilar 6)
+    var bench = d.benchmark_mercado_zonal || {};
+    document.getElementById('bizZonaNombre').textContent = bench.zona || 'Centro / Microcentro';
+    document.getElementById('bizTuTarifa').textContent = formatMoney(bench.tu_tarifa_hora) + '/h';
+    document.getElementById('bizTarifaPromedio').textContent = formatMoney(bench.precio_promedio_zona) + '/h';
+    document.getElementById('bizIndiceDemanda').textContent = bench.indice_demanda_zona || '94/100 (Muy Alta)';
+    document.getElementById('bizRecomendacion').textContent = bench.recomendacion_estrategica || '';
+
+    // 6. Comercios Patrocinados (Pilar 3)
+    var pub = d.publicidad_geolocalizada || {};
+    document.getElementById('bizPautaTotalBadge').textContent = '+' + formatMoney(pub.ingreso_mensual_pauta) + '/mes pauta';
+
+    var merchantsList = pub.comercios || [];
+    var mHtml = '';
+    if (merchantsList.length === 0) {
+      mHtml = '<div style="font-size:13px;color:#94A3B8;padding:12px;">No hay comercios asociados en este momento.</div>';
+    } else {
+      merchantsList.forEach(function(m) {
+        var icon = '☕';
+        if (m.rubro.toLowerCase().includes('lavadero')) icon = '🚗✨';
+        if (m.rubro.toLowerCase().includes('birr') || m.rubro.toLowerCase().includes('gastro')) icon = '🍽️';
+
+        mHtml += 
+          '<div class="biz-merchant-card">' +
+            '<div class="biz-merchant-icon">' + icon + '</div>' +
+            '<div class="biz-merchant-content">' +
+              '<div class="biz-merchant-title">' + m.nombre + '</div>' +
+              '<div class="biz-merchant-discount">' + m.descuento + '</div>' +
+              '<div class="biz-merchant-meta">' + m.rubro + ' · a ' + m.distancia_metros + 'm · Pauta: ' + formatMoney(m.pauta_mensual) + '/mes</div>' +
+            '</div>' +
+          '</div>';
+      });
+    }
+    document.getElementById('bizMerchantsList').innerHTML = mHtml;
+
+    if (window.lucide) { lucide.createIcons(); }
+  }
+
+  function abrirModalUpgradeSaaS() {
+    document.getElementById('saasModal').classList.remove('hidden');
+  }
+
+  function cerrarModalUpgradeSaaS() {
+    document.getElementById('saasModal').classList.add('hidden');
+  }
+
+  function confirmarUpgradeSaaS() {
+    fetch('http://127.0.0.1:8000/api/suscripciones/estacionamiento/contratar/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        estacionamiento_id: currentParkingId,
+        plan_nivel: 'premium'
+      })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(res) {
+      cerrarModalUpgradeSaaS();
+      alert('¡Plan Premium activado con éxito!\n\nTu estacionamiento ahora aparecerá destacado #1 en el mapa con badge dorado y acceso total a métricas.');
+      cargarInsightsDashboard();
+    })
+    .catch(function(e) {
+      alert('Ocurrió un error al procesar la suscripción.');
+    });
+  }
+
+  // Inicializar al cargar
+  cargarInsightsDashboard();
+</script>
+</body>
+</html>

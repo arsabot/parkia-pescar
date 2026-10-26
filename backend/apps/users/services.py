@@ -117,7 +117,16 @@ def crear_reserva(usuario, espacio_id: int, fecha_inicio, fecha_fin) -> Reserva:
     if not verificar_disponibilidad(espacio, fecha_inicio, fecha_fin):
         raise EspacioNoDisponibleError("El espacio ya está reservado en ese horario.")
 
-    precio_total = calcular_precio(espacio, fecha_inicio, fecha_fin)
+    precio_base = calcular_precio(espacio, fecha_inicio, fecha_fin)
+    # Pilar 4: Descuento 10% para usuarios con Parkia Pass
+    if getattr(usuario, 'es_parkia_pass', False):
+        precio_total = (precio_base * Decimal('0.90')).quantize(Decimal('0.01'))
+    else:
+        precio_total = precio_base
+
+    # Pilar 1: Comisión por reserva (8% retenido por Parkia)
+    comision_pct = Decimal('8.00')
+    comision_monto = (precio_total * comision_pct / Decimal('100')).quantize(Decimal('0.01'))
 
     reserva = Reserva.objects.create(
         usuario=usuario,
@@ -125,6 +134,8 @@ def crear_reserva(usuario, espacio_id: int, fecha_inicio, fecha_fin) -> Reserva:
         fecha_inicio=fecha_inicio,
         fecha_fin=fecha_fin,
         precio_total=precio_total,
+        comision_pct=comision_pct,
+        comision_monto=comision_monto,
         estado=Reserva.Estado.PENDIENTE,
     )
 
@@ -145,7 +156,9 @@ def confirmar_reserva(reserva: Reserva) -> Reserva:
         raise ReservaInvalidaError("Solo se pueden confirmar reservas pendientes.")
 
     reserva.estado = Reserva.Estado.CONFIRMADA
-    reserva.save(update_fields=["estado"])
+    if not reserva.comision_monto or reserva.comision_monto == 0:
+        reserva.calcular_comision()
+    reserva.save(update_fields=["estado", "comision_monto"])
     return reserva
 
 

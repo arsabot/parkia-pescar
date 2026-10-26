@@ -6,11 +6,12 @@ class EstacionamientoSerializer(serializers.ModelSerializer):
 
     espacios_totales = serializers.IntegerField(read_only=True)
     espacios_disponibles = serializers.IntegerField(read_only=True)
+    plan_nivel = serializers.CharField(source='plan.nivel', read_only=True, default='basico')
 
     class Meta:
         model = Estacionamiento
         fields = ["id", "nombre", "direccion", "latitud", "longitud",
-                  "precio_por_hora", "activo", "plan_destacado", "created_at",
+                  "precio_por_hora", "activo", "plan_destacado", "plan_nivel", "created_at",
                   "espacios_totales", "espacios_disponibles"]
         read_only_fields = ["id", "created_at"]
         extra_kwargs = {

@@ -75,6 +75,9 @@ class User(AbstractUser):
     )
     phone      = models.CharField(_('Teléfono'), max_length=30, blank=True, default='')
     avatar_url = models.URLField(_('URL del Avatar'), blank=True, default='')
+    # Pilar 4: Freemium B2C — Parkia Pass
+    es_parkia_pass     = models.BooleanField(_('Suscripción Parkia Pass B2C'), default=False)
+    parkia_pass_vence  = models.DateField(_('Vencimiento Parkia Pass'), null=True, blank=True)
     created_at = models.DateTimeField(_('Fecha de registro'), auto_now_add=True)
 
     objects = CustomUserManager()
@@ -455,6 +458,11 @@ class Pago(models.Model):
         choices=Estado.choices, default=Estado.PENDIENTE, db_index=True,
     )
     referencia_externa = models.CharField(_('Referencia externa'), max_length=100, blank=True, default='')
+    # Pilar 5: Fee por procesamiento de pago digital
+    fee_procesamiento  = models.DecimalField(
+        _('Fee procesamiento digital ($)'), max_digits=10, decimal_places=2, default=Decimal('0.00'),
+        help_text=_('Costo de pasarela retenido por transacción digital.')
+    )
     fecha_pago = models.DateTimeField(_('Fecha de pago'), null=True, blank=True)
     created_at = models.DateTimeField(_('Fecha de creación'), auto_now_add=True)
 
@@ -465,3 +473,73 @@ class Pago(models.Model):
 
     def __str__(self):
         return f"Pago #{self.id} — ${self.monto} ({self.get_estado_display()})"
+
+
+# ==============================================================================
+# PILAR 3: PUBLICIDAD GEOLOCALIZADA — Comercios Cercanos y Beneficios
+# ==============================================================================
+
+class ComercioCercano(models.Model):
+    """
+    Comercio cercano al estacionamiento que ofrece promociones o beneficios
+    a los conductores que reservan en la plataforma (Monetización Pilar 3).
+    """
+    class Rubro(models.TextChoices):
+        CAFETERIA       = 'cafeteria',       _('Cafetería')
+        GASTRONOMIA     = 'gastronomia',     _('Gastronomía')
+        LAVADERO        = 'lavadero',        _('Lavadero de autos')
+        SHOPPING        = 'shopping',        _('Shopping / Tienda')
+        ENTRETENIMIENTO = 'entretenimiento', _('Cine / Entretenimiento')
+
+    nombre            = models.CharField(_('Nombre del comercio'), max_length=150)
+    rubro             = models.CharField(_('Rubro'), max_length=50, choices=Rubro.choices, default=Rubro.CAFETERIA)
+    direccion         = models.CharField(_('Dirección'), max_length=255)
+    descuento         = models.CharField(_('Beneficio para usuarios'), max_length=100)
+    distancia_metros  = models.PositiveIntegerField(_('Distancia en metros'), default=100)
+    estacionamiento   = models.ForeignKey(
+        Estacionamiento, on_delete=models.CASCADE,
+        related_name='comercios_cercanos', verbose_name=_('Estacionamiento cercano'),
+    )
+    activo            = models.BooleanField(_('Campaña publicitaria activa'), default=True)
+    pauta_mensual     = models.DecimalField(
+        _('Pauta mensual abonada ($)'), max_digits=10, decimal_places=2, default=Decimal('15000.00')
+    )
+    created_at        = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name        = _('Comercio Cercano')
+        verbose_name_plural = _('Comercios Cercanos')
+        ordering            = ['distancia_metros']
+
+    def __str__(self):
+        return f"{self.nombre} ({self.get_rubro_display()}) — {self.descuento} [{self.distancia_metros}m]"
+
+
+# ==============================================================================
+# PILAR 4: FREEMIUM B2C — Suscripción Conductor 'Parkia Pass'
+# ==============================================================================
+
+class SuscripcionB2C(models.Model):
+    """
+    Suscripción B2C 'Parkia Pass' para conductores (Monetización Pilar 4).
+    Otorga descuentos del 10% en cocheras, reserva prioritaria y reportes de gastos.
+    """
+    usuario           = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+        related_name='suscripciones_b2c', verbose_name=_('Conductor'),
+    )
+    monto_mensual     = models.DecimalField(_('Monto mensual'), max_digits=10, decimal_places=2, default=Decimal('2999.00'))
+    activo            = models.BooleanField(_('Activo'), default=True)
+    fecha_inicio      = models.DateField(_('Fecha de inicio'), auto_now_add=True)
+    fecha_vencimiento = models.DateField(_('Fecha de vencimiento'))
+    proveedor_pago    = models.CharField(_('Proveedor'), max_length=50, default='mercado_pago')
+    referencia_mp     = models.CharField(_('Referencia Mercado Pago'), max_length=100, blank=True, default='')
+
+    class Meta:
+        verbose_name        = _('Suscripción Conductor Parkia Pass')
+        verbose_name_plural = _('Suscripciones Conductores Parkia Pass')
+        ordering            = ['-fecha_inicio']
+
+    def __str__(self):
+        return f"Parkia Pass: {self.usuario.email} — ${self.monto_mensual}/mes"
+
