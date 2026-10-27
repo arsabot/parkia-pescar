@@ -1,0 +1,92 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/reservas",
+      "destination": "/vistas/reservas"
+    },
+    {
+      "source": "/reservas.html",
+      "destination": "/vistas/reservas"
+    },
+    {
+      "source": "/buscador",
+      "destination": "/vistas/buscador"
+    },
+    {
+      "source": "/buscador.html",
+      "destination": "/vistas/buscador"
+    },
+    {
+      "source": "/reserva",
+      "destination": "/vistas/reserva"
+    },
+    {
+      "source": "/reserva.html",
+      "destination": "/vistas/reserva"
+    },
+    {
+      "source": "/dashboard",
+      "destination": "/vistas/dashboard_negocio"
+    },
+    {
+      "source": "/dashboard.html",
+      "destination": "/vistas/dashboard_negocio"
+    },
+    {
+      "source": "/dashboard_negocio",
+      "destination": "/vistas/dashboard_negocio"
+    },
+    {
+      "source": "/dashboard_negocio.html",
+      "destination": "/vistas/dashboard_negocio"
+    },
+    {
+      "source": "/perfil",
+      "destination": "/vistas/perfil"
+    },
+    {
+      "source": "/perfil.html",
+      "destination": "/vistas/perfil"
+    },
+    {
+      "source": "/confirmacion",
+      "destination": "/vistas/confirmacion"
+    },
+    {
+      "source": "/confirmacion.html",
+      "destination": "/vistas/confirmacion"
+    },
+    {
+      "source": "/detalle",
+      "destination": "/vistas/detalle"
+    },
+    {
+      "source": "/detalle.html",
+      "destination": "/vistas/detalle"
+    },
+    {
+      "source": "/api/:match*",
+      "destination": "https://delivery-whatever-authorized-forever.trycloudflare.com/api/:match*"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET,OPTIONS,PATCH,DELETE,POST,PUT"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization"
+        }
+      ]
+    }
+  ]
+}

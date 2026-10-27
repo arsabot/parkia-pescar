@@ -49,3 +49,5 @@ staticfiles/
 .idea/
 *.swp
 *.swo
+.vercel
+.env*
