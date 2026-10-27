@@ -14,6 +14,7 @@ from .business_views import (
 
 router = DefaultRouter()
 router.register("estacionamientos", EstacionamientoViewSet, basename="estacionamiento")
+router.register("parkings", EstacionamientoViewSet, basename="parkings")
 
 urlpatterns = [
     # Reservas
