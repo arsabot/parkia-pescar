@@ -11,6 +11,7 @@
 
   <link rel="stylesheet" href="../css/vistas.css" />
   <link rel="stylesheet" href="../css/chatbot.css" />
+  <script src="../js/config.js"></script>
 </head>
 <body>
 
@@ -87,7 +88,7 @@
   function cargarMisReservas() {
     var container = document.getElementById('reservasContainer');
 
-    fetch('http://127.0.0.1:8000/api/reservas/')
+    fetch(window.getParkiaApiUrl('reservas/'))
       .then(function (r) {
         if (!r.ok) throw new Error('HTTP ' + r.status);
         return r.json();
@@ -215,7 +216,7 @@
   function cancelarReserva(id) {
     if (!confirm('¿Estás seguro de que querés cancelar esta reserva? El lugar se liberará y se procesará el reembolso de Mercado Pago.')) return;
 
-    fetch('http://127.0.0.1:8000/api/reservas/' + id + '/cancelar/', { method: 'POST' })
+    fetch(window.getParkiaApiUrl('reservas/' + id + '/cancelar/'), { method: 'POST' })
       .then(function (r) {
         if (!r.ok) throw new Error('Error al cancelar');
         alert('Reserva cancelada con éxito.');

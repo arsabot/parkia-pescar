@@ -11,6 +11,7 @@
 
   <link rel="stylesheet" href="../css/vistas.css" />
   <link rel="stylesheet" href="../css/chatbot.css" />
+  <script src="../js/config.js"></script>
 </head>
 <body>
 
@@ -186,7 +187,7 @@
   var userEmail = 'conductor@parkia.com';
 
   function verificarEstadoParkiaPass() {
-    fetch('http://127.0.0.1:8000/api/suscripciones/parkia-pass/?email=' + encodeURIComponent(userEmail))
+    fetch(window.getParkiaApiUrl('suscripciones/parkia-pass/?email=' + encodeURIComponent(userEmail)))
       .then(function(r) { return r.json(); })
       .then(function(data) {
         var badge = document.getElementById('passStatusBadge');
@@ -216,7 +217,7 @@
   }
 
   function activarParkiaPass() {
-    fetch('http://127.0.0.1:8000/api/suscripciones/parkia-pass/contratar/', {
+    fetch(window.getParkiaApiUrl('suscripciones/parkia-pass/contratar/'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ usuario_email: userEmail, meses: 1 })
@@ -232,7 +233,7 @@
   }
 
   function abrirReporteGastosModal() {
-    fetch('http://127.0.0.1:8000/api/suscripciones/parkia-pass/reporte-gastos/?email=' + encodeURIComponent(userEmail))
+    fetch(window.getParkiaApiUrl('suscripciones/parkia-pass/reporte-gastos/?email=' + encodeURIComponent(userEmail)))
       .then(function(r) { return r.json(); })
       .then(function(data) {
         document.getElementById('repTotalGastado').textContent = '$' + Number(data.total_gastado || 0).toLocaleString('es-AR');

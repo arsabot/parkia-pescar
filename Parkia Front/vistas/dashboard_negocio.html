@@ -11,6 +11,7 @@
 
   <link rel="stylesheet" href="../css/vistas.css" />
   <link rel="stylesheet" href="../css/chatbot.css" />
+  <script src="../js/config.js"></script>
 </head>
 <body>
 
@@ -325,7 +326,7 @@
     var select = document.getElementById('selectParking');
     currentParkingId = select.value || 1;
 
-    fetch('http://127.0.0.1:8000/api/analytics/insights/?estacionamiento_id=' + encodeURIComponent(currentParkingId))
+    fetch(window.getParkiaApiUrl('analytics/insights/?estacionamiento_id=' + encodeURIComponent(currentParkingId)))
       .then(function(r) {
         if (!r.ok) throw new Error('HTTP ' + r.status);
         return r.json();
@@ -428,7 +429,7 @@
   }
 
   function confirmarUpgradeSaaS() {
-    fetch('http://127.0.0.1:8000/api/suscripciones/estacionamiento/contratar/', {
+    fetch(window.getParkiaApiUrl('suscripciones/estacionamiento/contratar/'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

@@ -16,9 +16,26 @@ Antes de comenzar, asegúrate de tener instalado en tu computadora:
 * **Git** para clonar el repositorio.
 * **Navegador web moderno** (Chrome, Firefox, Safari o Edge).
 
+## 🌐 Despliegue en Producción (Vercel + Tu PC como Servidor)
+
+El frontend de PARKIA está **desplegado en producción en Vercel**:
+👉 **[https://parkia-lac.vercel.app](https://parkia-lac.vercel.app)**
+
+### 💡 ¿Cómo funciona la arquitectura híbrida?
+* **Frontend en Vercel:** Aloja la interfaz web con CDN global, optimización de velocidad y certificado SSL HTTPS.
+* **Backend y Base de Datos en tu PC:** Tu computadora actúa como servidor ejecutando Django REST Framework y la base de datos SQLite con las cocheras de CABA, reservas en tiempo real y pasarela de Mercado Pago.
+* **Túnel Seguro Cloudflare (HTTPS):** Conecta de forma segura y encriptada el puerto `8000` de tu máquina a internet vía Cloudflare Tunnel, permitiendo que la app en Vercel consuma la API sin problemas de CORS ni de contenido mixto.
+
+#### Para activar tu PC como servidor remoto para Vercel:
+En macOS / Linux:
+```bash
+chmod +x iniciar-servidor-pc.sh
+./iniciar-servidor-pc.sh
+```
+
 ---
 
-## ⚡ Opción 1: Inicio Rápido Automático (Recomendado)
+## ⚡ Opción 1: Inicio Rápido Local (Recomendado para Desarrollo)
 
 El proyecto incluye scripts que se encargan automáticamente de crear el entorno virtual, instalar dependencias, migrar la base de datos, cargar los datos de prueba (`seed`) y levantar tanto el Backend como el Frontend.
 

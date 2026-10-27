@@ -17,6 +17,8 @@
   <!-- Estilos del Mapa Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <!-- Configuración de API (Local / Vercel / Cloudflare) -->
+  <script src="js/config.js"></script>
 </head>
 <body>
 
@@ -470,7 +472,7 @@
 
   // Cargar estacionamientos desde la API REST
   function cargarEstacionamientos(query) {
-    var url = "http://127.0.0.1:8000/api/estacionamientos/";
+    var url = window.getParkiaApiUrl ? window.getParkiaApiUrl('estacionamientos/') : "http://127.0.0.1:8000/api/estacionamientos/";
     showApiMessage("info", "Buscando estacionamientos...");
     
     fetch(url)

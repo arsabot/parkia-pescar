@@ -11,6 +11,7 @@
 
   <link rel="stylesheet" href="../css/vistas.css" />
   <link rel="stylesheet" href="../css/chatbot.css" />
+  <script src="../js/config.js"></script>
 </head>
 <body>
 
@@ -165,7 +166,7 @@
   }
 
   function cargarComerciosCercanos(estId) {
-    fetch('http://127.0.0.1:8000/api/comercios-cercanos/?estacionamiento_id=' + encodeURIComponent(estId || 1))
+    fetch(window.getParkiaApiUrl('comercios-cercanos/?estacionamiento_id=' + encodeURIComponent(estId || 1)))
       .then(function(r) { return r.json(); })
       .then(function(data) {
         var items = data.results || [];
@@ -197,7 +198,7 @@
     document.getElementById('confQrCode').textContent = '#PK-' + String(reservaId).padStart(5, '0');
     document.getElementById('confQrImg').src = 'https://api.qrserver.com/v1/create-qr-code/?size=164x164&data=PARKIA-RES-' + reservaId;
 
-    fetch('http://127.0.0.1:8000/api/reservas/' + encodeURIComponent(reservaId) + '/')
+    fetch(window.getParkiaApiUrl('reservas/' + encodeURIComponent(reservaId) + '/'))
       .then(function (r) {
         if (!r.ok) throw new Error('HTTP ' + r.status);
         return r.json();

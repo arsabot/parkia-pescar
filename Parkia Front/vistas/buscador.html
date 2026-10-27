@@ -11,6 +11,7 @@
 
   <link rel="stylesheet" href="../css/inicio.css" />
   <link rel="stylesheet" href="../css/chatbot.css" />
+  <script src="../js/config.js"></script>
   <style>
     .search-page {
       max-width: 760px;
@@ -142,7 +143,8 @@
   }
 
   function cargarEstacionamientos(query) {
-    fetch("http://127.0.0.1:8000/api/estacionamientos/")
+    var apiUrl = window.getParkiaApiUrl ? window.getParkiaApiUrl('estacionamientos/') : "http://127.0.0.1:8000/api/estacionamientos/";
+    fetch(apiUrl)
       .then(function (r) {
         if (!r.ok) throw new Error("HTTP " + r.status);
         return r.json();
