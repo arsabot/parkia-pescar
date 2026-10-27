@@ -24,9 +24,16 @@ echo "🗄️ Verificando base de datos y migraciones..."
 "$PYTHON_EXEC" "$DIR/backend/manage.py" migrate --noinput
 "$PYTHON_EXEC" "$DIR/backend/manage.py" seed_db
 
-echo "📦 Iniciando Backend Django (http://127.0.0.1:8000)..."
-"$PYTHON_EXEC" "$DIR/backend/manage.py" runserver 127.0.0.1:8000 &
-BACKEND_PID=$!
+if [ -f "$DIR/backend/venv/bin/gunicorn" ]; then
+    echo "📦 Iniciando Servidor WSGI Gunicorn (http://127.0.0.1:8000)..."
+    cd "$DIR/backend"
+    "$DIR/backend/venv/bin/gunicorn" config.wsgi:application --bind 127.0.0.1:8000 --workers 2 &
+    BACKEND_PID=$!
+else
+    echo "📦 Iniciando Backend Django (http://127.0.0.1:8000)..."
+    "$PYTHON_EXEC" "$DIR/backend/manage.py" runserver 127.0.0.1:8000 &
+    BACKEND_PID=$!
+fi
 
 echo "🌐 Conectando túnel seguro Cloudflare (HTTPS)..."
 cloudflared tunnel --url http://127.0.0.1:8000 &
