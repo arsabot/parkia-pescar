@@ -160,11 +160,14 @@
         renderResults(filtered);
       })
       .catch(function () {
-        // Fallback demo local
         var sample = [
-          { id: 1, nombre: "Estacionamiento Central Obelisco", direccion: "Av. Corrientes 1045, San Nicolás", espacios_disponibles: 18, espacios_totales: 30, precio_por_hora: 2500, plan_destacado: true },
-          { id: 5, nombre: "Cocheras Palermo Soho", direccion: "Honduras 4820, Palermo", espacios_disponibles: 8, espacios_totales: 20, precio_por_hora: 3000, plan_destacado: true },
-          { id: 3, nombre: "Garage Puerto Madero Dique 3", direccion: "Juana Manso 1100, Puerto Madero", espacios_disponibles: 14, espacios_totales: 40, precio_por_hora: 4500, plan_destacado: false }
+          { id: 1, nombre: "Estacionamiento Central Obelisco", direccion: "Av. Corrientes 1050, San Nicolás", espacios_disponibles: 18, espacios_totales: 35, precio_por_hora: 2500, plan_destacado: true },
+          { id: 5, nombre: "Cocheras Palermo Soho", direccion: "Honduras 4800, Palermo", espacios_disponibles: 12, espacios_totales: 30, precio_por_hora: 3000, plan_destacado: true },
+          { id: 3, nombre: "Garage Puerto Madero Dique 3", direccion: "Juana Manso 1100, Puerto Madero", espacios_disponibles: 25, espacios_totales: 50, precio_por_hora: 4500, plan_destacado: true },
+          { id: 6, nombre: "Parking Belgrano Juramento", direccion: "Av. Cabildo 2150, Belgrano", espacios_disponibles: 15, espacios_totales: 40, precio_por_hora: 2900, plan_destacado: true },
+          { id: 10, nombre: "Garage Abasto Shopping", direccion: "Av. Corrientes 3250, Almagro", espacios_disponibles: 32, espacios_totales: 60, precio_por_hora: 3100, plan_destacado: true },
+          { id: 9, nombre: "Estacionamiento Retiro Plaza San Martín", direccion: "Florida 1050, Retiro", espacios_disponibles: 22, espacios_totales: 50, precio_por_hora: 3600, plan_destacado: true },
+          { id: 25, nombre: "Parkia Saavedra Dot Baires", direccion: "Vedia 3650, Saavedra", espacios_disponibles: 48, espacios_totales: 80, precio_por_hora: 3200, plan_destacado: true }
         ];
         var q = (query || "").toLowerCase();
         var filtered = q ? sample.filter(function(e) { return e.nombre.toLowerCase().includes(q) || e.direccion.toLowerCase().includes(q); }) : sample;
